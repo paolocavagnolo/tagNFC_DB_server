@@ -15,3 +15,17 @@ Per qualche motivo quantistico è stato scelto MongoDB, python edition.
     easy_install pymongo
 
 si sta seguendo la guida su: https://docs.mongodb.org/getting-started/python/client/
+
+## Aggiornare il database direttamente dal gsheet dell'associazione (libro soci)
+
+http://stackoverflow.com/questions/16178423/updating-mongodb-from-a-spreadsheet
+
+## Inserire un IP fisso alla yun
+
+    vi /etc/config/network
+    config interface 'lan'
+	      #option proto 'dhcp'
+        option proto 'static'
+        option ipaddr '192.168.1.150'
+        option netmask '255.255.255.0'
+	      option gateway   '192.168.1.1'
