@@ -16,7 +16,8 @@ Per qualche motivo quantistico è stato scelto MongoDB, python edition.
 
 si sta seguendo la guida su: https://docs.mongodb.org/getting-started/python/client/
 
-
+aggiorna i file!
+svn export https://github.com/paolocavagnolo/tagNFC_DB_server.git/trunk/provaDB.py --force
 
 
 

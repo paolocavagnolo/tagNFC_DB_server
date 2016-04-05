@@ -12,7 +12,6 @@ post = {"author": "Mike",
          "date": datetime.datetime.utcnow()}
 
 posts = db.posts
-post_id = posts.insert_one(post).inserted_id
 
 print post_id
 input("Press Enter to continue...")
