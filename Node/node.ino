@@ -52,7 +52,7 @@ byte sendSize = 0;
 boolean requestACK = false;
 
 //7Segment side
-LedControl lc = LedControl(17,16,15,2);
+LedControl lc = LedControl(17,16,15,1);
 
 //Flash side
 SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for 4mbit  Windbond chip (W25X40CL)
@@ -127,7 +127,7 @@ void setup() {
 
 //7Segment side
 lc.shutdown(0,false);
-ls.setIntesity(0,8);
+lc.setIntensity(0,8);
 lc.clearDisplay(0);
 
 }
@@ -138,6 +138,19 @@ void Blink(byte PIN, int DELAY_MS)
   digitalWrite(PIN, HIGH);
   delay(DELAY_MS);
   digitalWrite(PIN, LOW);
+}
+
+String hexify(unsigned int n)
+{
+  String res;
+
+  do
+  {
+    res += "0123456789ABCDEF"[n % 16];
+    n >>= 4;
+  } while(n);
+
+  return res;
 }
 
 
@@ -160,14 +173,15 @@ void loop() {
       Serial.print("  UID Length: "); Serial.print(sendSize, DEC); Serial.println(" bytes");
       Serial.print("  UID Value: ");
       nfc.PrintHex(uid, sendSize);
-      lc.setDigit(1,3,uid[0],false);
-      lc.setDigit(1,2,uid[1],false);
-      lc.setDigit(1,1,uid[2],false);
-      lc.setDigit(1,0,uid[3],false);
-      lc.setDigit(0,3,uid[4],false);
-      lc.setDigit(0,3,uid[5],false);
-      lc.setDigit(0,3,uid[6],false);
-      lc.setDigit(0,3,uid[7],false);
+      lc.setChar(0,7,hexify(uid[0])[0],false);
+      lc.setChar(0,6,hexify(uid[0])[1],false);
+      lc.setChar(0,5,hexify(uid[1])[0],false);
+      lc.setChar(0,4,hexify(uid[1])[1],false);
+      lc.setChar(0,3,hexify(uid[2])[0],false);
+      lc.setChar(0,2,hexify(uid[2])[1],false);
+      lc.setChar(0,1,hexify(uid[3])[0],false);
+      lc.setChar(0,0,hexify(uid[3])[1],false);
+      
     }
     //Ascolta il gateway per l'ok
     digitalWrite(5, HIGH);
@@ -197,3 +211,4 @@ void loop() {
   LuceEnable = false;
 
 }
+
