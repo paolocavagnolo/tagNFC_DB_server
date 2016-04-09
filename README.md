@@ -1,27 +1,12 @@
 # tagNFC_DB_server
 
+An open source system to manage machines in a cool makerspace!
 
- 1- Installare un database "server" sulla yun del techlab che si occupa del monitoraggio.
+The system is composed by nodes and 1 gateway. The gateway is a arduino YUN with an RFM69 moteino board.
+Each node has at least 1 moteino board and a NFC tag shield.
 
- 2- Leggere quel database dalla yun collegata alla laser
+## Laser node
+Hacking the Laser:
+![Alt text](https://lh3.googleusercontent.com/XCoaaOT6O4BzO5U8wtSX5OgKLz_5uHQfqf0ip7A4G7SFzWbD5I9IVt8VVpTohM7vxBachwNntntgR7AXrMmXbZT2xcmWbJHFiKCxw51UEXsCrnUGEzItq08hpOqjPtaAMyVmiOfyLbpttHSsaZAfdHApaE0IhWU2CuKlxmATBdZQVPPnSq5IY48vzpxxIxnhgU-8_X8iBdprwrxxi1ipQlW03wTsdQJxsuQXEFAlLoji4GDxcNwTg6HCiuazvL7z2O9PNjl8fh2ZqRUJ-o8-S6h_YDJS_h3S0DlXKqkOT7D3ySid1lnkl4pnGfH3UeTRWR8sIsFFiXZJG9XbDSN9gE4zaC8hZ0jSkn0PtpXjhmQud319eMzWMp1Mlvnzs-zLMPg1csdetR4byz5kNwCcq2aUTB_ZxUjs12GbwXpFRQn_vEU_V7dkngDEVgaLf40fI1C5tq-0sXk5z_JfZuJ-YnChFW20um7CboWuRyQgWfZD5J2YpKXa6o_N4uTl6AQhcif_0sROuGY5TRw4uxC_Y9i0R8-bZ8zytLX7R6atuqXTnRhDI-cY9jVQkxwEgDadLUuYMA=w453-h805-no)
 
- 3- Aggiornare quel database da qualsiasi computer collegato alla rete del techlab
-
-
-## Step eseguiti fin'ora
-
-Per qualche motivo quantistico è stato scelto MongoDB, python edition.
-
-    python -m pip install pymongo
-
-si sta seguendo la guida su: https://docs.mongodb.org/getting-started/python/client/
-
-aggiorna i file!
-svn export https://github.com/paolocavagnolo/tagNFC_DB_server.git/trunk/provaDB.py --force
-
-
-## 
-
-## Aggiornare il database direttamente dal gsheet dell'associazione (libro soci)
-
-http://stackoverflow.com/questions/16178423/updating-mongodb-from-a-spreadsheet
+[Here](http://www.rabbitlaserusa.com/manuals/MPC6515HardwareManual.pdf) the hardware manual of the laser cutter
