@@ -62,6 +62,7 @@ void setup() {
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(7, OUTPUT);
+  digitalWrite(7, HIGH);
 
   Serial.begin(SERIAL_BAUD);
 
@@ -151,11 +152,9 @@ void loop() {
     //Ascolta il gateway per l'ok
     digitalWrite(5, HIGH);
     digitalWrite(6, HIGH);
-    digitalWrite(7, HIGH);
     delay(500);
     digitalWrite(5, LOW);
     digitalWrite(6, LOW);
-    digitalWrite(7, LOW);
     delay(500);
     LuceEnable = true;
   }
