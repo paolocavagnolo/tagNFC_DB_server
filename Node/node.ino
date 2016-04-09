@@ -184,7 +184,7 @@ void loop() {
       for(byte i = 0; i < sendSize; i++)
         Serial.print((char)payload[i]);
 
-      if (radio.sendWithRetry(GATEWAYID, payload, sendSize))
+      if (radio.sendWithRetry(GATEWAYID, uid, sendSize))
        Serial.print(" ok!");
       else Serial.print(" nothing...");
     }
@@ -193,53 +193,5 @@ void loop() {
     Blink(LED,3);
   }
 
-  //FLASH side
-  //process any serial input
-  if (Serial.available() > 0)
-  {
-    char input = Serial.read();
-    if (input >= 48 && input <= 57) //[0,9]
-    {
-      TRANSMITPERIOD = 100 * (input-48);
-      if (TRANSMITPERIOD == 0) TRANSMITPERIOD = 1000;
-      Serial.print("\nChanging delay to ");
-      Serial.print(TRANSMITPERIOD);
-      Serial.println("ms\n");
-    }
-
-    if (input == 'r') //d=dump register values
-      radio.readAllRegs();
-    //if (input == 'E') //E=enable encryption
-    //  radio.encrypt(KEY);
-    //if (input == 'e') //e=disable encryption
-    //  radio.encrypt(null);
-
-    if (input == 'd') //d=dump flash area
-    {
-      Serial.println("Flash content:");
-      uint16_t counter = 0;
-
-      Serial.print("0-256: ");
-      while(counter<=256){
-        Serial.print(flash.readByte(counter++), HEX);
-        Serial.print('.');
-      }
-      while(flash.busy());
-      Serial.println();
-    }
-    if (input == 'e')
-    {
-      Serial.print("Erasing Flash chip ... ");
-      flash.chipErase();
-      while(flash.busy());
-      Serial.println("DONE");
-    }
-    if (input == 'i')
-    {
-      Serial.print("DeviceID: ");
-      word jedecid = flash.readDeviceId();
-      Serial.println(jedecid, HEX);
-    }
-  }
 
 }
