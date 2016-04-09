@@ -136,7 +136,7 @@ uint8_t uidLength;                        // Length of the UID (4 or 7 bytes dep
 void loop() {
 
   if (!LuceEnable) {
-    success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+    success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &sendSize);
     if (success) {
       // Display some basic information about the card
       Serial.println("Found an ISO14443A card");
@@ -172,27 +172,20 @@ void loop() {
     {
       lastPeriod=currPeriod;
 
-      //send FLASH id
-      if(sendSize==0)
-      {
-        sprintf(buff, "FLASH_MEM_ID:0x%X", flash.readDeviceId());
-        byte buffLen=strlen(buff);
-        if (radio.sendWithRetry(GATEWAYID, buff, buffLen))
-          Serial.print(" ok!");
-        else Serial.print(" nothing...");
-        //sendSize = (sendSize + 1) % 31;
-      }
-      else
-      {
-        Serial.print("Sending[");
-        Serial.print(sendSize);
-        Serial.print("]: ");
+      sprintf(buff, "FLASH_MEM_ID:0x%X", flash.readDeviceId());
+      byte buffLen=strlen(buff);
+      if (radio.sendWithRetry(GATEWAYID, buff, buffLen))
+        Serial.print(" ok!");
+      else Serial.print(" nothing...");
 
-        if (radio.sendWithRetry(GATEWAYID, uid, sendSize))
-         Serial.print(" ok!");
-        else Serial.print(" nothing...");
-      }
-      sendSize = 16;
+      Serial.print("Sending[");
+      Serial.print(sendSize);
+      Serial.print("]: ");
+
+      if (radio.sendWithRetry(GATEWAYID, uid, sendSize))
+       Serial.print(" ok!");
+      else Serial.print(" nothing...");
+
       Serial.println();
       Blink(LED,3);
     }
