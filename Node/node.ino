@@ -29,16 +29,16 @@ Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 //#define FREQUENCY   RF69_868MHZ
 //#define FREQUENCY     RF69_915MHZ
 #define ENCRYPTKEY    "sampleEncryptKey" //exactly the same 16 characters/bytes on all nodes!
-//#define IS_RFM69HW    //uncomment only for RFM69HW! Leave out if you have RFM69W!
+#define IS_RFM69HW    //uncomment only for RFM69HW! Leave out if you have RFM69W!
 #define ENABLE_ATC    //comment out this line to disable AUTO TRANSMISSION CONTROL
 //*********************************************************************************************
 
 #ifdef __AVR_ATmega1284P__
-  #define LED           15 // Moteino MEGAs have LEDs on D15
-  #define FLASH_SS      23 // and FLASH SS on D23
+#define LED           15 // Moteino MEGAs have LEDs on D15
+#define FLASH_SS      23 // and FLASH SS on D23
 #else
-  #define LED           9 // Moteinos have LEDs on D9
-  #define FLASH_SS      8 // and FLASH SS on D8
+#define LED           9 // Moteinos have LEDs on D9
+#define FLASH_SS      8 // and FLASH SS on D8
 #endif
 
 #define SERIAL_BAUD   115200
@@ -46,19 +46,23 @@ Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 int TRANSMITPERIOD = 150; //transmit a packet to gateway so often (in ms)
 char payload[] = "";
 char buff[20];
-byte sendSize=0;
+byte sendSize = 0;
 boolean requestACK = false;
 
 //Flash side
 SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for 4mbit  Windbond chip (W25X40CL)
 
 #ifdef ENABLE_ATC
-  RFM69_ATC radio;
+RFM69_ATC radio;
 #else
-  RFM69 radio;
+RFM69 radio;
 #endif
 
 void setup() {
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(7, OUTPUT);
+
   Serial.begin(SERIAL_BAUD);
 
   //NFC side
@@ -68,9 +72,9 @@ void setup() {
     Serial.print("Didn't find PN53x board");
     while (1); // halt
   }
-  Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX);
-  Serial.print("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC);
-  Serial.print('.'); Serial.println((versiondata>>8) & 0xFF, DEC);
+  Serial.print("Found chip PN5"); Serial.println((versiondata >> 24) & 0xFF, HEX);
+  Serial.print("Firmware ver. "); Serial.print((versiondata >> 16) & 0xFF, DEC);
+  Serial.print('.'); Serial.println((versiondata >> 8) & 0xFF, DEC);
 
   // configure board to read RFID tags
   nfc.SAMConfig();
@@ -78,30 +82,30 @@ void setup() {
   Serial.println("Waiting for an ISO14443A Card ...");
 
   //RFM side
-  radio.initialize(FREQUENCY,NODEID,NETWORKID);
+  radio.initialize(FREQUENCY, NODEID, NETWORKID);
 #ifdef IS_RFM69HW
   radio.setHighPower(); //uncomment only for RFM69HW!
 #endif
   radio.encrypt(ENCRYPTKEY);
   //radio.setFrequency(919000000); //set frequency to some custom frequency
 
-//Auto Transmission Control - dials down transmit power to save battery (-100 is the noise floor, -90 is still pretty good)
-//For indoor nodes that are pretty static and at pretty stable temperatures (like a MotionMote) -90dBm is quite safe
-//For more variable nodes that can expect to move or experience larger temp drifts a lower margin like -70 to -80 would probably be better
-//Always test your ATC mote in the edge cases in your own environment to ensure ATC will perform as you expect
+  //Auto Transmission Control - dials down transmit power to save battery (-100 is the noise floor, -90 is still pretty good)
+  //For indoor nodes that are pretty static and at pretty stable temperatures (like a MotionMote) -90dBm is quite safe
+  //For more variable nodes that can expect to move or experience larger temp drifts a lower margin like -70 to -80 would probably be better
+  //Always test your ATC mote in the edge cases in your own environment to ensure ATC will perform as you expect
 #ifdef ENABLE_ATC
   radio.enableAutoPower(-70);
 #endif
 
   char buff[50];
-  sprintf(buff, "\nTransmitting at %d Mhz...", FREQUENCY==RF69_433MHZ ? 433 : FREQUENCY==RF69_868MHZ ? 868 : 915);
+  sprintf(buff, "\nTransmitting at %d Mhz...", FREQUENCY == RF69_433MHZ ? 433 : FREQUENCY == RF69_868MHZ ? 868 : 915);
   Serial.println(buff);
 
   if (flash.initialize())
   {
     Serial.print("SPI Flash Init OK ... UniqueID (MAC): ");
     flash.readUniqueId();
-    for (byte i=0;i<8;i++)
+    for (byte i = 0; i < 8; i++)
     {
       Serial.print(flash.UNIQUEID[i], HEX);
       Serial.print(' ');
@@ -119,9 +123,9 @@ void setup() {
 void Blink(byte PIN, int DELAY_MS)
 {
   pinMode(PIN, OUTPUT);
-  digitalWrite(PIN,HIGH);
+  digitalWrite(PIN, HIGH);
   delay(DELAY_MS);
-  digitalWrite(PIN,LOW);
+  digitalWrite(PIN, LOW);
 }
 
 long lastPeriod = 0;
@@ -140,109 +144,38 @@ void loop() {
     if (success) {
       // Display some basic information about the card
       Serial.println("Found an ISO14443A card");
-      Serial.print("  UID Length: ");Serial.print(uidLength, DEC);Serial.println(" bytes");
+      Serial.print("  UID Length: "); Serial.print(sendSize, DEC); Serial.println(" bytes");
       Serial.print("  UID Value: ");
-      nfc.PrintHex(uid, uidLength);
+      nfc.PrintHex(uid, sendSize);
     }
-
     //Ascolta il gateway per l'ok
-    delay(1000);
+    digitalWrite(5, HIGH);
+    digitalWrite(6, HIGH);
+    digitalWrite(7, HIGH);
+    delay(500);
+    digitalWrite(5, LOW);
+    digitalWrite(6, LOW);
+    digitalWrite(7, LOW);
+    delay(500);
     LuceEnable = true;
-    delay(1000);
-    LuceEnable = false;
-    // if (radio.receiveDone())
-    // {
-    //   Serial.print('[');Serial.print(radio.SENDERID, DEC);Serial.print("] ");
-    //   for (byte i = 0; i < radio.DATALEN; i++)
-    //     Serial.print((char)radio.DATA[i]);
-    //   Serial.print("   [RX_RSSI:");Serial.print(radio.RSSI);Serial.print("]");
-    //
-    //   if (radio.ACKRequested())
-    //   {
-    //     radio.sendACK();
-    //     Serial.print(" - ACK sent");
-    //   }
-    //   Blink(LED,3);
-    //   Serial.println();
-    // }
-
-    //Manda
-    int currPeriod = millis()/TRANSMITPERIOD;
-    if (currPeriod != lastPeriod)
-    {
-      lastPeriod=currPeriod;
-
-      sprintf(buff, "FLASH_MEM_ID:0x%X", flash.readDeviceId());
-      byte buffLen=strlen(buff);
-      if (radio.sendWithRetry(GATEWAYID, buff, buffLen))
-        Serial.print(" ok!");
-      else Serial.print(" nothing...");
-
-      Serial.print("Sending[");
-      Serial.print(sendSize);
-      Serial.print("]: ");
-
-      if (radio.sendWithRetry(GATEWAYID, uid, sendSize))
-       Serial.print(" ok!");
-      else Serial.print(" nothing...");
-
-      Serial.println();
-      Blink(LED,3);
-    }
-
   }
 
-  //READ TIME LASER
+  int currPeriod = millis() / TRANSMITPERIOD;
+  if (currPeriod != lastPeriod)
+  {
+    lastPeriod = currPeriod;
 
-  // while (analogRead(0)>1000) {
-  //   if (LaserOn) {
-  //     inizio = millis();
-  //     LaserOn = true;    //inizia a contare il tempo
-  //   }
-  //   if ((millis() - inizio) > Cr_time) {
-  //     scala_cr(tagId_OK,tagId_NO);
-  //     inizio = millis();
-  //   }
-  // }
-  // if (flagLaser==true) {
-  //   fine = millis();
-  //   flagLaser=false;
-  //   durata += abs(fine - inizio);
-  //
-  //   if (durata > Cr_time) {
-  //     scala_cr(tagId_OK,tagId_NO);//scala
-  //     durata = 0;
-  //   }
-  // }
+    Serial.print("Sending[");
+    Serial.print(sendSize);
+    Serial.print("]: ");
 
-  //gestisci l'abilitazione del laser
-  // if (flag_enable == true) {    //se ti è arrivato il segnale di abilitazione
-  //   digitalWrite(enable,HIGH); //abilita il laser
-  //   digitalWrite(ledOK,HIGH);  //accende il led verde
-  // }
-  // else {
-  //   digitalWrite(enable,LOW);
-  //   digitalWrite(ledOK,LOW);
-  // }
-  //
-  // if (flag_danger == true) {
-  //   digitalWrite(ledNO,HIGH);  //accende il led verde
-  // }
-  // else {
-  //   digitalWrite(ledNO,LOW);
-  // }
-
-  //TIME OUT
-  //
-  // if (flagLaser==true) {
-  //   fine = millis();
-  //   flagLaser=false;
-  //   durata += abs(fine - inizio);
-  //
-  //   if (durata > Cr_time) {
-  //     scala_cr(tagId_OK,tagId_NO);//scala
-  //     durata = 0;
-  //   }
-  // }
+    if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
+      Serial.print(" ok!");
+      LuceEnable = false;
+    }
+    else Serial.print(" nothing...");
+  }
+  Blink(LED, 3);
 
 }
+
