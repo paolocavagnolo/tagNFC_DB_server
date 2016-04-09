@@ -125,73 +125,131 @@ void Blink(byte PIN, int DELAY_MS)
 }
 
 long lastPeriod = 0;
+bool LuceEnable = false;
+bool LaserOn = false;
+//NFC side
+uint8_t success;
+uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
+uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
+
+
 void loop() {
-  //NFC side
-  uint8_t success;
-  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
-  uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
-  // Wait for an ISO14443A type cards (Mifare, etc.).  When one is found
-  // 'uid' will be populated with the UID, and uidLength will indicate
-  // if the uid is 4 bytes (Mifare Classic) or 7 bytes (Mifare Ultralight)
-  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
-  if (success) {
-    // Display some basic information about the card
-    Serial.println("Found an ISO14443A card");
-    Serial.print("  UID Length: ");Serial.print(uidLength, DEC);Serial.println(" bytes");
-    Serial.print("  UID Value: ");
-    nfc.PrintHex(uid, uidLength);
+
+  if (!LuceEnable) {
+    success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
+    if (success) {
+      // Display some basic information about the card
+      Serial.println("Found an ISO14443A card");
+      Serial.print("  UID Length: ");Serial.print(uidLength, DEC);Serial.println(" bytes");
+      Serial.print("  UID Value: ");
+      nfc.PrintHex(uid, uidLength);
+    }
+
+    //Ascolta il gateway per l'ok
+    delay(1000);
+    LuceEnable = true;
+    delay(1000);
+    LuceEnable = false;
+    // if (radio.receiveDone())
+    // {
+    //   Serial.print('[');Serial.print(radio.SENDERID, DEC);Serial.print("] ");
+    //   for (byte i = 0; i < radio.DATALEN; i++)
+    //     Serial.print((char)radio.DATA[i]);
+    //   Serial.print("   [RX_RSSI:");Serial.print(radio.RSSI);Serial.print("]");
+    //
+    //   if (radio.ACKRequested())
+    //   {
+    //     radio.sendACK();
+    //     Serial.print(" - ACK sent");
+    //   }
+    //   Blink(LED,3);
+    //   Serial.println();
+    // }
+
+    //Manda
+    int currPeriod = millis()/TRANSMITPERIOD;
+    if (currPeriod != lastPeriod)
+    {
+      lastPeriod=currPeriod;
+
+      //send FLASH id
+      if(sendSize==0)
+      {
+        sprintf(buff, "FLASH_MEM_ID:0x%X", flash.readDeviceId());
+        byte buffLen=strlen(buff);
+        if (radio.sendWithRetry(GATEWAYID, buff, buffLen))
+          Serial.print(" ok!");
+        else Serial.print(" nothing...");
+        //sendSize = (sendSize + 1) % 31;
+      }
+      else
+      {
+        Serial.print("Sending[");
+        Serial.print(sendSize);
+        Serial.print("]: ");
+
+        if (radio.sendWithRetry(GATEWAYID, uid, sendSize))
+         Serial.print(" ok!");
+        else Serial.print(" nothing...");
+      }
+      sendSize = 16;
+      Serial.println();
+      Blink(LED,3);
+    }
 
   }
 
-  //RFM side
-  //check for any received packets
-  if (radio.receiveDone())
-  {
-    Serial.print('[');Serial.print(radio.SENDERID, DEC);Serial.print("] ");
-    for (byte i = 0; i < radio.DATALEN; i++)
-      Serial.print((char)radio.DATA[i]);
-    Serial.print("   [RX_RSSI:");Serial.print(radio.RSSI);Serial.print("]");
+  //READ TIME LASER
 
-    if (radio.ACKRequested())
-    {
-      radio.sendACK();
-      Serial.print(" - ACK sent");
-    }
-    Blink(LED,3);
-    Serial.println();
-  }
+  // while (analogRead(0)>1000) {
+  //   if (LaserOn) {
+  //     inizio = millis();
+  //     LaserOn = true;    //inizia a contare il tempo
+  //   }
+  //   if ((millis() - inizio) > Cr_time) {
+  //     scala_cr(tagId_OK,tagId_NO);
+  //     inizio = millis();
+  //   }
+  // }
+  // if (flagLaser==true) {
+  //   fine = millis();
+  //   flagLaser=false;
+  //   durata += abs(fine - inizio);
+  //
+  //   if (durata > Cr_time) {
+  //     scala_cr(tagId_OK,tagId_NO);//scala
+  //     durata = 0;
+  //   }
+  // }
 
-  int currPeriod = millis()/TRANSMITPERIOD;
-  if (currPeriod != lastPeriod)
-  {
-    lastPeriod=currPeriod;
+  //gestisci l'abilitazione del laser
+  // if (flag_enable == true) {    //se ti è arrivato il segnale di abilitazione
+  //   digitalWrite(enable,HIGH); //abilita il laser
+  //   digitalWrite(ledOK,HIGH);  //accende il led verde
+  // }
+  // else {
+  //   digitalWrite(enable,LOW);
+  //   digitalWrite(ledOK,LOW);
+  // }
+  //
+  // if (flag_danger == true) {
+  //   digitalWrite(ledNO,HIGH);  //accende il led verde
+  // }
+  // else {
+  //   digitalWrite(ledNO,LOW);
+  // }
 
-    //send FLASH id
-    if(sendSize==0)
-    {
-      sprintf(buff, "FLASH_MEM_ID:0x%X", flash.readDeviceId());
-      byte buffLen=strlen(buff);
-      if (radio.sendWithRetry(GATEWAYID, buff, buffLen))
-        Serial.print(" ok!");
-      else Serial.print(" nothing...");
-      //sendSize = (sendSize + 1) % 31;
-    }
-    else
-    {
-      Serial.print("Sending[");
-      Serial.print(sendSize);
-      Serial.print("]: ");
-      for(byte i = 0; i < sendSize; i++)
-        Serial.print((char)payload[i]);
-
-      if (radio.sendWithRetry(GATEWAYID, uid, sendSize))
-       Serial.print(" ok!");
-      else Serial.print(" nothing...");
-    }
-    sendSize = (sendSize + 1) % 31;
-    Serial.println();
-    Blink(LED,3);
-  }
-
+  //TIME OUT
+  //
+  // if (flagLaser==true) {
+  //   fine = millis();
+  //   flagLaser=false;
+  //   durata += abs(fine - inizio);
+  //
+  //   if (durata > Cr_time) {
+  //     scala_cr(tagId_OK,tagId_NO);//scala
+  //     durata = 0;
+  //   }
+  // }
 
 }
