@@ -10,6 +10,8 @@
 #include <RFM69_ATC.h>    //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <SPIFlash.h>     //get it here: https://www.github.com/lowpowerlab/spiflash
 
+//7Segment side
+#include "LedControl.h"
 
 //*********************************************************************************************
 //************ IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE *************
@@ -48,6 +50,9 @@ char payload[] = "";
 char buff[20];
 byte sendSize = 0;
 boolean requestACK = false;
+
+//7Segment side
+LedControl lc = LedControl(17,16,15,2);
 
 //Flash side
 SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for 4mbit  Windbond chip (W25X40CL)
@@ -119,6 +124,12 @@ void setup() {
 #ifdef ENABLE_ATC
   Serial.println("RFM69_ATC Enabled (Auto Transmission Control)\n");
 #endif
+
+//7Segment side
+lc.shutdown(0,false);
+ls.setIntesity(0,8);
+lc.clearDisplay(0);
+
 }
 
 void Blink(byte PIN, int DELAY_MS)
@@ -128,6 +139,7 @@ void Blink(byte PIN, int DELAY_MS)
   delay(DELAY_MS);
   digitalWrite(PIN, LOW);
 }
+
 
 long lastPeriod = 0;
 bool LuceEnable = false;
@@ -148,6 +160,14 @@ void loop() {
       Serial.print("  UID Length: "); Serial.print(sendSize, DEC); Serial.println(" bytes");
       Serial.print("  UID Value: ");
       nfc.PrintHex(uid, sendSize);
+      lc.setDigit(1,3,uid[0],false);
+      lc.setDigit(1,2,uid[1],false);
+      lc.setDigit(1,1,uid[2],false);
+      lc.setDigit(1,0,uid[3],false);
+      lc.setDigit(0,3,uid[4],false);
+      lc.setDigit(0,3,uid[5],false);
+      lc.setDigit(0,3,uid[6],false);
+      lc.setDigit(0,3,uid[7],false);
     }
     //Ascolta il gateway per l'ok
     digitalWrite(5, HIGH);
@@ -170,11 +190,10 @@ void loop() {
 
     if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
       Serial.print(" ok!");
-      LuceEnable = false;
     }
     else Serial.print(" nothing...");
   }
   Blink(LED, 3);
+  LuceEnable = false;
 
 }
-
