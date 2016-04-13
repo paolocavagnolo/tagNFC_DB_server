@@ -4,10 +4,10 @@ import pandas as pd
 import sys, getopt, pprint
 from pymongo import MongoClient
 #CSV to JSON Conversion
-csvfile = open('C://test//final-current.csv', 'r')
+csvfile = open('./', 'r')
 reader = csv.DictReader( csvfile )
 mongo_client=MongoClient()
-db=mongo_client.october_mug_talk
+db=mongo_client.techlab_soci_db
 db.segment.drop()
 header= [ "Tessera", "tagNFC", "Data richiesta", "Data accettazione", "Tutore", "Mail", "Nome", "Cognome", "Data nascita", "Luogo nascita", "Residenza", "CF", "Qualifica", "Quota 2015" ,"Quota 2016", "Data annullamento"]
 
