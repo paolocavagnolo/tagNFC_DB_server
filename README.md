@@ -12,6 +12,40 @@ Download raspbian from [here] (https://www.raspberrypi.org/downloads/raspbian/)
 
 Follow all the instructions [here](https://www.raspberrypi.org/documentation/installation/installing-images/)
 
+Resize to the max size
+      sudo raspi-config
+      --resize
+
+update
+
+      sudo apt-get update
+      sudo apt-get upgrade
+      sudo apt-get dist-upgrade
+      sudo rpi-update
+      sudo dpkg-reconfigure tzdata
+
+from https://openenergymonitor.org/emon/node/12311
+
+test UART
+
+      sudo apt-get install minicom
+      sudo minicom -D /dev/ttyAMA0 -b115200
+
+prevent rpi3 to use UART
+
+      sudo nano /boot/cmdline.txt
+      dwc_otg.lpm_enable=0 console=serial1,115200  console=tty1 root=/dev/mmcblk0p2  kgdboc=serial1,115200 rootfstype=ext4 elevator=deadline fsck.repair=yes  rootwait
+
+install subversion
+
+      sudo apt-get install subversion
+
+download the last python code
+
+      svn export https://github.com/paolocavagnolo/tagNFC_DB_server/trunk/GaGateway --force
+
+
+
 Check for the UART communication
 
       Hi,
