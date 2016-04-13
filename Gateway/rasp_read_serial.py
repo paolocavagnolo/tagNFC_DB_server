@@ -1,7 +1,7 @@
 import serial
 
-serial.Serial() as ser:
-    ser.baudrate = 115200
-    ser.port = '/dev/ttyAMA0'
-    ser.open()
-    ser.write(b'hello')
+port = serial.Serial()
+port.baudrate = 115200
+port.port = '/dev/ttyAMA0'
+port.open()
+port.write(b'hello')
