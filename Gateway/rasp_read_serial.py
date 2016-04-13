@@ -8,5 +8,6 @@ moteino.timeout = 3
 moteino.open()
 print(moteino)
 
-if (moteino.readlines):
-    print "ciao"
+while True:
+    if (moteino.readlines() != ""):
+        print "ciao"
