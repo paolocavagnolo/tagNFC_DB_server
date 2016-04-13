@@ -11,3 +11,4 @@ print(moteino)
 while True:
     if (moteino.readlines() != ""):
         print "ciao"
+        ser.write(b'd')
