@@ -12,3 +12,5 @@ while True:
     if (moteino.readlines() != ""):
         print "ciao"
         moteino.write(b'd')
+        print moteino.readlines()
+        print moteino.readlines()
