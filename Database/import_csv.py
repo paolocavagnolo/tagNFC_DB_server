@@ -1,19 +1,15 @@
-import csv
-import json
-import pandas as pd
-import sys, getopt, pprint
-from pymongo import MongoClient
-#CSV to JSON Conversion
-csvfile = open('./', 'r')
-reader = csv.DictReader( csvfile )
-mongo_client=MongoClient('localhost', 27017)
-db=mongo_client.techlab_soci_db
-db.segment.drop()
-header= [ "Tessera", "tagNFC", "Data richiesta", "Data accettazione", "Tutore", "Mail", "Nome", "Cognome", "Data nascita", "Luogo nascita", "Residenza", "CF", "Qualifica", "Quota 2015" ,"Quota 2016", "Data annullamento"]
+import csv, simplejson, decimal, codecs
 
-for each in reader:
-    row={}
-    for field in header:
-        row[field]=each[field]
+data = open("soci.csv")
+reader = csv.DictReader(data, delimiter=",", quotechar='"')
 
-    db.segment.insert(row)
+with codecs.open("out.json", "w", encoding="utf-8") as out:
+    for r in reader:
+        for k, v in r.items():
+         # make sure nulls are generated
+         if not v:
+            r[k] = None
+         # generate int
+        elif k == "Tessera":
+            r[k] = int(v)
+        out.write(simplejson.dumps(r, ensure_ascii=False, use_decimal=True)+"\n")

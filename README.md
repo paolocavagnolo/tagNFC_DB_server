@@ -7,6 +7,8 @@ Each node has at least 1 moteino board and a NFC tag shield.
 
 ## Gateway
 
+https://mongopi.wordpress.com/2012/11/25/installation/
+
 I'm using Raspberry PI 3.
 Download raspbian from [here] (https://www.raspberrypi.org/downloads/raspbian/)
 
@@ -26,6 +28,9 @@ update
 
 from https://openenergymonitor.org/emon/node/12311
 
+      sudo nano /boot/config.txt
+      add core_freq=250
+
 test UART
 
       sudo apt-get install minicom
@@ -42,32 +47,13 @@ install subversion
 
 download the last python code
 
-      svn export https://github.com/paolocavagnolo/tagNFC_DB_server/trunk/GaGateway --force
+      svn export https://github.com/paolocavagnolo/tagNFC_DB_server/trunk/Gateway --force
+
+## MongoDB on pi
+http://andyfelong.com/2016/01/mongodb-3-0-9-binaries-for-raspberry-pi-2-jessie/
 
 
 
-Check for the UART communication
-
-      Hi,
-      First of all, thanks for the information. My serial connection has started to work!
-      I've added core_freq=250 to /boot/config.txt on my Pi 3.
-      vcgencmd get_config arm_freq reports 1200 and /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq shows 600000 and 1200000. It looks like performance of the board didn't decrease.
-      Of course I use /dev/ttyS0 device.
-
-Install pySerial
-
-      sudo apt-get install python-serial
-
-and then
-
-      import serial
-
-      port = serial.Serial("/dev/ttyAMA0", baudrate=115200, timeout=3.0)
-
-      while True:
-        port.write("\r\nSay something:")
-        rcv = port.read(10)
-        port.write("\r\nYou sent:" + repr(rcv))
 
 ## Laser node
 ###Hacking the Laser
