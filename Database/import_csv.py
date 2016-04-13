@@ -6,7 +6,7 @@ from pymongo import MongoClient
 #CSV to JSON Conversion
 csvfile = open('./', 'r')
 reader = csv.DictReader( csvfile )
-mongo_client=MongoClient()
+mongo_client=MongoClient('localhost', 27017)
 db=mongo_client.techlab_soci_db
 db.segment.drop()
 header= [ "Tessera", "tagNFC", "Data richiesta", "Data accettazione", "Tutore", "Mail", "Nome", "Cognome", "Data nascita", "Luogo nascita", "Residenza", "CF", "Qualifica", "Quota 2015" ,"Quota 2016", "Data annullamento"]
