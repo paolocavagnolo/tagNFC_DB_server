@@ -1,7 +1,9 @@
 var GoogleSpreadsheets = require('google-spreadsheets');
+var fs = require('fs');
 
 var col = parseInt(process.argv[3]);
 var row = parseInt(process.argv[2]);
+
 
 CLIENT_ID = '1083549263547-2rp85g51in8kl864ch7nisoehepk2odu.apps.googleusercontent.com';
 CLIENT_SECRET = 'c7APBFFW55IVgp5BAvMZYT7b';
@@ -29,4 +31,12 @@ GoogleSpreadsheets({
       }, function(err, result) {
       	console.log(result.cells[row][col].value);
       });
+  });
+
+  fs.writeFile("/home/pi/Documents/Database/buffer", "Hey there!", function(err) {
+      if(err) {
+          return console.log(err);
+      }
+
+      console.log("The file was saved!");
   });

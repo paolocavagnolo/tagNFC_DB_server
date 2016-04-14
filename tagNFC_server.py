@@ -4,7 +4,7 @@ import serial
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
 
 #node js part
-from Naked.toolshed.shell import execute_js, muterun_js
+import execjs
 
 cc = 0;
 
