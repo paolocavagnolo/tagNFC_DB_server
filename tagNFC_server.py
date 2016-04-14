@@ -1,13 +1,11 @@
 import serial
-from pymongo import MongoClient
 
 #serial part
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
 
-#mongodb part
-client = MongoClient('localhost', 27017)
-db = client['techlab']
-cc = 0
+#node js part
+from Naked.toolshed.shell import execute_js, muterun_js
+
 
 while True:
     try:
@@ -21,12 +19,9 @@ while True:
             cc = 1
             print uid
 
-        #check into DB
         if (cc == 1):
-            cursor = db.soci.find({"tagNFC": "Paolo"})
-            for document in cursor:
-                print(document)
-            cc = 0
+            muterun_js('/home/pi/Database/read_gsheet.js 2 3')
+            cc = 0;
 
     except (KeyboardInterrupt, SystemExit):
         ser.close()
