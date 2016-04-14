@@ -9,10 +9,6 @@ async.series([
         // see notes below for authentication instructions!
         var creds = require('/home/pi/techlab-tag-nfc-01c55db202b2.json');
         // OR, if you cannot save the file locally (like on heroku)
-        var creds_json = {
-          client_email: 'yourserviceaccountemailhere@google.com',
-          private_key: 'your long private key stuff here'
-        }
 
         doc.useServiceAccountAuth(creds, step);
       },
@@ -89,5 +85,5 @@ async.series([
 
           step();
         });
-      }
+      
     });
