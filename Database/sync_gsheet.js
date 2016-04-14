@@ -22,10 +22,16 @@ Spreadsheet.load({
 
     if (err) throw err;
 
-    spreadsheet.add(data);
-
-    spreadsheet.send(function(err) {
+    // spreadsheet.add(data);
+    //
+    // spreadsheet.send(function(err) {
+    //   if(err) throw err;
+    // });
+    spreadsheet.receive(function(err, rows, info) {
       if(err) throw err;
+      console.log("Found rows:", rows);
+      // Found rows: { '3': { '5': 'hello!' } }
     });
+
 
 });
