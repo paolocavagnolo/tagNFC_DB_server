@@ -7,7 +7,6 @@ ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
 #mongodb part
 client = MongoClient('localhost', 27017)
 db = client['techlab']
-collection = db['soci']
 cc = 0
 
 while True:
@@ -24,7 +23,7 @@ while True:
 
         #check into DB
         if (cc == 1):
-            cursor = db.collection.find({"Nome": "Paolo"})
+            cursor = db.soci.find({"Nome": "Paolo"})
             print cursor
             cc = 0
 
