@@ -14,10 +14,10 @@ Spreadsheet.load({
 
     if (err) throw err;
 
-    spreadsheet.receive(function(err, rows, info) {
+    spreadsheet.add({ 3: { 3: "5" } });
+
+    spreadsheet.send(function(err) {
       if(err) throw err;
-      console.log("Found rows:", rows);
-      // Found rows: { '3': { '5': 'hello!' } }
     });
 
 });
