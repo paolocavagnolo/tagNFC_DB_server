@@ -14,7 +14,7 @@ Spreadsheet.load({
 
     if (err) throw err;
 
-    spreadsheet.add({ process.argv[3]: { process.argv[4]: process.argv[2] } });
+    spreadsheet.add({ parseInt(process.argv[3]): { parseInt(process.argv[4]): process.argv[2] } });
 
     spreadsheet.send(function(err) {
       if(err) throw err;
