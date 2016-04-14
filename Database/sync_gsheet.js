@@ -1,7 +1,7 @@
 var Spreadsheet = require('edit-google-spreadsheet');
 
-var col = 2;
-var row = 4;
+var col = process.argv[4];
+var row = process.argv[3];
 
 
 var data = {};
