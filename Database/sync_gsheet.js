@@ -3,7 +3,7 @@ var Spreadsheet = require('edit-google-spreadsheet');
 Spreadsheet.load({
     debug: true,
     spreadsheetId: '1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380',
-    worksheetName: 'Foglio1',
+    worksheetId: "od6",
 
     oauth : {
         email: 'techlab@techlab-tag-nfc.iam.gserviceaccount.com',
