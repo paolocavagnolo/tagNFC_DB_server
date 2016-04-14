@@ -24,7 +24,8 @@ while True:
         #check into DB
         if (cc == 1):
             cursor = db.soci.find({"Nome": "Paolo"})
-            print cursor
+            for document in cursor:
+                print(document)
             cc = 0
 
     except (KeyboardInterrupt, SystemExit):
