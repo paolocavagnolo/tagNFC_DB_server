@@ -1,8 +1,12 @@
 var Spreadsheet = require('edit-google-spreadsheet');
 
+var col = 2;
+var row = 4;
+
+
 var data = {};
-data[parseInt(process.argv[3])] = {};
-data[parseInt(process.argv[3])][parseInt(process.argv[4])] = process.argv[2];
+data[row] = {};
+data[row][col] = process.argv[2];
 
 Spreadsheet.load({
     debug: true,
