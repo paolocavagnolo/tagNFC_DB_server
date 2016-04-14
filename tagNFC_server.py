@@ -6,8 +6,8 @@ while True:
     try:
         linea = ser.readline()
         if (linea != ""):
-            for item in linea.split(",")[4].split(" "):
-                print item.split("x")[1]
+            uid = linea.split(",")[4].split(" ")[0].split("x")[1] + linea.split(",")[4].split(" ")[1].split("x")[1] + linea.split(",")[4].split(" ")[2].split("x")[1] + linea.split(",")[4].split(" ")[3].split("x")[1]
+
 
     except (KeyboardInterrupt, SystemExit):
         ser.close()
