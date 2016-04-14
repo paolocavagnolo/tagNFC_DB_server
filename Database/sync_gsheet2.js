@@ -9,7 +9,7 @@ var data = {};
 data[row] = {};
 data[row][col] = process.argv[2];
 
-async.series([]
+async.series([
 
   function setAuth(step) {
     // see notes below for authentication instructions!
