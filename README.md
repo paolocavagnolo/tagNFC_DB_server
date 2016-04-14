@@ -92,6 +92,14 @@ https://github.com/codeforamerica/ohana-api/wiki/Automatically-generate-CSV-file
 
 http://sweetme.at/2014/02/17/a-simple-approach-to-execute-a-node.js-script-from-python/
 
+download soci.gsheet to MongoDB
+      sh soci2mongo.sh
+
+upload changes to soci.gsheet
+      node sync_gsheet.js "content" [rowN] [colN]
+
+
+
 
 ## Autoupdating
 
