@@ -12,17 +12,13 @@ Spreadsheet.load({
 
 }, function sheetReady(err, spreadsheet) {
 
-    if (err) {
-        throw err;
-    }
+    if (err) throw err;
 
-    spreadsheet.receive(function(err, rows, info) {
-        if (err) {
-            throw err;
-        }
+    spreadsheet.add({ 3: { 5: "hello!" } });
 
-        console.dir(rows);
-        console.dir(info);
+    spreadsheet.send(function(err) {
+      if(err) throw err;
+      console.log("Updated Cell at row 3, column 5 to 'hello!'");
     });
 
 });

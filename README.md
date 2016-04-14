@@ -65,6 +65,8 @@ https://github.com/amperka/ino
 
 ## Google sheet
 
+https://www.nczonline.net/blog/2014/03/04/accessing-google-spreadsheets-from-node-js/
+
 install nodejs
 
       sudo apt-get install nodejs npm
