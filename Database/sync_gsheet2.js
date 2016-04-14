@@ -1,5 +1,8 @@
 var GoogleSpreadsheets = require('google-spreadsheets');
 
+var col = process.argv[3];
+var row = process.argv[2];
+
 CLIENT_ID = '1083549263547-2rp85g51in8kl864ch7nisoehepk2odu.apps.googleusercontent.com';
 CLIENT_SECRET = 'c7APBFFW55IVgp5BAvMZYT7b';
 REDIRECT_URL = 'techlab.tl';
@@ -24,6 +27,6 @@ GoogleSpreadsheets({
       spreadsheet.worksheets[0].cells({
           range: "R2C2:R205C3"
       }, function(err, result) {
-      	console.log(result.cells[3][2].value + result.cells[3][3].value);
+      	console.log(result.cells[row][col].value + result.cells[row][col].value);
       });
   });
