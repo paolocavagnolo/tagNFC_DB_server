@@ -14,17 +14,8 @@ REDIRECT_URL = 'techlab.tl';
 // You must install this dependency yourself if you need it.
 var google = require('googleapis');
 
-var oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
-REFRESH_TOKEN = '1/A43PCiEpucRYsRXxDp_-iqaK1Os3J1yEM16Z0xnTTDs';
-// Assuming you already obtained an OAuth2 token that has access to the correct scopes somehow...
-oauth2Client.setCredentials({
-    access_token: ACCESS_TOKEN,
-    refresh_token: REFRESH_TOKEN
-});
-
 GoogleSpreadsheets({
     key: '1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380',
-    auth: oauth2Client
   }, function(err, spreadsheet) {
       spreadsheet.worksheets[0].cells({
           range: "R2C2:R205C3"
