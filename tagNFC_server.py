@@ -6,6 +6,6 @@ while True:
     try:
         linea = ser.readline()
         if (linea != ""):
-            print linea.split(",")[4]
+            print linea.split(",")[4].split(" ")
     except (KeyboardInterrupt, SystemExit):
         ser.close()
