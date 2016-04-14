@@ -22,8 +22,8 @@ GoogleSpreadsheets({
     auth: oauth2Client
   }, function(err, spreadsheet) {
       spreadsheet.worksheets[0].cells({
-          range: "R3C3:R3C4"
+          range: "R3C2:R3C3"
       }, function(err, result) {
-      	console.log(result.cells[3][3].value + result.cells[3][4].value);
+      	console.log(result.cells[3][2].value + result.cells[3][3].value);
       });
   });
