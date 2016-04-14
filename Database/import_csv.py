@@ -1,9 +1,9 @@
 import csv, simplejson, decimal, codecs
 
-data = open("soci.csv")
+data = open("/home/pi/Documents/Database/csv/soci.csv")
 reader = csv.DictReader(data, delimiter=",", quotechar='"')
 
-with codecs.open("out.json", "w", encoding="utf-8") as out:
+with codecs.open("/home/pi/Documents/Database/out.json", "w", encoding="utf-8") as out:
     for r in reader:
         for k, v in r.items():
             if not v:
