@@ -15,7 +15,6 @@ REDIRECT_URL = 'techlab.tl';
 var google = require('googleapis');
 
 var oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
-ACCESS_TOKEN = 'ya29..xAICNFvy9E2ES48gE0hlJlMKJPzhk9WamcIq9t5wOCJ6NsIM8ZxKxdD_kJpgq6i9Jg';
 REFRESH_TOKEN = '1/A43PCiEpucRYsRXxDp_-iqaK1Os3J1yEM16Z0xnTTDs';
 // Assuming you already obtained an OAuth2 token that has access to the correct scopes somehow...
 oauth2Client.setCredentials({
