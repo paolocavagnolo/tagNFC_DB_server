@@ -1,5 +1,6 @@
 var GoogleSpreadsheets = require('google-spreadsheets');
 var fs = require('fs');
+var buf = "";
 
 var col = parseInt(process.argv[3]);
 var row = parseInt(process.argv[2]);
@@ -29,7 +30,7 @@ GoogleSpreadsheets({
       spreadsheet.worksheets[0].cells({
           range: "R2C2:R205C3"
       }, function(err, result) {
-      	console.log(result.cells[row][col].value);
+      	buff = result.cells[row][col].value;
       });
   });
 
@@ -37,6 +38,4 @@ GoogleSpreadsheets({
       if(err) {
           return console.log(err);
       }
-
-      console.log("The file was saved!");
   });
