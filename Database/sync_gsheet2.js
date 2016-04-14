@@ -1,89 +1,28 @@
-var GoogleSpreadsheet = require("google-spreadsheet");
+var GoogleSpreadsheets = require('google-spreadsheets');
 
-// spreadsheet key is the long id in the sheets URL
-var doc = new GoogleSpreadsheet('1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380');
-var sheet;
+CLIENT_ID = 1083549263547-2rp85g51in8kl864ch7nisoehepk2odu.apps.googleusercontent.com;
+CLIENT_SECRET = c7APBFFW55IVgp5BAvMZYT7b;
+REDIRECT_URL = techlab.tl;
 
-async.series([
-      function setAuth(step) {
-        // see notes below for authentication instructions!
-        var creds = require('/home/pi/techlab-tag-nfc-01c55db202b2.json');
-        // OR, if you cannot save the file locally (like on heroku)
+// OPTIONAL: if you want to perform authenticated requests.
+// You must install this dependency yourself if you need it.
+var google = require('googleapis');
 
-        doc.useServiceAccountAuth(creds, step);
-      },
-      function getInfoAndWorksheets(step) {
-        doc.getInfo(function(err, info) {
-          console.log('Loaded doc: '+info.title+' by '+info.author.email);
-          sheet = info.worksheets[0];
-          console.log('sheet 1: '+sheet.title+' '+sheet.rowCount+'x'+sheet.colCount);
-          step();
-        });
-      },
-      function workingWithRows(step) {
-        // google provides some query options
-        sheet.getRows({
-          offset: 1,
-          limit: 20,
-          orderby: 'col2'
-        }, function( err, rows ){
-          console.log('Read '+rows.length+' rows');
+var oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
+// Assuming you already obtained an OAuth2 token that has access to the correct scopes somehow...
+oauth2Client.setCredentials({
+    access_token: ACCESS_TOKEN,
+    refresh_token: REFRESH_TOKEN
+});
 
-          // the row is an object with keys set by the column headers
-          rows[0].colname = 'new val';
-          rows[0].save(); // this is async
-
-          // deleting a row
-          rows[0].del();  // this is async
-
-          step();
-        });
-      },
-      function workingWithCells(step) {
-        sheet.getCells({
-          'min-row': 1,
-          'max-row': 5,
-          'return-empty': true
-        }, function(err, cells) {
-          var cell = cells[0];
-          console.log('Cell R'+cell.row+'C'+cell.col+' = '+cells.value);
-
-          // cells have a value, numericValue, and formula
-          cell.value == '1'
-          cell.numericValue == 1;
-          cell.formula == '=ROW()';
-
-          // updating `value` is "smart" and generally handles things for you
-          cell.value = 123;
-          cell.value = '=A1+B2'
-          cell.save(); //async
-
-          // bulk updates make it easy to update many cells at once
-          cells[0].value = 1;
-          cells[1].value = 2;
-          cells[2].formula = '=A1+B1';
-          sheet.bulkUpdateCells(cells); //async
-
-          step();
-        });
-      },
-      function managingSheets(step) {
-        doc.addWorksheet({
-          title: 'my new sheet'
-        }, function(err, sheet) {
-
-          // change a sheet's title
-          sheet.setTitle('new title'); //async
-
-          //resize a sheet
-          sheet.resize({rowCount: 50, colCount: 20}); //async
-
-          sheet.setHeaderRow(['name', 'age', 'phone']); //async
-
-          // removing a worksheet
-          sheet.del(); //async
-
-          step();
-        });
-      
+GoogleSpreadsheets({
+    key: '1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380',
+    auth: oauth2Client
+}, function(err, spreadsheet) {
+    spreadsheet.worksheets[0].cells({
+        range: 'R1C1:R5C5'
+    }, function(err, cells) {
+        // Cells will contain a 2 dimensional array with all cell data in the
+        // range requested.
     });
+});
