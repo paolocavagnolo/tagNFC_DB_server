@@ -1,7 +1,8 @@
 import serial
 
-ser = serial.Serial('/dev/ttyAMA0',115200,timeout=3)
+ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
 
 while True:
-    if (ser.readline() != ""):
-        print ser.readline()
+    linea = ser.readline()
+    if (linea != ""):
+        print linea
