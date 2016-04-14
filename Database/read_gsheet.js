@@ -1,6 +1,6 @@
 var GoogleSpreadsheets = require('google-spreadsheets');
 var fs = require('fs');
-var buf = "";
+var buff = "";
 
 var col = parseInt(process.argv[3]);
 var row = parseInt(process.argv[2]);
