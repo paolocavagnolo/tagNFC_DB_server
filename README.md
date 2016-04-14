@@ -52,6 +52,54 @@ download the last python code
 ## MongoDB on pi
 http://andyfelong.com/2016/01/mongodb-3-0-9-binaries-for-raspberry-pi-2-jessie/
 
+## Arduino on pi
+https://github.com/amperka/ino
+
+## Upload sketch from rpi3
+
+      copy the hex file to .build/uno/firmware.hex (changing the name with firmware!)
+      move to the project folder
+      ino upload -p /dev/ttyAMA0
+
+
+
+## Google sheet
+
+install nodejs
+
+      sudo apt-get install nodejs npm
+
+and
+
+      wget https://nodejs.org/dist/v4.2.4/node-v4.2.4-linux-armv6l.tar.gz
+      sudo mv node-v4.2.4-linux-armv6l.tar.gz /opt
+      cd /opt
+      sudo tar -xzf node-v4.2.4-linux-armv6l.tar.gz
+      sudo mv node-v4.2.4-linux-armv6l nodejs
+      sudo rm node-v4.2.4-linux-armv6l.tar.gz
+      sudo ln -s /opt/nodejs/bin/node /usr/bin/node
+      sudo ln -s /opt/nodejs/bin/npm /usr/bin/npm
+
+
+https://github.com/codeforamerica/ohana-api/wiki/Automatically-generate-CSV-files-from-a-HSDS-Google-spreadsheet
+
+      rake ohana:csv[https://docs.google.com/spreadsheets/d/1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380/edit?usp=sharing]
+
+
+## Autoupdating
+
+1) take info from gsheet to csv
+2) csv to json
+3) json to MongoDB
+4) fine!
+
+      rake ohana:csv[https://docs.google.com/spreadsheets/d/1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380/edit?usp=sharing]
+
+      python import_csv.py
+
+      mongoimport --db techlab --collection soci --drop --file out.json
+
+
 
 
 

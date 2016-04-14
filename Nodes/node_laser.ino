@@ -165,6 +165,14 @@ uint8_t uidLength;                        // Length of the UID (4 or 7 bytes dep
 
 void loop() {
 
+  //ACK Gateway
+  //send an ACK
+  if (radio.ACKRequested())
+  {
+    radio.sendACK();
+    Serial.print(" - ACK sent");
+  }
+
   if (!LuceEnable) {
     success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &sendSize);
     if (success) {
@@ -181,34 +189,23 @@ void loop() {
       lc.setChar(0,2,hexify(uid[2])[1],false);
       lc.setChar(0,1,hexify(uid[3])[0],false);
       lc.setChar(0,0,hexify(uid[3])[1],false);
-      
+
     }
-    //Ascolta il gateway per l'ok
-    digitalWrite(5, HIGH);
-    digitalWrite(6, HIGH);
-    delay(500);
-    digitalWrite(5, LOW);
-    digitalWrite(6, LOW);
-    delay(500);
+    //Li
+
+
+
     LuceEnable = true;
   }
 
-  int currPeriod = millis() / TRANSMITPERIOD;
-  if (currPeriod != lastPeriod)
-  {
-    lastPeriod = currPeriod;
 
-    Serial.print("Sending[");
-    Serial.print(sendSize);
-    Serial.print("]: ");
-
-    if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
-      Serial.print(" ok!");
-    }
-    else Serial.print(" nothing...");
+  //trasmetti
+  if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
+    Serial.print(" ok!");
+  }
+  else Serial.print(" nothing...");
   }
   Blink(LED, 3);
-  LuceEnable = false;
+
 
 }
-
