@@ -27,6 +27,6 @@ GoogleSpreadsheets({
       spreadsheet.worksheets[0].cells({
           range: "R2C2:R205C3"
       }, function(err, result) {
-      	console.log(result.cells[row][col].value);
+      	console.log(result.cells[2][3].value);
       });
   });
