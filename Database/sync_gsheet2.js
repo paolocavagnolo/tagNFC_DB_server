@@ -43,7 +43,7 @@ GoogleSpreadsheets.cells(
   },
   function(err, spreadsheet)
   {
-    spreadsheet.worksheets.cells(
+    worksheet.cells(
       {
         range: "R3C3:R3C4"
       },
