@@ -8,4 +8,4 @@ echo "csv to json"
 python /home/pi/Documents/Database/csv_json.py -i /home/pi/Documents/Database/csv/soci.csv -o /home/pi/Documents/Database/out.json -f pretty
 
 echo "json to mongoDB"
-mongoimport --db techlab --collection soci --drop --file /home/pi/Documents/Database/out.json
+mongoimport --db techlab --collection soci --drop --file /home/pi/Documents/Database/out.json --jsonArray
