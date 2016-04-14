@@ -88,6 +88,11 @@ https://github.com/codeforamerica/ohana-api/wiki/Automatically-generate-CSV-file
       rake ohana:csv[https://docs.google.com/spreadsheets/d/1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380/edit?usp=sharing]
 
 
+## The script!
+
+http://sweetme.at/2014/02/17/a-simple-approach-to-execute-a-node.js-script-from-python/
+
+
 ## Autoupdating
 
 1) take info from gsheet to csv

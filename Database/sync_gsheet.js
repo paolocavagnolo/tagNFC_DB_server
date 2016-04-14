@@ -14,11 +14,10 @@ Spreadsheet.load({
 
     if (err) throw err;
 
-    spreadsheet.add({ 3: { 5: "hello!" } });
-
-    spreadsheet.send(function(err) {
+    spreadsheet.receive(function(err, rows, info) {
       if(err) throw err;
-      console.log("Updated Cell at row 3, column 5 to 'hello!'");
+      console.log("Found rows:", rows);
+      // Found rows: { '3': { '5': 'hello!' } }
     });
 
 });
