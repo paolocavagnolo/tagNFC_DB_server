@@ -10,7 +10,7 @@ def convert(filename):
     print "Opening CSV file: ",csv_filename
     f=open(csv_filename, 'r')
     csv_reader = csv.DictReader(f,fieldnames)
-    json_filename = csv_filename.split(".")[0]+".json"
+    json_filename = "out.json"
     print "Saving JSON to file: ",json_filename
     jsonf = open(json_filename,'w')
     data = json.dumps([r for r in csv_reader])
