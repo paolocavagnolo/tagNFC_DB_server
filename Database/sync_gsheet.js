@@ -2,7 +2,7 @@ var Spreadsheet = require('edit-google-spreadsheet');
 
 var data = {};
 data[parseInt(process.argv[3])] = {};
-data[parseInt(process.argv[4])] = process.argv[2];
+data[parseInt(process.argv[3])][parseInt(process.argv[4])] = process.argv[2];
 
 Spreadsheet.load({
     debug: true,
