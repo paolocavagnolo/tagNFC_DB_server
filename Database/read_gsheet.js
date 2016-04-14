@@ -34,7 +34,7 @@ GoogleSpreadsheets({
       });
   });
 
-  fs.writeFile("/home/pi/Documents/Database/buffer", "Hey there!", function(err) {
+  fs.writeFile("/home/pi/Documents/Database/buffer", buff, function(err) {
       if(err) {
           return console.log(err);
       }
