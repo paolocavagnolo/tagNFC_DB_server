@@ -1,8 +1,5 @@
 var Spreadsheet = require('edit-google-spreadsheet');
 
-row = 3;
-col = 4;
-
 Spreadsheet.load({
     debug: true,
     spreadsheetId: '1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380',
@@ -17,7 +14,7 @@ Spreadsheet.load({
 
     if (err) throw err;
 
-    spreadsheet.add({ global.row: { global.col: process.argv[2] } });
+    spreadsheet.add({ process.argv[3] { process.argv[4] process.argv[2] } });
 
     spreadsheet.send(function(err) {
       if(err) throw err;
