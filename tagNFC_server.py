@@ -21,7 +21,7 @@ while True:
             print uid
 
         if (cc == 1):
-            muterun_js('/home/pi/Database/read_gsheet.js 2 3')
+            print muterun_js('/home/pi/Database/read_gsheet.js 2 3')
             cc = 0;
 
     except (KeyboardInterrupt, SystemExit):
