@@ -14,7 +14,7 @@ Spreadsheet.load({
 
     if (err) throw err;
 
-    spreadsheet.add({ 3: { 2: process.argv[0] } });
+    spreadsheet.add({ 3: { 2: process.argv[1] } });
 
     spreadsheet.send(function(err) {
       if(err) throw err;
