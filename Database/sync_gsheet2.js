@@ -1,8 +1,8 @@
 var GoogleSpreadsheets = require('google-spreadsheets');
 
-CLIENT_ID = 1083549263547-2rp85g51in8kl864ch7nisoehepk2odu.apps.googleusercontent.com;
-CLIENT_SECRET = c7APBFFW55IVgp5BAvMZYT7b;
-REDIRECT_URL = techlab.tl;
+CLIENT_ID = '1083549263547-2rp85g51in8kl864ch7nisoehepk2odu.apps.googleusercontent.com';
+CLIENT_SECRET = 'c7APBFFW55IVgp5BAvMZYT7b';
+REDIRECT_URL = 'techlab.tl';
 
 // OPTIONAL: if you want to perform authenticated requests.
 // You must install this dependency yourself if you need it.
