@@ -103,6 +103,8 @@ upload changes to soci.gsheet
 
 ## Autoupdating
 
+https://github.com/samcday/node-google-spreadsheets
+
 1) take info from gsheet to csv
 2) csv to json
 3) json to MongoDB

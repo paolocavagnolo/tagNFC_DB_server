@@ -20,11 +20,35 @@ oauth2Client.setCredentials({
 GoogleSpreadsheets({
     key: '1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380',
     auth: oauth2Client
-}, function(err, spreadsheet) {
-    spreadsheet.worksheets[0].cells({
+    },
+
+    function(err, spreadsheet) {
+      spreadsheet.worksheets[0].cells({
         range: 'R1C1:R5C5'
-    }, function(err, cells) {
+    },
+
+    function(err, cells) {
         // Cells will contain a 2 dimensional array with all cell data in the
         // range requested.
     });
 });
+
+GoogleSpreadsheets.cells(
+  {
+    key: '1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380',
+    worksheet: 'od6',
+    auth: oauth2Client,
+    range: 'R2C2:R2C2'
+
+  },
+  function(err, spreadsheet)
+  {
+    spreadsheet.worksheets[0].cells(
+      {
+        range: "R3C3:R3C4"
+      },
+    function(err, result) {
+    	console.log(result.cells[1][1].value + result.cells[1][2].value);
+    });
+
+  });
