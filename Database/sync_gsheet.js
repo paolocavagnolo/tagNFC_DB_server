@@ -2,7 +2,7 @@ var Spreadsheet = require('edit-google-spreadsheet');
 
 Spreadsheet.load({
     debug: true,
-    spreadsheetId: 'soci',
+    spreadsheetId: '1gBOByKgaDgbneWOBalxZ5jihJVV1iUFKuytqGVUG380',
     worksheetName: 'Foglio1',
 
     oauth : {
