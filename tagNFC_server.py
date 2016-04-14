@@ -23,7 +23,7 @@ while True:
 
         #check into DB
         if (cc == 1):
-            cursor = db.soci.find({"Nome": "Paolo"})
+            cursor = db.soci.find({"tagNFC": "Paolo"})
             for document in cursor:
                 print(document)
             cc = 0
