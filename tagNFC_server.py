@@ -26,9 +26,8 @@ while True:
             print uid
 
         if (cc == 1):
-            print worksheet.cell(3, 2).value
-            worksheet.update_cell(3, 2, 'Bingo!')
-            print worksheet.cell(3, 2).value
+            cell_list = worksheet.findall("uid");
+            print cell_list
             cc = 0;
 
     except (KeyboardInterrupt, SystemExit):
