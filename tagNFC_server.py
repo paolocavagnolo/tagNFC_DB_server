@@ -40,10 +40,10 @@ while True:
                 ser.write('n')
             else:
                 ser.write('o')
-                ser.write(',')
-                ser.write('3')
+                ser.write(b',')
+                ser.write(b'3')
+                ser.write(b',')
                 print worksheet.cell(cell.row, 3).value
-                ser.write(',')
                 print worksheet.cell(cell.row, 4).value
             tag = 0;
 
