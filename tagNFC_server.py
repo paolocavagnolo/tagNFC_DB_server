@@ -29,7 +29,7 @@ while True:
             linea = ser.readline()
             print "New tag!"
 
-        if (x == 'A')
+        if (x == 'A'):
             linea = ser.readline()
             print linea
 
