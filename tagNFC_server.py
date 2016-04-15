@@ -25,6 +25,10 @@ while True:
             tag = 1
             print uid
 
+        if (x == 'n'):
+            linea = ser.readline()
+            print linea
+
         if (tag == 1):
             try:
                 cell = worksheet.find(uid)
