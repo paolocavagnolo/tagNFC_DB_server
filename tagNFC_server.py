@@ -41,6 +41,7 @@ while True:
             else:
                 ser.write('o')
                 ser.write(',')
+                ser.write('3')
                 print worksheet.cell(cell.row, 3).value
                 ser.write(',')
                 print worksheet.cell(cell.row, 4).value
