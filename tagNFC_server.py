@@ -41,9 +41,9 @@ while True:
             else:
                 ser.write('o')
                 ser.write(',')
-                ser.write(unicode(worksheet.cell(cell.row, 3).value))
+                ser.write((int)(worksheet.cell(cell.row, 3).value))
                 ser.write(',')
-                ser.write(unicode(worksheet.cell(cell.row, 4).value))
+                ser.write((int)(worksheet.cell(cell.row, 4).value))
             tag = 0;
 
     except (KeyboardInterrupt, SystemExit):
