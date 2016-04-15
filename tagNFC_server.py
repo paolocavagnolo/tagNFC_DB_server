@@ -27,6 +27,10 @@ while True:
 
         if (x == 'n'):
             linea = ser.readline()
+            print "New tag!"
+
+        if (x == "A")
+            linea = ser.readline()
             print linea
 
         if (tag == 1):
