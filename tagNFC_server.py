@@ -26,7 +26,7 @@ while True:
             print uid
 
         if (cc == 1):
-            cell_list = worksheet.findall("uid");
+            cell_list = worksheet.findall(uid);
             print cell_list
             cc = 0;
 
