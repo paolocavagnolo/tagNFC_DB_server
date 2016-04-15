@@ -40,9 +40,9 @@ while True:
                 ser.write('n')
             else:
                 ser.write('o')
-                ser.write(b',')
-                ser.write(b'3')
-                ser.write(b',')
+                ser.write(unicode',')
+                ser.write(str(chr(worksheet.cell(cell.row, 3).value)))
+                ser.write(',')
 
             tag = 0;
 
