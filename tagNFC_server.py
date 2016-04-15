@@ -11,7 +11,7 @@ worksheet = sh.get_worksheet(0)
 
 #serial part
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
-cc = 0;
+tag = 0;
 
 while True:
     try:
@@ -22,16 +22,21 @@ while True:
         if (x == '#'):
             linea = ser.readline()
             uid = linea.split(",")[4].split(" ")[0].split("x")[1] + linea.split(",")[4].split(" ")[1].split("x")[1] + linea.split(",")[4].split(" ")[2].split("x")[1] + linea.split(",")[4].split(" ")[3].split("x")[1]
-            cc = 1
+            tag = 1
             print uid
 
-        if (cc == 1):
+        if (tag == 1):
             try:
                 cell = worksheet.find(uid)
             except:
-                print "nuovo!"
-            print worksheet.cell(cell.row, 3).value
-            cc = 0;
+                ser.write('n')
+            else:
+                ser.write('n')
+                ser.write(',')
+                ser.write(worksheet.cell(cell.row, 3).value)
+                ser.write(',')
+                ser.write(worksheet.cell(cell.row, 4).value)
+            tag = 0;
 
     except (KeyboardInterrupt, SystemExit):
         ser.close()
