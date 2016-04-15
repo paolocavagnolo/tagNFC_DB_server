@@ -28,7 +28,7 @@ while True:
         if (cc == 1):
             cell = worksheet.find(uid)
             if (cell != None):
-                print worksheet.cell(cell.row, 2).value
+                print worksheet.cell(cell.row, 3).value
             cc = 0;
 
     except (KeyboardInterrupt, SystemExit):
