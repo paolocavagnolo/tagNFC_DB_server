@@ -3,6 +3,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 #gspread part
+scope = ['https://spreadsheets.google.com/feeds']
 credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/TechLab-tag-2f5daa332583.json', scope)
 gc = gspread.authorize(credentials)
 sht1 = gc.open_by_key('1xiJKT-ZHd9yyG2MtFha7TtRL6zSssoLuN_4Ky_2_buk')
