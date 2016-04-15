@@ -27,7 +27,7 @@ while True:
 
         if (cc == 1):
             cell_list = worksheet.find(uid);
-            print cell_list[0].row
+            print cell_list.row
             cc = 0;
 
     except (KeyboardInterrupt, SystemExit):
