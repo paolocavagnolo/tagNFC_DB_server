@@ -40,7 +40,7 @@ while True:
                 ser.write('n')
             else:
                 ser.write('o')
-                ser.write(unicode',')
+                ser.write(',')
                 ser.write(str(chr(worksheet.cell(cell.row, 3).value)))
                 ser.write(',')
 
