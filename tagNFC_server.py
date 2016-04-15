@@ -41,7 +41,7 @@ while True:
             else:
                 ser.write('o')
                 ser.write(',')
-                ser.write(str(chr(worksheet.cell(cell.row, 3).value)))
+                ser.write(str(chr((int)worksheet.cell(cell.row, 3).value)))
                 ser.write(',')
 
             tag = 0;
