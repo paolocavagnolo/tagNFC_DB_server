@@ -1,11 +1,18 @@
 import serial
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
+#gspread part
+scope = ['https://spreadsheets.google.com/feeds']
+
+credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/TechLab-tag-2f5daa332583.json', scope)
+
+gc = gspread.authorize(credentials)
+
+wks = gc.open("soci").sheet1
 
 #serial part
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
-
-#node js part
-import execjs
-
 cc = 0;
 
 while True:
