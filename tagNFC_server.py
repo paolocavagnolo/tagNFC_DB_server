@@ -43,8 +43,7 @@ while True:
                 ser.write(b',')
                 ser.write(b'3')
                 ser.write(b',')
-                print worksheet.cell(cell.row, 3).value
-                print worksheet.cell(cell.row, 4).value
+
             tag = 0;
 
     except (KeyboardInterrupt, SystemExit):
