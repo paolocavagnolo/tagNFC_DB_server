@@ -26,8 +26,9 @@ while True:
             print uid
 
         if (cc == 1):
-            cell_list = worksheet.find(uid);
-            print cell_list.row
+            cell = worksheet.find(uid)
+            if (cell != None):
+                print worksheet.cell(cell.row, 2).value
             cc = 0;
 
     except (KeyboardInterrupt, SystemExit):
