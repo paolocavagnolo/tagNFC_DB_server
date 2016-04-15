@@ -31,7 +31,7 @@ while True:
             except:
                 ser.write('n')
             else:
-                ser.write('n')
+                ser.write('o')
                 ser.write(',')
                 ser.write(worksheet.cell(cell.row, 3).value)
                 ser.write(',')
