@@ -11,7 +11,6 @@ worksheet = sh.get_worksheet(0)
 
 #serial part
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
-tag = 0;
 
 while True:
     try:
@@ -19,30 +18,22 @@ while True:
         x = ser.read()
 
         #select lines
+        # from Gateway a tagID
         if (x == '#'):
             linea = ser.readline()
             uid = linea.split(",")[4].split(" ")[0].split("x")[1] + linea.split(",")[4].split(" ")[1].split("x")[1] + linea.split(",")[4].split(" ")[2].split("x")[1] + linea.split(",")[4].split(" ")[3].split("x")[1]
-            tag = 1
+
             print uid
 
-        if (x == 'n'):
-            linea = ser.readline()
-            print "New tag!"
-
-        if (x == 'A'):
-            linea = ser.readline()
-            print linea
-
-        if (tag == 1):
             try:
-                cell = worksheet.find(uid)
+                cellTag = worksheet.find(uid)
             except:
                 ser.write('n')
             else:
                 ser.write('o')
-                ser.write(',')
-                ser.write(str(chr((int)worksheet.cell(cell.row, 3).value)))
-                ser.write(',')
+                ser.write(worksheet.cell(cellTag.row, 3))
+                ser.write(worksheet.cell(cellTag.row, 4))
+                ser.write('/n')
 
             tag = 0;
 
