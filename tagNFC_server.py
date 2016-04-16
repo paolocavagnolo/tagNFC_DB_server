@@ -10,6 +10,8 @@ gc = gspread.authorize(credentials)
 sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
 worksheet = sh.get_worksheet(0)
 cellTag = ""
+Cr = 0
+Sk = 0
 
 #serial part
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
@@ -52,7 +54,8 @@ while True:
 
         elif (x == '-'):
             Cr = float(worksheet.cell(cellTag.row, 3).value)
-            worksheet.update_cell(cellTag.row, 3, Cr-0.1)
+            Sk = float(worksheet.cell(cellTag.row, 3).value)
+            worksheet.update_cell(cellTag.row, 3, Cr-(0.2-(0.1*Sk))
             ser.write('c' + struct.pack('>B', float(worksheet.cell(cellTag.row, 3).value)))
             print "PY: Credits:"
             print worksheet.cell(cellTag.row, 3).value
