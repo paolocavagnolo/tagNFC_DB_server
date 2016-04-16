@@ -46,7 +46,7 @@ while True:
                 print worksheet.cell(cellTag.row, 4).value
                 ser.write('/n')
 
-        else if (x != ''):
+        elif (x != ''):
             linea = ser.readline()
             print linea
 
