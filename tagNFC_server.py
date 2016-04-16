@@ -44,7 +44,6 @@ while True:
                 print "PY: Skills:"
                 ser.write(worksheet.cell(cellTag.row, 4).value)
                 print worksheet.cell(cellTag.row, 4).value
-                ser.write('/n')
 
         elif (x != ''):
             linea = ser.readline()
