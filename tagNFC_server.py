@@ -47,15 +47,16 @@ while True:
                 ser.flush()
                 print "PY: Credits:"
                 print worksheet.cell(cellTag.row, 3).value
-                ser.write('s' + struct.pack('>B', float(worksheet.cell(cellTag.row, 4).value)))
+                ser.write('s' + struct.pack('>B', int(worksheet.cell(cellTag.row, 4).value)))
                 ser.flush()
                 print "PY: Skills:"
                 print worksheet.cell(cellTag.row, 4).value
 
         elif (x == '-'):
             Cr = float(worksheet.cell(cellTag.row, 3).value)
-            Sk = float(worksheet.cell(cellTag.row, 3).value)
+            Sk = int(worksheet.cell(cellTag.row, 3).value)
             worksheet.update_cell(cellTag.row, 3, Cr-(0.2-(0.1*Sk)))
+            print Cr + " - " Sk + Cr-(0.2-(0.1*Sk))
             ser.write('c' + struct.pack('>B', float(worksheet.cell(cellTag.row, 3).value)))
             print "PY: Credits:"
             print worksheet.cell(cellTag.row, 3).value
