@@ -31,8 +31,8 @@ while True:
                 ser.write('n')
             else:
                 ser.write('o')
-                ser.write(worksheet.cell(cellTag.row, 3))
-                ser.write(worksheet.cell(cellTag.row, 4))
+                ser.write(worksheet.cell(cellTag.row, 3).value)
+                ser.write(worksheet.cell(cellTag.row, 4).value)
                 ser.write('/n')
 
             tag = 0;
