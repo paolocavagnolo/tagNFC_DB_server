@@ -12,6 +12,7 @@ worksheet = sh.get_worksheet(0)
 #serial part
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
 
+print "Ready!"
 while True:
     try:
         #read from serial
@@ -34,6 +35,8 @@ while True:
                 ser.write(worksheet.cell(cellTag.row, 3).value)
                 ser.write(worksheet.cell(cellTag.row, 4).value)
                 ser.write('/n')
+                linea = ser.readline()
+                print linea
 
             tag = 0;
 
