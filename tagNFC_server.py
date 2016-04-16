@@ -54,9 +54,9 @@ while True:
 
         elif (x == '-'):
             Cr = float(worksheet.cell(cellTag.row, 3).value)
-            Sk = int(worksheet.cell(cellTag.row, 3).value)
+            Sk = int(worksheet.cell(cellTag.row, 4).value)
             worksheet.update_cell(cellTag.row, 3, Cr-(0.2-(0.1*Sk)))
-            print str(Cr) + " - " + str(Sk) + str(Cr-(0.2-(0.1*Sk)))
+            #print str(Cr) + " - " + str(Sk) + str(Cr-(0.2-(0.1*Sk)))
             ser.write('c' + struct.pack('>B', float(worksheet.cell(cellTag.row, 3).value)))
             print "PY: Credits:"
             print worksheet.cell(cellTag.row, 3).value
