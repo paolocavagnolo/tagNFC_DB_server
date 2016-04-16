@@ -10,8 +10,10 @@ gc = gspread.authorize(credentials)
 sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
 worksheet = sh.get_worksheet(0)
 
+
 #serial part
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
+
 
 print "Ready!"
 while True:
@@ -31,7 +33,7 @@ while True:
 
             try:
                 print "PY: Search for the person behind the tag..."
-                cellTag = worksheet.find(uid)
+                global cellTag = worksheet.find(uid)
 
             except:
                 print "PY: No one. So its a new fellow!"
@@ -47,6 +49,17 @@ while True:
                 ser.flush()
                 print "PY: Skills:"
                 print worksheet.cell(cellTag.row, 4).value
+
+        elif (x == '-'):
+            Cr = float(worksheet.cell(cellTag.row, 3).value)
+            worksheet.update_cell(cellTag.row, 3, Cr-0.1)
+            ser.write('c' + struct.pack('>B', float(worksheet.cell(cellTag.row, 3).value)))
+            print "PY: Credits:"
+            print worksheet.cell(cellTag.row, 3).value
+            ser.write('s' + struct.pack('>B', float(worksheet.cell(cellTag.row, 4).value)))
+            ser.flush()
+            print "PY: Skills:"
+            print worksheet.cell(cellTag.row, 4).value
 
         elif (x != ''):
             linea = ser.readline()
