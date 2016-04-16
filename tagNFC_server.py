@@ -39,11 +39,11 @@ while True:
                 ser.flush()
             else:
                 print "PY: Find one!"
-                ser.write('c' + struct.pack('>B', int(worksheet.cell(cellTag.row, 3).value)))
+                ser.write('c' + struct.pack('>B', float(worksheet.cell(cellTag.row, 3).value)))
                 ser.flush()
                 print "PY: Credits:"
                 print worksheet.cell(cellTag.row, 3).value
-                ser.write('s' + struct.pack('>B', int(worksheet.cell(cellTag.row, 4).value)))
+                ser.write('s' + struct.pack('>B', float(worksheet.cell(cellTag.row, 4).value)))
                 ser.flush()
                 print "PY: Skills:"
                 print worksheet.cell(cellTag.row, 4).value
