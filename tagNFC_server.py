@@ -29,14 +29,12 @@ while True:
             try:
                 cellTag = worksheet.find(uid)
             except:
-                ser.write('n')
+                ser.write('d')
             else:
                 ser.write('o')
                 ser.write(worksheet.cell(cellTag.row, 3).value)
                 ser.write(worksheet.cell(cellTag.row, 4).value)
                 ser.write('/n')
-                linea = ser.readline()
-                print linea
 
             tag = 0;
 
