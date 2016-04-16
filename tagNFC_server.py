@@ -2,13 +2,15 @@ import serial
 import gspread
 import struct
 from oauth2client.service_account import ServiceAccountCredentials
+log_file = open("/home/pi/Documents/log_tag.log","a")
 
 #gspread part
 scope = ['https://spreadsheets.google.com/feeds']
 credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/techlab-tag-nfc-b3f2a2929d98.json', scope)
 gc = gspread.authorize(credentials)
 sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
-worksheet = sh.get_worksheet(0)
+worksheet = sh.worksheet("soci")
+worksheet_log = sh.worksheet("log_laser")
 cellTag = ""
 Cr = 0
 Sk = 0
@@ -17,7 +19,7 @@ Sk = 0
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
 
 
-print "Ready!"
+log_file.write("Ready!")
 while True:
     try:
         #read from serial
@@ -26,31 +28,31 @@ while True:
         #select lines
         # from Gateway a tagID
         if (x == '#'):
-            print "PY: Tag received with ID:"
+            log_file.write("PY: Tag received with ID:")
 
             linea = ser.readline()
             uid = linea.split(",")[4].split(" ")[0].split("x")[1] + linea.split(",")[4].split(" ")[1].split("x")[1] + linea.split(",")[4].split(" ")[2].split("x")[1] + linea.split(",")[4].split(" ")[3].split("x")[1]
 
-            print uid
+            log_file.write(uid
 
             try:
-                print "PY: Search for the person behind the tag..."
+                log_file.write("PY: Search for the person behind the tag...")
                 cellTag = worksheet.find(uid)
 
             except:
-                print "PY: No one. So its a new fellow!"
+                log_file.write("PY: No one. So its a new fellow!")
                 ser.write('n')
                 ser.flush()
             else:
-                print "PY: Find one!"
+                log_file.write("PY: Find one!")
                 ser.write('c' + struct.pack('>B', float(worksheet.cell(cellTag.row, 3).value)))
                 ser.flush()
-                print "PY: Credits:"
-                print worksheet.cell(cellTag.row, 3).value
+                log_file.write("PY: Credits:")
+                log_file.write(worksheet.cell(cellTag.row, 3).value
                 ser.write('s' + struct.pack('>B', int(worksheet.cell(cellTag.row, 4).value)))
                 ser.flush()
-                print "PY: Skills:"
-                print worksheet.cell(cellTag.row, 4).value
+                log_file.write("PY: Skills:")
+                log_file.write(worksheet.cell(cellTag.row, 4).value
 
         elif (x == '-'):
             Cr = float(worksheet.cell(cellTag.row, 3).value)
@@ -58,16 +60,16 @@ while True:
             worksheet.update_cell(cellTag.row, 3, Cr-(0.2-(0.1*Sk)))
             #print str(Cr) + " - " + str(Sk) + str(Cr-(0.2-(0.1*Sk)))
             ser.write('c' + struct.pack('>B', float(worksheet.cell(cellTag.row, 3).value)))
-            print "PY: Credits:"
-            print worksheet.cell(cellTag.row, 3).value
+            log_file.write("PY: Credits:")
+            log_file.write(worksheet.cell(cellTag.row, 3).value
             ser.write('s' + struct.pack('>B', float(worksheet.cell(cellTag.row, 4).value)))
             ser.flush()
-            print "PY: Skills:"
-            print worksheet.cell(cellTag.row, 4).value
+            log_file.write("PY: Skills:")
+            log_file.write(worksheet.cell(cellTag.row, 4).value
 
         elif (x != ''):
             linea = ser.readline()
-            print linea
+            log_file.write(linea
 
 
     except (KeyboardInterrupt, SystemExit):
