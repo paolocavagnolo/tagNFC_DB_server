@@ -74,3 +74,4 @@ while True:
 
     except (KeyboardInterrupt, SystemExit):
         ser.close()
+        log_file.close()
