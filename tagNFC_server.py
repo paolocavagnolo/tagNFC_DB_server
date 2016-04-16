@@ -37,7 +37,7 @@ while True:
                 ser.write('n')
             else:
                 print "PY: Find one!"
-                ser.write('o' + worksheet.cell(cellTag.row, 3).value.encode('utf-8') + worksheet.cell(cellTag.row, 4).value.encode('utf-8'))
+                ser.write('o' + '12' + '3')
                 print "PY: Credits:"
                 print worksheet.cell(cellTag.row, 3).value
                 print "PY: Skills:"
