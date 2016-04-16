@@ -1,6 +1,11 @@
 //General
 #include <SPI.h>
 
+//Timer 1
+// avr-libc library includes
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
 //NFC side
 #include <Wire.h>
 #include <Adafruit_PN532.h>
@@ -46,13 +51,13 @@ Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 #define SERIAL_BAUD   115200
 
 int TRANSMITPERIOD = 150; //transmit a packet to gateway so often (in ms)
-char payload[] = "";
+char payload[] = "a";
 char buff[20];
 byte sendSize = 0;
 boolean requestACK = false;
 
 //7Segment side
-LedControl lc = LedControl(17,16,15,1);
+LedControl lc = LedControl(17, 16, 15, 1);
 
 //Flash side
 SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for 4mbit  Windbond chip (W25X40CL)
@@ -67,9 +72,21 @@ void setup() {
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(7, OUTPUT);
-  digitalWrite(7, HIGH);
 
   Serial.begin(SERIAL_BAUD);
+
+  //Timer1
+  // initialize Timer1
+  cli();             // disable global interrupts
+  TCCR1A = 0;        // set entire TCCR1A register to 0
+  TCCR1B = 0;
+
+  // enable Timer1 overflow interrupt:
+  TIMSK1 = (1 << TOIE1);
+  // Set CS10 bit so timer runs at clock speed:
+  TCCR1B |= (1 << CS11);
+  // enable global interrupts:
+  sei();
 
   //NFC side
   nfc.begin();
@@ -125,11 +142,30 @@ void setup() {
   Serial.println("RFM69_ATC Enabled (Auto Transmission Control)\n");
 #endif
 
-//7Segment side
-lc.shutdown(0,false);
-lc.setIntensity(0,8);
-lc.clearDisplay(0);
+  //7Segment side
+  lc.shutdown(0, false);
+  lc.setIntensity(0, 8);
+  lc.clearDisplay(0);
 
+}
+
+volatile long trigTime = 0;
+int ar = 0;
+long tick = 0;
+bool trig = false;
+
+ISR(TIMER1_OVF_vect)
+{
+  ar = analogRead(0);
+  if (ar > 15) {
+    if (!trig) trigTime = millis();
+    trig = true;
+    if ((millis() - trigTime) > (2023-ar)) {
+      tick++;
+      trigTime = 0;
+      trig = false;
+    }
+  }
 }
 
 void Blink(byte PIN, int DELAY_MS)
@@ -148,64 +184,169 @@ String hexify(unsigned int n)
   {
     res += "0123456789ABCDEF"[n % 16];
     n >>= 4;
-  } while(n);
+  } while (n);
 
   return res;
 }
 
 
 long lastPeriod = 0;
-bool LuceEnable = false;
+bool readEnable = false;
 bool LaserOn = false;
 //NFC side
 uint8_t success;
 uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
 uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
-
+bool ansCr = false;
+bool ansSk = false;
+bool answered = false;
+bool answered2 = false;
+char tagLife = ' ';
+String mode = "";
+int Cr = 0;
+int Sk = 0;
+bool timeout = false;
 
 void loop() {
+  
+  //laser off
+  digitalWrite(7, LOW);
+  readEnable = false;
+  answered = false;
+  answered2 = false;
+  timeout = false;
 
-  //ACK Gateway
-  //send an ACK
-  if (radio.ACKRequested())
-  {
-    radio.sendACK();
-    Serial.print(" - ACK sent");
-  }
-
-  if (!LuceEnable) {
+  if (!readEnable) {
+    //read tag
     success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &sendSize);
     if (success) {
       // Display some basic information about the card
+
       Serial.println("Found an ISO14443A card");
       Serial.print("  UID Length: "); Serial.print(sendSize, DEC); Serial.println(" bytes");
       Serial.print("  UID Value: ");
       nfc.PrintHex(uid, sendSize);
-      lc.setChar(0,7,hexify(uid[0])[0],false);
-      lc.setChar(0,6,hexify(uid[0])[1],false);
-      lc.setChar(0,5,hexify(uid[1])[0],false);
-      lc.setChar(0,4,hexify(uid[1])[1],false);
-      lc.setChar(0,3,hexify(uid[2])[0],false);
-      lc.setChar(0,2,hexify(uid[2])[1],false);
-      lc.setChar(0,1,hexify(uid[3])[0],false);
-      lc.setChar(0,0,hexify(uid[3])[1],false);
 
+      //send to gateway
+      if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
+        Serial.print(" ok!");
+      }
+      else Serial.print(" nothing...");
+
+      //display
+      setDisplay(uid);
     }
-    //Li
 
-
-
-    LuceEnable = true;
+    //check for any received packets
+    while (!answered) {
+      if (radio.receiveDone()) {
+        if (radio.DATA[0] == 'c') {
+          Serial.print("Credits: ");
+          Cr = (int)radio.DATA[1];
+          Serial.println(Cr);
+          mode = "update";
+        }
+        else if (radio.DATA[0] == 's') {
+          Serial.print("Skills: ");
+          Sk = (int)radio.DATA[1];
+          Serial.println(Sk);
+          answered = true;
+        }
+        else if (radio.DATA[0] == 'n') {
+          Serial.print("Nuovo!");
+          mode = "new";
+          answered = true;
+        }
+      }
+    }
+    readEnable = true;
   }
 
 
-  //trasmetti
-  if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
-    Serial.print(" ok!");
+  if (mode == "new") {
+    Blink(5, 1000);
   }
-  else Serial.print(" nothing...");
+
+  else if (mode == "update") {
+    if (Cr > 0) {
+      digitalWrite(7,HIGH);
+    }
+    printCr(Cr, Sk);
+    digitalWrite(6, HIGH);
+    long iTimeOut = millis();
+    while (!timeout) {
+      if (tick > 10) {
+        iTimeOut = millis();
+        if (radio.sendWithRetry(GATEWAYID, "-", sendSize)) {
+          Serial.print(" ok!");
+          tick -= 10;
+        }
+        else Serial.print(" nothing...");
+
+        //update number
+        while (!answered2) {
+          if (radio.receiveDone()) {
+            if (radio.DATA[0] == 'c') {
+              Serial.print("Credits: ");
+              Cr = (int)radio.DATA[1];
+              Serial.println(Cr);
+            }
+            else if (radio.DATA[0] == 's') {
+              Serial.print("Skills: ");
+              Sk = (int)radio.DATA[1];
+              Serial.println(Sk);
+              answered2 = true;
+            }
+            if (Cr <= 0) {
+              digitalWrite(7,LOW);
+              answered2 = true;
+              timeout = true;
+            }
+          }
+        }
+        printCr(Cr,Sk);
+        answered2 = false;
+      }
+      if ((millis() - iTimeOut) > 300000) {
+        timeout = true;
+      }
+    }
+    lc.clearDisplay(0);
   }
-  Blink(LED, 3);
 
-
+  //end loop 
+  
 }
+
+void setDisplay(uint8_t id[]) {
+  lc.setChar(0, 7, hexify(id[0])[1], false);
+  lc.setChar(0, 6, hexify(id[0])[0], false);
+  lc.setChar(0, 5, hexify(id[1])[1], false);
+  lc.setChar(0, 4, hexify(id[1])[0], false);
+  lc.setChar(0, 3, hexify(id[2])[1], false);
+  lc.setChar(0, 2, hexify(id[2])[0], false);
+  lc.setChar(0, 1, hexify(id[3])[1], false);
+  lc.setChar(0, 0, hexify(id[3])[0], false);
+}
+
+void printCr(int number, int sk) {
+  uint8_t ones, tens, hundreds;
+
+  hundreds = number / 100;
+  number = number - hundreds * 100;
+
+  tens = number / 10;
+  ones = number - tens * 10;
+
+  lc.clearDisplay(0);
+  if (sk == 0) {
+    lc.setChar(0, 7, 'b', false);
+  }
+  else {
+    lc.setChar(0, 7, 'A', false);
+  }
+  lc.setDigit(0, 2, hundreds, false);
+  lc.setDigit(0, 1, tens, false);
+  lc.setDigit(0, 0, ones, false);
+}
+
