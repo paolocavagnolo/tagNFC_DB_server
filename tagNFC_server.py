@@ -46,7 +46,10 @@ while True:
                 print worksheet.cell(cellTag.row, 4).value
                 ser.write('/n')
 
-            tag = 0;
+        else if (x != ''):
+            linea = ser.readline()
+            print linea
+
 
     except (KeyboardInterrupt, SystemExit):
         ser.close()
