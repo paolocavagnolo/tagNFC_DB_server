@@ -34,7 +34,7 @@ while True:
 
             except:
                 print "No one. So its a new fellow!"
-                ser.write('d')
+                ser.write('n')
             else:
                 print "Find one!"
                 ser.write('o')
