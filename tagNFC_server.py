@@ -48,11 +48,11 @@ while True:
                 ser.write('c' + struct.pack('>B', float(worksheet.cell(cellTag.row, 3).value)))
                 ser.flush()
                 log_file.write("PY: Credits:")
-                log_file.write(worksheet.cell(cellTag.row, 3).value
+                log_file.write(worksheet.cell(cellTag.row, 3).value)
                 ser.write('s' + struct.pack('>B', int(worksheet.cell(cellTag.row, 4).value)))
                 ser.flush()
                 log_file.write("PY: Skills:")
-                log_file.write(worksheet.cell(cellTag.row, 4).value
+                log_file.write(worksheet.cell(cellTag.row, 4).value)
 
         elif (x == '-'):
             Cr = float(worksheet.cell(cellTag.row, 3).value)
@@ -61,15 +61,15 @@ while True:
             #print str(Cr) + " - " + str(Sk) + str(Cr-(0.2-(0.1*Sk)))
             ser.write('c' + struct.pack('>B', float(worksheet.cell(cellTag.row, 3).value)))
             log_file.write("PY: Credits:")
-            log_file.write(worksheet.cell(cellTag.row, 3).value
+            log_file.write(worksheet.cell(cellTag.row, 3).value)
             ser.write('s' + struct.pack('>B', float(worksheet.cell(cellTag.row, 4).value)))
             ser.flush()
             log_file.write("PY: Skills:")
-            log_file.write(worksheet.cell(cellTag.row, 4).value
+            log_file.write(worksheet.cell(cellTag.row, 4).value)
 
         elif (x != ''):
             linea = ser.readline()
-            log_file.write(linea
+            log_file.write(linea)
 
 
     except (KeyboardInterrupt, SystemExit):
