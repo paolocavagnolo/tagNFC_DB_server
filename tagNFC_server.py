@@ -36,12 +36,15 @@ while True:
             except:
                 print "PY: No one. So its a new fellow!"
                 ser.write('n')
+                ser.flush()
             else:
                 print "PY: Find one!"
                 ser.write('c' + struct.pack('>B', int(worksheet.cell(cellTag.row, 3).value)))
+                ser.flush()
                 print "PY: Credits:"
                 print worksheet.cell(cellTag.row, 3).value
                 ser.write('s' + struct.pack('>B', int(worksheet.cell(cellTag.row, 4).value)))
+                ser.flush()
                 print "PY: Skills:"
                 print worksheet.cell(cellTag.row, 4).value
 
