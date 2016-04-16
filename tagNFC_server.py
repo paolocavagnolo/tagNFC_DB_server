@@ -39,9 +39,8 @@ while True:
             else:
                 print "PY: Find one!"
                 ser.write('o')
-                ser.write(struct.pack('>B', (int)worksheet.cell(cellTag.row, 3).value))
-                ser.write(struct.pack('>B', (int)worksheet.cell(cellTag.row, 4).value))
-                struct.pack('>B', valueToWrite)
+                ser.write(struct.pack('>B', int(worksheet.cell(cellTag.row, 3).value)))
+                ser.write(struct.pack('>B', int(worksheet.cell(cellTag.row, 4).value)))
                 print "PY: Credits:"
                 print worksheet.cell(cellTag.row, 3).value
                 print "PY: Skills:"
