@@ -33,7 +33,7 @@ while True:
             linea = ser.readline()
             uid = linea.split(",")[4].split(" ")[0].split("x")[1] + linea.split(",")[4].split(" ")[1].split("x")[1] + linea.split(",")[4].split(" ")[2].split("x")[1] + linea.split(",")[4].split(" ")[3].split("x")[1]
 
-            log_file.write(uid
+            log_file.write(uid)
 
             try:
                 log_file.write("PY: Search for the person behind the tag...")
