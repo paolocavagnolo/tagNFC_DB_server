@@ -21,19 +21,29 @@ while True:
         #select lines
         # from Gateway a tagID
         if (x == '#'):
+            print "Tag received with ID:"
+
             linea = ser.readline()
             uid = linea.split(",")[4].split(" ")[0].split("x")[1] + linea.split(",")[4].split(" ")[1].split("x")[1] + linea.split(",")[4].split(" ")[2].split("x")[1] + linea.split(",")[4].split(" ")[3].split("x")[1]
 
             print uid
 
             try:
+                print "Search for the person behind the tag..."
                 cellTag = worksheet.find(uid)
+
             except:
+                print "No one. So its a new fellow!"
                 ser.write('d')
             else:
+                print "Find one!"
                 ser.write('o')
+                print "Credits:"
                 ser.write(worksheet.cell(cellTag.row, 3).value)
+                print worksheet.cell(cellTag.row, 3).value
+                print "Skills:"
                 ser.write(worksheet.cell(cellTag.row, 4).value)
+                print worksheet.cell(cellTag.row, 4).value
                 ser.write('/n')
 
             tag = 0;
