@@ -1,5 +1,6 @@
 import serial
 import gspread
+import struct
 from oauth2client.service_account import ServiceAccountCredentials
 
 #gspread part
@@ -37,7 +38,10 @@ while True:
                 ser.write('n')
             else:
                 print "PY: Find one!"
-                ser.write("oab".encode('latin_1'))
+                ser.write('o')
+                ser.write(struct.pack('>B', (int)worksheet.cell(cellTag.row, 3).value))
+                ser.write(struct.pack('>B', (int)worksheet.cell(cellTag.row, 4).value))
+                struct.pack('>B', valueToWrite)
                 print "PY: Credits:"
                 print worksheet.cell(cellTag.row, 3).value
                 print "PY: Skills:"
