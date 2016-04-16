@@ -9,7 +9,7 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/techlab
 gc = gspread.authorize(credentials)
 sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
 worksheet = sh.get_worksheet(0)
-
+cellTag = ""
 
 #serial part
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
@@ -33,7 +33,7 @@ while True:
 
             try:
                 print "PY: Search for the person behind the tag..."
-                global cellTag = worksheet.find(uid)
+                cellTag = worksheet.find(uid)
 
             except:
                 print "PY: No one. So its a new fellow!"
