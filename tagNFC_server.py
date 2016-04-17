@@ -10,7 +10,10 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 
 #log part
-logging.basicConfig(filename='/home/pi/Documents/logs/'+sys.argv[1]+'.log',format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p', level=logging.DEBUG)
+try:
+    logging.basicConfig(filename='/home/pi/Documents/logs/'+sys.argv[1]+'.log',format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p', level=logging.DEBUG)
+except:
+    print "The name of the log file! pass it as an argument"
 #debug / info / warning
 logging.info('New beginning')
 
