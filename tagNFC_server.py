@@ -5,6 +5,7 @@ import gspread
 import struct
 import logging
 import sys
+import time
 
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -34,6 +35,9 @@ Sk = 0
 ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
 logging.info(ser)
 
+#time part
+t0 = time.clock()
+
 
 logging.info("Ready!")
 while True:
@@ -44,6 +48,7 @@ while True:
         #select lines
         # from Gateway a tagID
         if (x == '#'):
+            t0 = time.clock()
             logging.info("PY: Tag received with ID:")
 
             linea = ser.readline()
@@ -71,6 +76,7 @@ while True:
                 logging.info(worksheet.cell(cellTag.row, 4).value)
 
         elif (x == '-'):
+            t0 = time.clock()
             Cr = float(worksheet.cell(cellTag.row, 3).value)
             Sk = int(worksheet.cell(cellTag.row, 4).value)
             worksheet.update_cell(cellTag.row, 3, Cr-(0.2-(0.1*Sk)))
@@ -90,3 +96,13 @@ while True:
 
     except (KeyboardInterrupt, SystemExit):
         ser.close()
+
+    if ((time.clock() - t0) > 300):
+        ser.close()
+        scope = ['https://spreadsheets.google.com/feeds']
+        credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/techlab-tag-nfc-b3f2a2929d98.json', scope)
+        gc = gspread.authorize(credentials)
+        logging.info(gc)
+        sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
+        worksheet = sh.worksheet("soci")
+        worksheet_log = sh.worksheet("log_laser")
