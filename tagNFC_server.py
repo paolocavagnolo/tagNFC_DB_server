@@ -36,7 +36,7 @@ ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
 logging.info(ser)
 
 #time part
-t0 = time.clock()
+t0 = time.time()
 
 
 logging.info("Ready!")
@@ -48,7 +48,7 @@ while True:
         #select lines
         # from Gateway a tagID
         if (x == '#'):
-            t0 = time.clock()
+            t0 = time.time()
             logging.info("PY: Tag received with ID:")
 
             linea = ser.readline()
@@ -76,7 +76,7 @@ while True:
                 logging.info(worksheet.cell(cellTag.row, 4).value)
 
         elif (x == '-'):
-            t0 = time.clock()
+            t0 = time.time()
             Cr = float(worksheet.cell(cellTag.row, 3).value)
             Sk = int(worksheet.cell(cellTag.row, 4).value)
             worksheet.update_cell(cellTag.row, 3, Cr-(0.2-(0.1*Sk)))
@@ -97,11 +97,7 @@ while True:
     except (KeyboardInterrupt, SystemExit):
         ser.close()
 
-    print time.clock()
-    print t0
-    print time.clock() - t0
-
-    if ((time.clock() - t0) > 300):
+    if ((time.time() - t0) > 300):
         ser.close()
         scope = ['https://spreadsheets.google.com/feeds']
         credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/techlab-tag-nfc-b3f2a2929d98.json', scope)
