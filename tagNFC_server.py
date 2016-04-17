@@ -97,6 +97,10 @@ while True:
     except (KeyboardInterrupt, SystemExit):
         ser.close()
 
+    print time.clock()
+    print t0
+    print time.clock() - t0
+
     if ((time.clock() - t0) > 300):
         ser.close()
         scope = ['https://spreadsheets.google.com/feeds']
