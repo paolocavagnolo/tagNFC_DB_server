@@ -7,8 +7,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 
 #log part
-logging.basicConfig(filename='/home/pi/Documents/log_tag.log',level=logging.DEBUG)
-logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
+logging.basicConfig(filename='/home/pi/Documents/log_tag.log',format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
 #debug / info / warning
 logging.info('New beginning')
 
