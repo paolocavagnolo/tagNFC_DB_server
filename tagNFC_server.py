@@ -93,6 +93,9 @@ while True:
             linea = ser.readline()
             logging.info(linea)
 
+        else:
+            time.sleep(2)
+
 
     except (KeyboardInterrupt, SystemExit):
         ser.close()
@@ -108,3 +111,4 @@ while True:
         worksheet_log = sh.worksheet("log_laser")
         ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
         logging.info(ser)
+        t0 = time.time()
