@@ -1,13 +1,16 @@
+#!/usr/bin/python
+
 import serial
 import gspread
 import struct
 import logging
+import sys
 
 from oauth2client.service_account import ServiceAccountCredentials
 
 
 #log part
-logging.basicConfig(filename='/home/pi/Documents/log_tag.log',format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
+logging.basicConfig(filename='/home/pi/Documents/log_tag'+sys.argv[0]+'.log',format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
 #debug / info / warning
 logging.info('New beginning')
 
