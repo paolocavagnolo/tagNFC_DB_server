@@ -106,3 +106,5 @@ while True:
         sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
         worksheet = sh.worksheet("soci")
         worksheet_log = sh.worksheet("log_laser")
+        ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
+        logging.info(ser)
