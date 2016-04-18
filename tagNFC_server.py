@@ -100,15 +100,14 @@ while True:
     except (KeyboardInterrupt, SystemExit):
         ser.close()
 
-    if ((time.time() - t0) > 300):
+    if ((time.time() - t0) > 600):
+        logging.info("Reset connections GDrive / Serial")
         ser.close()
         scope = ['https://spreadsheets.google.com/feeds']
         credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/techlab-tag-nfc-b3f2a2929d98.json', scope)
         gc = gspread.authorize(credentials)
-        logging.info(gc)
         sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
         worksheet = sh.worksheet("soci")
         worksheet_log = sh.worksheet("log_laser")
         ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
-        logging.info(ser)
         t0 = time.time()
