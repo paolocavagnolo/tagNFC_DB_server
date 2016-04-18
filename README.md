@@ -44,4 +44,7 @@ prevent rpi3 to use UART
 install subversion
 
       sudo apt-get install subversion
-      
+
+## Set-up VPN for remote controll
+
+https://www.digitalocean.com/community/tutorials/how-to-set-up-an-openvpn-server-on-debian-8
