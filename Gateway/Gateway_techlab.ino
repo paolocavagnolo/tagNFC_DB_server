@@ -6,6 +6,7 @@
 //*********************************************************************************************
 //************ IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE *************
 //*********************************************************************************************
+#define GATEWAYID     1
 #define NETWORKID     100  //the same on all nodes that talk to each other
 //Match frequency to the hardware version of the radio on your Moteino (uncomment one):
 #define FREQUENCY     RF69_433MHZ
@@ -35,7 +36,7 @@ uint8_t CheckTresh = 0;
 void setup() {
   Serial.begin(SERIAL_BAUD);
   delay(10);
-  radio.initialize(FREQUENCY, NODEID, NETWORKID);
+  radio.initialize(FREQUENCY, GATEWAYID, NETWORKID);
 #ifdef IS_RFM69HW
   radio.setHighPower(); //only for RFM69HW!
 #endif
@@ -55,25 +56,30 @@ int Ab = 0; //abilitation code
 byte incomingByte[5];
 byte sendSize = 1;
 
-String radio2serial = "";
-String serial2radio  = "";
+byte serial2radio[12];
 uint8_t idNode = 0;
-char TypeFromNode;
-char MessageFromNode[8];
-char MessageToNode[8];
+byte TypeFromNode;
+byte TypeFromGateway;
+byte MessageFromNode[8];
+byte MessageToNode[8];
 int8_t RSSInode;
 
 void loop() {
   //Read from node and sendit to serial
-  switch (recieveFromNodes() {
+  switch (recieveFromNodes()) {
     case 'z':
       Serial.println("m: Error in check treshold of incremental number **POSSIBLE ATTACK!**");
       break;
 
     case 'a':
       //Send to Serial
-      radio2serial = '<' + idNode + (char)(CheckTresh+1) + TypeFromGateway + MessageFromNode + (char)RSSInode + '>';
-      Serial.println(radio2serial);
+      Serial.print('<');
+      Serial.print(idNode);
+      Serial.print(CheckTresh);
+      Serial.print(TypeFromNode);
+      for (int i=0; i < 8; i++) Serial.print(MessageFromNode[i]);
+      Serial.print(RSSInode);
+      Serial.println('>');
       break;
   }
   //Read from serial and sendit to node
@@ -82,7 +88,7 @@ void loop() {
     for (int i=0;i<12;i++) {
       serial2radio[i] = (char)Serial.read();
     }
-    for (int i=0);i<8;i++) MessageToNode[i] = serial2radio[3+i];
+    for (int i=0;i<8;i++) MessageToNode[i] = serial2radio[3+i];
     sendToNode(serial2radio[1], serial2radio[2], MessageToNode);
   }
 
@@ -96,28 +102,30 @@ void Blink(byte PIN, int DELAY_MS)
   digitalWrite(PIN, LOW);
 }
 
-int sendToNode(uint8_t nodeid, char type, char message[8]) {
-  MessageToGateway[0] = '<';       //SoC
-  MessageToGateway[1] = nodeid;    //Node ID
+int sendToNode(uint8_t nodeid, char type, byte message[8]) {
+  MessageToNode[0] = '<';       //SoC
+  MessageToNode[1] = nodeid;    //Node ID
   CheckTresh++;
   if (CheckTresh > 254) {
     CheckTresh = 0;
   }
-  MessageToGateway[2] = (char)(CheckTresh);  //Security incremental
-  MessageToGateway[3] = type;
-  for (int i=0; i<8; i++) MessageToGateway[4+i] = message[i];
-  MessageToGateway[12] = '>';
+  MessageToNode[2] = (char)(CheckTresh);  //Security incremental
+  MessageToNode[3] = type;
+  for (int i=0; i<8; i++) MessageToNode[4+i] = message[i];
+  MessageToNode[12] = '>';
 
-  return radio.sendWithRetry(NODEID, MessageToGateway, 13);
+  return radio.sendWithRetry(nodeid, MessageToNode, 13);
 
 }
+
+byte zeros[] = {'0','0','0','0','0','0','0','0'};
 
 char recieveFromNodes(){
   if (radio.receiveDone()) {
     idNode = radio.SENDERID;
     //Check incremental variable
     if (radio.DATA[2] == 'k'){
-      sendToNode(idNode,'k',"00000000");
+      sendToNode(idNode,'k',zeros);
     }
     else {
       if (radio.DATA[2] > CheckTresh) {
@@ -128,10 +136,10 @@ char recieveFromNodes(){
       }
     }
 
-    TypeFromNode = radio.DATA[3]
+    TypeFromNode = radio.DATA[3];
     for (int i=0; i<8; i++) MessageFromNode[i] = radio.DATA[4+i];
-    RSSInode = data.RSSI;
-    return 'a'
+    RSSInode = radio.RSSI;
+    return 'a';
   }
 }
 
@@ -157,3 +165,4 @@ void PrintHex8(uint8_t *data, uint8_t length) // prints 8-bit data in hex
   tmp[length * 5] = 0;
   Serial.print(tmp);
 }
+
