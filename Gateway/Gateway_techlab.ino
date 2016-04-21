@@ -83,7 +83,7 @@ void loop() {
       serial2radio[i] = (char)Serial.read();
     }
     for (int i=0);i<8;i++) MessageToNode[i] = serial2radio[3+i];
-    sendToNode(serial2radio[1], serial2radio[2], char message[8]);
+    sendToNode(serial2radio[1], serial2radio[2], MessageToNode);
   }
 
 }
@@ -98,11 +98,12 @@ void Blink(byte PIN, int DELAY_MS)
 
 int sendToNode(uint8_t nodeid, char type, char message[8]) {
   MessageToGateway[0] = '<';       //SoC
-  MessageToGateway[1] = NODEID;    //Node ID
+  MessageToGateway[1] = nodeid;    //Node ID
+  CheckTresh++;
   if (CheckTresh > 254) {
     CheckTresh = 0;
   }
-  MessageToGateway[2] = (char)(CheckTresh + 1);  //Security incremental
+  MessageToGateway[2] = (char)(CheckTresh);  //Security incremental
   MessageToGateway[3] = type;
   for (int i=0; i<8; i++) MessageToGateway[4+i] = message[i];
   MessageToGateway[12] = '>';

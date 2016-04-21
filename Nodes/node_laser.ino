@@ -318,10 +318,11 @@ void loop() {
 int sendToGateway(char type, byte message[8]) {
   MessageToGateway[0] = '<';       //SoC
   MessageToGateway[1] = NODEID;    //Node ID
+  CheckTresh++;
   if (CheckTresh > 254) {
     CheckTresh = 0;
   }
-  MessageToGateway[2] = (char)(CheckTresh + 1);  //Security incremental
+  MessageToGateway[2] = (char)(CheckTresh);  //Security incremental
   MessageToGateway[3] = type;
   for (int i = 0; i < 8; i++) MessageToGateway[4 + i] = message[i];
   MessageToGateway[12] = '>';
@@ -383,4 +384,3 @@ void printCr(float number, int sk) {
   lc.setDigit(0, 1, ones, true);
   lc.setDigit(0, 0, dec, false);
 }
-
