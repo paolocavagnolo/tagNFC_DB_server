@@ -76,7 +76,7 @@ void loop() {
       Serial.print('<');
       Serial.print(idNode);
       Serial.print(CheckTresh);
-      Serial.print(TypeFromNode);
+      Serial.print((char)TypeFromNode);
       for (int i=0; i < 8; i++) Serial.print(MessageFromNode[i]);
       Serial.print(RSSInode);
       Serial.println('>');
@@ -165,4 +165,3 @@ void PrintHex8(uint8_t *data, uint8_t length) // prints 8-bit data in hex
   tmp[length * 5] = 0;
   Serial.print(tmp);
 }
-
