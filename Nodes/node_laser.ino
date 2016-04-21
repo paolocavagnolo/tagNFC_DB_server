@@ -121,16 +121,17 @@ void setup() {
   lc.shutdown(0, false);
   lc.setIntensity(0, 8);
   lc.clearDisplay(0);
-
+  byte zero[] = {'0', '0', '0', '0', '0', '0', '0', '0'};
   //Sync CheckTreshold
-  sendToGateway('k', "00000000");
-  while ((!radio.receiveDone()) && (millis()-timeOutAnswer)<10000) {}
+  sendToGateway('k', zero);
+  long timeOutAnswer = millis();
+  while ((!radio.receiveDone()) && (millis() - timeOutAnswer) < 10000) {}
   if (radio.receiveDone()) {
     CheckTresh = radio.DATA[2];
-    Serial.println("Synced Check Treshold")
+    Serial.println("Synced Check Treshold");
   }
   else {
-    Serial.println("NO RADIO CONNECTION WITH GATEWAY")
+    Serial.println("NO RADIO CONNECTION WITH GATEWAY");
   }
 
 }
@@ -146,7 +147,7 @@ ISR(TIMER1_OVF_vect)
   if (ar > 15) {
     if (!trig) trigTime = millis();
     trig = true;
-    if ((millis() - trigTime) > (2023-ar)) {
+    if ((millis() - trigTime) > (2023 - ar)) {
       tick++;
       trigTime = 0;
       trig = false;
@@ -186,15 +187,18 @@ uint8_t success;
 uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0, 0};  // Buffer to store the returned UID
 byte uidLength = 0;
 
-char MessageToGateway[13] = {'<','0','0','a', '1','2','3','4','5','6','7','8','>'};
-char TypeFromGateway;
-char MessageFromGateway[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+byte MessageToGateway[] = {'<', '0', '0', 'a', '1', '2', '3', '4', '5', '6', '7', '8', '>'};
+byte TypeFromGateway;
+byte MessageFromGateway[] = {'0', '0', '0', '0', '0', '0', '0', '0'};
 
-
-String Cr_s = "";
 float Cr = 0;
 int Sk = 0;
 bool timeout = false;
+
+union u_Cr {
+  byte b[4];
+  float fval;
+} u;
 
 void loop() {
   //debug
@@ -218,7 +222,7 @@ void loop() {
       //display it
       setDisplay(uid);
       //send to gateway
-      if (sendToGateway('n',uid)) {
+      if (sendToGateway('n', uid)) {
         Serial.println("TagID to gateway sent and ACK ok! :)");
       }
       else Serial.println("TagID to gateway sent and but no ACK :(");
@@ -234,15 +238,15 @@ void loop() {
           switch (TypeFromGateway) {
             case 'r':
               if (MessageToGateway[0] > 0) {
-                Cr_s = MessageToGateway[4] + MessageToGateway[5] + MessageToGateway[6] + MessageToGateway[7];
-                Cr = atof(Cr_s);
+                for (int i = 0; i < 4; i++) u.b[i] = MessageToGateway[i];
+                Cr = u.fval;
                 Sk = MessageToGateway[3];
                 laserEnable = true;
               }
               else {
                 //No tagID:
                 Serial.println("No Person Found");
-                Blink(5,500);
+                Blink(5, 500);
               }
               break;
 
@@ -256,7 +260,7 @@ void loop() {
 
     while (laserEnable) {
       if (Cr > 0) {
-        digitalWrite(7,HIGH);
+        digitalWrite(7, HIGH);
       }
       printCr(Cr, Sk);
       digitalWrite(6, HIGH);
@@ -264,7 +268,7 @@ void loop() {
       while (!timeout) {
         if (tick > 10) {
           iTimeOut = millis();
-          if (sendToGateway('l',uid)) {
+          if (sendToGateway('l', uid)) {
             Serial.println("Tick to gateway sent and ACK ok! :)");
           }
           else Serial.println("Tick to gateway sent and but no ACK :(");
@@ -281,15 +285,15 @@ void loop() {
               switch (TypeFromGateway) {
                 case 'r':
                   if (MessageToGateway[0] > 0) {
-                    Cr_s = MessageToGateway[4] + MessageToGateway[5] + MessageToGateway[6] + MessageToGateway[7];
-                    Cr = atof(Cr_s);
+                    for (int i = 0; i < 4; i++) u.b[i] = MessageToGateway[i];
+                    Cr = u.fval;
                     Sk = MessageToGateway[3];
-                    printCr(Cr,Sk);
+                    printCr(Cr, Sk);
                   }
                   else {
                     //No tagID:
                     Serial.println("No Person Found");
-                    Blink(5,500);
+                    Blink(5, 500);
                   }
                   break;
 
@@ -304,14 +308,14 @@ void loop() {
           timeout = true;
         }
 
-        }
       }
-
     }
+
+  }
 
 } //close loop
 
-int sendToGateway(char type, char message[8]) {
+int sendToGateway(char type, byte message[8]) {
   MessageToGateway[0] = '<';       //SoC
   MessageToGateway[1] = NODEID;    //Node ID
   if (CheckTresh > 254) {
@@ -319,16 +323,16 @@ int sendToGateway(char type, char message[8]) {
   }
   MessageToGateway[2] = (char)(CheckTresh + 1);  //Security incremental
   MessageToGateway[3] = type;
-  for (int i=0; i<8; i++) MessageToGateway[4+i] = message[i];
+  for (int i = 0; i < 8; i++) MessageToGateway[4 + i] = message[i];
   MessageToGateway[12] = '>';
 
   return radio.sendWithRetry(GATEWAYID, MessageToGateway, 13);
 
 }
 
-char answerFromGateway(long timeOut){
+char answerFromGateway(long timeOut) {
   long timeOutAnswer = millis();
-  while ((!radio.receiveDone()) && (millis()-timeOutAnswer)<timeOut) {}
+  while ((!radio.receiveDone()) && (millis() - timeOutAnswer) < timeOut) {}
   if (radio.receiveDone()) {
     //Check incremental variable
     if (radio.DATA[2] > CheckTresh) {
@@ -338,8 +342,8 @@ char answerFromGateway(long timeOut){
       return 'z';
     }
     TypeFromGateway = radio.DATA[3];
-    for (int i=0; i<8; i++) MessageFromGateway[i] = radio.DATA[4+i];
-    return 'a'
+    for (int i = 0; i < 8; i++) MessageFromGateway[i] = radio.DATA[4 + i];
+    return 'a';
   }
   else return 't';
 }
@@ -379,3 +383,4 @@ void printCr(float number, int sk) {
   lc.setDigit(0, 1, ones, true);
   lc.setDigit(0, 0, dec, false);
 }
+
