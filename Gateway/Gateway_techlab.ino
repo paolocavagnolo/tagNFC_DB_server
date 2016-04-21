@@ -155,8 +155,8 @@ void PrintHex8(uint8_t *data, uint8_t length) // prints 8-bit data in hex
     // base for converting single digit numbers to ASCII is 48
     // base for 10-16 to become upper-case characters A-F is 55
     // note: difference is 7
-    //tmp[i * 5] = 48; // add leading 0
-    //tmp[i * 5 + 1] = 120; // add leading x
+    tmp[i * 5] = 48; // add leading 0
+    tmp[i * 5 + 1] = 120; // add leading x
     tmp[i * 5 + 2] = first + 48;
     tmp[i * 5 + 3] = second + 48;
     //tmp[i * 5 + 4] = 32; // add trailing space
