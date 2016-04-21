@@ -1,8 +1,7 @@
-//General
+///General
 #include <SPI.h>
 
 //Timer 1
-// avr-libc library includes
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -11,56 +10,26 @@
 #include <Adafruit_PN532.h>
 
 //RFM side
-#include <RFM69.h>        //get it here: https://www.github.com/lowpowerlab/rfm69
-#include <RFM69_ATC.h>    //get it here: https://www.github.com/lowpowerlab/rfm69
-#include <SPIFlash.h>     //get it here: https://www.github.com/lowpowerlab/spiflash
+#include <RFM69.h>
+#include <RFM69_ATC.h>
+#include <SPIFlash.h>
 
-//7Segment side
+//Display side
 #include "LedControl.h"
 
-//*********************************************************************************************
-//************ IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE *************
-//*********************************************************************************************
-//NFC side
+///NFC side
 #define PN532_IRQ   (3)
 #define PN532_RESET (4)
-
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
 //RFM side
-#define NODEID        2    //must be unique for each node on same network (range up to 254, 255 is used for broadcast)
-#define NETWORKID     100  //the same on all nodes that talk to each other (range up to 255)
+#define NODEID        2
+#define NETWORKID     100
 #define GATEWAYID     1
-//Match frequency to the hardware version of the radio on your Moteino (uncomment one):
 #define FREQUENCY   RF69_433MHZ
-//#define FREQUENCY   RF69_868MHZ
-//#define FREQUENCY     RF69_915MHZ
-#define ENCRYPTKEY    "sampleEncryptKey" //exactly the same 16 characters/bytes on all nodes!
-#define IS_RFM69HW    //uncomment only for RFM69HW! Leave out if you have RFM69W!
-#define ENABLE_ATC    //comment out this line to disable AUTO TRANSMISSION CONTROL
-//*********************************************************************************************
-
-#ifdef __AVR_ATmega1284P__
-#define LED           15 // Moteino MEGAs have LEDs on D15
-#define FLASH_SS      23 // and FLASH SS on D23
-#else
-#define LED           9 // Moteinos have LEDs on D9
-#define FLASH_SS      8 // and FLASH SS on D8
-#endif
-
-#define SERIAL_BAUD   115200
-
-int TRANSMITPERIOD = 150; //transmit a packet to gateway so often (in ms)
-char payload[] = "a";
-char buff[20];
-byte sendSize = 0;
-boolean requestACK = false;
-
-//7Segment side
-LedControl lc = LedControl(17, 16, 15, 1);
-
-//Flash side
-SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for 4mbit  Windbond chip (W25X40CL)
+#define ENCRYPTKEY    "sampleEncryptKey"
+#define IS_RFM69HW
+#define ENABLE_ATC
 
 #ifdef ENABLE_ATC
 RFM69_ATC radio;
@@ -68,24 +37,36 @@ RFM69_ATC radio;
 RFM69 radio;
 #endif
 
+byte sendSize = 0;
+boolean requestACK = false;
+
+//HARDWARE side
+#define LED           9 // Moteinos have LEDs on D9
+#define FLASH_SS      8 // and FLASH SS on D8
+#define SERIAL_BAUD   115200
+
+//7Segment side
+LedControl lc = LedControl(17, 16, 15, 1);
+
+//Flash side
+SPIFlash flash(FLASH_SS, 0xEF30);
+
+//Sicurity side
+uint8_t CheckTresh = 0;
+
 void setup() {
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
+  pinMode(5, OUTPUT);   //Red
+  pinMode(6, OUTPUT);   //Green
   pinMode(7, OUTPUT);
 
   Serial.begin(SERIAL_BAUD);
 
   //Timer1
-  // initialize Timer1
-  cli();             // disable global interrupts
-  TCCR1A = 0;        // set entire TCCR1A register to 0
+  cli();
+  TCCR1A = 0;
   TCCR1B = 0;
-
-  // enable Timer1 overflow interrupt:
   TIMSK1 = (1 << TOIE1);
-  // Set CS10 bit so timer runs at clock speed:
   TCCR1B |= (1 << CS11);
-  // enable global interrupts:
   sei();
 
   //NFC side
@@ -101,7 +82,6 @@ void setup() {
 
   // configure board to read RFID tags
   nfc.SAMConfig();
-
   Serial.println("Waiting for an ISO14443A Card ...");
 
   //RFM side
@@ -110,12 +90,7 @@ void setup() {
   radio.setHighPower(); //uncomment only for RFM69HW!
 #endif
   radio.encrypt(ENCRYPTKEY);
-  //radio.setFrequency(919000000); //set frequency to some custom frequency
 
-  //Auto Transmission Control - dials down transmit power to save battery (-100 is the noise floor, -90 is still pretty good)
-  //For indoor nodes that are pretty static and at pretty stable temperatures (like a MotionMote) -90dBm is quite safe
-  //For more variable nodes that can expect to move or experience larger temp drifts a lower margin like -70 to -80 would probably be better
-  //Always test your ATC mote in the edge cases in your own environment to ensure ATC will perform as you expect
 #ifdef ENABLE_ATC
   radio.enableAutoPower(-70);
 #endif
@@ -146,6 +121,17 @@ void setup() {
   lc.shutdown(0, false);
   lc.setIntensity(0, 8);
   lc.clearDisplay(0);
+
+  //Sync CheckTreshold
+  sendToGateway('k', "00000000");
+  while ((!radio.receiveDone()) && (millis()-timeOutAnswer)<10000) {}
+  if (radio.receiveDone()) {
+    CheckTresh = radio.DATA[2];
+    Serial.println("Synced Check Treshold")
+  }
+  else {
+    Serial.println("NO RADIO CONNECTION WITH GATEWAY")
+  }
 
 }
 
@@ -191,131 +177,171 @@ String hexify(unsigned int n)
 
 
 long lastPeriod = 0;
+
 bool readEnable = false;
-bool LaserOn = false;
+bool laserEnable = false;
+
 //NFC side
 uint8_t success;
-uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
-uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
-bool ansCr = false;
-bool ansSk = false;
-bool answered = false;
-bool answered2 = false;
-char tagLife = ' ';
-String mode = "";
-int Cr = 0;
+uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0, 0};  // Buffer to store the returned UID
+byte uidLength = 0;
+
+char MessageToGateway[13] = {'<','0','0','a', '1','2','3','4','5','6','7','8','>'};
+char TypeFromGateway;
+char MessageFromGateway[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+
+String Cr_s = "";
+float Cr = 0;
 int Sk = 0;
 bool timeout = false;
 
 void loop() {
-  
-  //laser off
+  //debug
+  Serial.println("Beginning of the loop - initialize the variables");
+
+  //initialize variables at reset or timeout
   digitalWrite(7, LOW);
   readEnable = false;
-  answered = false;
-  answered2 = false;
+  laserEnable = false;
   timeout = false;
 
   if (!readEnable) {
     //read tag
-    success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &sendSize);
+    success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
     if (success) {
       // Display some basic information about the card
-
       Serial.println("Found an ISO14443A card");
       Serial.print("  UID Length: "); Serial.print(sendSize, DEC); Serial.println(" bytes");
       Serial.print("  UID Value: ");
-      nfc.PrintHex(uid, sendSize);
-
-      //send to gateway
-      if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
-        Serial.print(" ok!");
-      }
-      else Serial.print(" nothing...");
-
-      //display
+      nfc.PrintHex(uid, uidLength);
+      //display it
       setDisplay(uid);
-    }
-
-    //check for any received packets
-    while (!answered) {
-      if (radio.receiveDone()) {
-        if (radio.DATA[0] == 'c') {
-          Serial.print("Credits: ");
-          Cr = (int)radio.DATA[1];
-          Serial.println(Cr);
-          mode = "update";
-        }
-        else if (radio.DATA[0] == 's') {
-          Serial.print("Skills: ");
-          Sk = (int)radio.DATA[1];
-          Serial.println(Sk);
-          answered = true;
-        }
-        else if (radio.DATA[0] == 'n') {
-          Serial.print("Nuovo!");
-          mode = "new";
-          answered = true;
-        }
+      //send to gateway
+      if (sendToGateway('n',uid)) {
+        Serial.println("TagID to gateway sent and ACK ok! :)");
       }
-    }
-    readEnable = true;
-  }
+      else Serial.println("TagID to gateway sent and but no ACK :(");
+      //check answer
+      switch (answerFromGateway(10000)) {
+        case 'z': //crack
+          Serial.println("Error in check treshold of incremental number **POSSIBLE ATTACK!**");
+          break;
+        case 't': //timeout
+          Serial.println("Time out recieving answer after TagID sent");
+          break;
+        case 'a':
+          switch (TypeFromGateway) {
+            case 'r':
+              if (MessageToGateway[0] > 0) {
+                Cr_s = MessageToGateway[4] + MessageToGateway[5] + MessageToGateway[6] + MessageToGateway[7];
+                Cr = atof(Cr_s);
+                Sk = MessageToGateway[3];
+                laserEnable = true;
+              }
+              else {
+                //No tagID:
+                Serial.println("No Person Found");
+                Blink(5,500);
+              }
+              break;
 
+            case 'd':
+              Serial.println("door open?! in the laser?");
+              break;
+          }
+          break;
+      }
+    } // close read tag
 
-  if (mode == "new") {
-    Blink(5, 1000);
-  }
-
-  else if (mode == "update") {
-    if (Cr > 0) {
-      digitalWrite(7,HIGH);
-    }
-    printCr(Cr, Sk);
-    digitalWrite(6, HIGH);
-    long iTimeOut = millis();
-    while (!timeout) {
-      if (tick > 10) {
-        iTimeOut = millis();
-        if (radio.sendWithRetry(GATEWAYID, "-", sendSize)) {
-          Serial.print(" ok!");
+    while (laserEnable) {
+      if (Cr > 0) {
+        digitalWrite(7,HIGH);
+      }
+      printCr(Cr, Sk);
+      digitalWrite(6, HIGH);
+      long iTimeOut = millis();
+      while (!timeout) {
+        if (tick > 10) {
+          iTimeOut = millis();
+          if (sendToGateway('l',uid)) {
+            Serial.println("Tick to gateway sent and ACK ok! :)");
+          }
+          else Serial.println("Tick to gateway sent and but no ACK :(");
           tick -= 10;
-        }
-        else Serial.print(" nothing...");
 
-        //update number
-        while (!answered2) {
-          if (radio.receiveDone()) {
-            if (radio.DATA[0] == 'c') {
-              Serial.print("Credits: ");
-              Cr = (int)radio.DATA[1];
-              Serial.println(Cr);
-            }
-            else if (radio.DATA[0] == 's') {
-              Serial.print("Skills: ");
-              Sk = (int)radio.DATA[1];
-              Serial.println(Sk);
-              answered2 = true;
-            }
-            if (Cr <= 0) {
-              digitalWrite(7,LOW);
-              answered2 = true;
-              timeout = true;
-            }
+          switch (answerFromGateway(10000)) {
+            case 'z': //crack
+              Serial.println("Error in check treshold of incremental number **POSSIBLE ATTACK!**");
+              break;
+            case 't': //timeout
+              Serial.println("Time out recieving answer after TagID sent");
+              break;
+            case 'a':
+              switch (TypeFromGateway) {
+                case 'r':
+                  if (MessageToGateway[0] > 0) {
+                    Cr_s = MessageToGateway[4] + MessageToGateway[5] + MessageToGateway[6] + MessageToGateway[7];
+                    Cr = atof(Cr_s);
+                    Sk = MessageToGateway[3];
+                    printCr(Cr,Sk);
+                  }
+                  else {
+                    //No tagID:
+                    Serial.println("No Person Found");
+                    Blink(5,500);
+                  }
+                  break;
+
+                case 'd':
+                  Serial.println("door open?! in the laser?");
+                  break;
+              }
+              break;
           }
         }
-        printCr(Cr,Sk);
-        answered2 = false;
-      }
-      if ((millis() - iTimeOut) > 300000) {
-        timeout = true;
-      }
-    }
-    lc.clearDisplay(0);
-  }
+        if ((millis() - iTimeOut) > 300000) {
+          timeout = true;
+        }
 
-  //end loop 
-  
+        }
+      }
+
+    }
+
+} //close loop
+
+int sendToGateway(char type, char message[8]) {
+  MessageToGateway[0] = '<';       //SoC
+  MessageToGateway[1] = NODEID;    //Node ID
+  if (CheckTresh > 254) {
+    CheckTresh = 0;
+  }
+  MessageToGateway[2] = (char)(CheckTresh + 1);  //Security incremental
+  MessageToGateway[3] = type;
+  for (int i=0; i<8; i++) MessageToGateway[4+i] = message[i];
+  MessageToGateway[12] = '>';
+
+  return radio.sendWithRetry(GATEWAYID, MessageToGateway, 13);
+
+}
+
+char answerFromGateway(long timeOut){
+  long timeOutAnswer = millis();
+  while ((!radio.receiveDone()) && (millis()-timeOutAnswer)<timeOut) {}
+  if (radio.receiveDone()) {
+    //Check incremental variable
+    if (radio.DATA[2] > CheckTresh) {
+      CheckTresh + 1;
+    }
+    else {
+      return 'z';
+    }
+    TypeFromGateway = radio.DATA[3];
+    for (int i=0; i<8; i++) MessageFromGateway[i] = radio.DATA[4+i];
+    return 'a'
+  }
+  else return 't';
 }
 
 void setDisplay(uint8_t id[]) {
@@ -329,14 +355,17 @@ void setDisplay(uint8_t id[]) {
   lc.setChar(0, 0, hexify(id[3])[0], false);
 }
 
-void printCr(int number, int sk) {
-  uint8_t ones, tens, hundreds;
+void printCr(float number, int sk) {
+  uint8_t ones, tens, hundreds, dec;
 
   hundreds = number / 100;
   number = number - hundreds * 100;
 
   tens = number / 10;
   ones = number - tens * 10;
+  number = number - tens * 10;
+  dec = (number - ones) * 10;
+
 
   lc.clearDisplay(0);
   if (sk == 0) {
@@ -345,8 +374,8 @@ void printCr(int number, int sk) {
   else {
     lc.setChar(0, 7, 'A', false);
   }
-  lc.setDigit(0, 2, hundreds, false);
-  lc.setDigit(0, 1, tens, false);
-  lc.setDigit(0, 0, ones, false);
+  lc.setDigit(0, 3, hundreds, false);
+  lc.setDigit(0, 2, tens, false);
+  lc.setDigit(0, 1, ones, true);
+  lc.setDigit(0, 0, dec, false);
 }
-

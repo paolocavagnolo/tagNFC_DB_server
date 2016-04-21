@@ -1,3 +1,9 @@
+// Sample RFM69 receiver/gateway sketch, with ACK and optional encryption, and Automatic Transmission Control
+// Passes through any wireless received messages to the serial port & responds to ACKs
+// It also looks for an onboard FLASH chip, if present
+// RFM69 library and sample code by Felix Rusu - http://LowPowerLab.com/contact
+// Copyright Felix Rusu (2015)
+
 #include <RFM69.h>    //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <RFM69_ATC.h>//get it here: https://www.github.com/lowpowerlab/rfm69
 #include <SPI.h>      //comes with Arduino IDE (www.arduino.cc)
@@ -6,6 +12,8 @@
 //*********************************************************************************************
 //************ IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE *************
 //*********************************************************************************************
+#define NODEID        1    //unique for each node on same network
+#define LASERID       2
 #define NETWORKID     100  //the same on all nodes that talk to each other
 //Match frequency to the hardware version of the radio on your Moteino (uncomment one):
 #define FREQUENCY     RF69_433MHZ
@@ -18,8 +26,13 @@
 
 #define SERIAL_BAUD   115200
 
+#ifdef __AVR_ATmega1284P__
+#define LED           15 // Moteino MEGAs have LEDs on D15
+#define FLASH_SS      23 // and FLASH SS on D23
+#else
 #define LED           9 // Moteinos have LEDs on D9
 #define FLASH_SS      8 // and FLASH SS on D8
+#endif
 
 #ifdef ENABLE_ATC
 RFM69_ATC radio;
@@ -29,8 +42,6 @@ RFM69 radio;
 
 SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for 4mbit  Windbond chip (W25X40CL)
 bool promiscuousMode = false; //set to 'true' to sniff all packets on the same network
-
-uint8_t CheckTresh = 0;
 
 void setup() {
   Serial.begin(SERIAL_BAUD);
@@ -42,9 +53,34 @@ void setup() {
   radio.encrypt(ENCRYPTKEY);
   radio.promiscuous(promiscuousMode);
   //radio.setFrequency(919000000); //set frequency to some custom frequency
+  char buff[50];
+  sprintf(buff, "\nListening at %d Mhz...", FREQUENCY == RF69_433MHZ ? 433 : FREQUENCY == RF69_868MHZ ? 868 : 915);
+  Serial.println(buff);
+  if (flash.initialize())
+  {
+    Serial.print("SPI Flash Init OK. Unique MAC = [");
+    flash.readUniqueId();
+    for (byte i = 0; i < 8; i++)
+    {
+      Serial.print(flash.UNIQUEID[i], HEX);
+      if (i != 8) Serial.print(':');
+    }
+    Serial.println(']');
 
-  flash.initialize();
+    //alternative way to read it:
+    //byte* MAC = flash.readUniqueId();
+    //for (byte i=0;i<8;i++)
+    //{
+    //  Serial.print(MAC[i], HEX);
+    //  Serial.print(' ');
+    //}
+  }
+  else
+    Serial.println("SPI Flash MEM not found (is chip soldered?)...");
 
+#ifdef ENABLE_ATC
+  Serial.println("RFM69_ATC Enabled (Auto Transmission Control)");
+#endif
 }
 
 byte ackCount = 0;
@@ -53,39 +89,67 @@ uint8_t dataRecevied[7];
 int Cr = 0; //credits
 int Ab = 0; //abilitation code
 byte incomingByte[5];
+char feedback[4];
+byte nodeID;
 byte sendSize = 1;
 
-String radio2serial = "";
-String serial2radio  = "";
-uint8_t idNode = 0;
-char TypeFromNode;
-char MessageFromNode[8];
-char MessageToNode[8];
-int8_t RSSInode;
-
 void loop() {
-  //Read from node and sendit to serial
-  switch (recieveFromNodes() {
-    case 'z':
-      Serial.println("m: Error in check treshold of incremental number **POSSIBLE ATTACK!**");
-      break;
 
-    case 'a':
-      //Send to Serial
-      radio2serial = '<' + idNode + (char)(CheckTresh+1) + TypeFromGateway + MessageFromNode + (char)RSSInode + '>';
-      Serial.println(radio2serial);
-      break;
-  }
-  //Read from serial and sendit to node
+  //process any serial input
   if (Serial.available() > 0)
   {
-    for (int i=0;i<12;i++) {
-      serial2radio[i] = (char)Serial.read();
+    char input = Serial.read();
+    if (input == 'n') //new tag
+    {
+      feedback[0] = 'n';
+      Serial.println("GGW: New tag found!");
+      radio.sendWithRetry(LASERID, feedback, 1);
     }
-    for (int i=0);i<8;i++) MessageToNode[i] = serial2radio[3+i];
-    sendToNode(serial2radio[1], serial2radio[2], char message[8]);
+    else if (input == 'c') //new tag
+    {
+      feedback[0] = 'c';
+      Serial.println("GGW: Person! credits..");
+      feedback[1] = (char)Serial.read();
+      radio.sendWithRetry(LASERID, feedback, 2);
+    }
+    else if (input == 's') //new tag
+    {
+      feedback[0] = 's';
+      Serial.println("GGW: Person! skills..");
+      feedback[1] = (char)Serial.read();
+      radio.sendWithRetry(LASERID, feedback, 2);
+    }
   }
 
+  if (radio.receiveDone())
+  {
+    for (byte i = 0; i < radio.DATALEN; i++)
+      dataRecevied[i] = radio.DATA[i];
+
+    if (dataRecevied[0] == '-') {
+      Serial.print("-tick");
+    }
+    else {
+
+      Serial.print("#,");
+      Serial.print(++packetCount);
+      Serial.print(',');
+      Serial.print(','); Serial.print(radio.SENDERID, DEC); Serial.print(",");
+      nodeID = radio.SENDERID;
+
+      PrintHex8(dataRecevied, 7);
+      Serial.print(",RX_RSSI:"); Serial.print(radio.RSSI); Serial.print(",");
+    }
+    if (radio.ACKRequested())
+    {
+      byte theNodeID = radio.SENDERID;
+      radio.sendACK();
+      Serial.print("ACK sent,");
+
+      Serial.println();
+      Blink(LED, 3);
+    }
+  }
 }
 
 void Blink(byte PIN, int DELAY_MS)
@@ -94,44 +158,6 @@ void Blink(byte PIN, int DELAY_MS)
   digitalWrite(PIN, HIGH);
   delay(DELAY_MS);
   digitalWrite(PIN, LOW);
-}
-
-int sendToNode(uint8_t nodeid, char type, char message[8]) {
-  MessageToGateway[0] = '<';       //SoC
-  MessageToGateway[1] = NODEID;    //Node ID
-  if (CheckTresh > 254) {
-    CheckTresh = 0;
-  }
-  MessageToGateway[2] = (char)(CheckTresh + 1);  //Security incremental
-  MessageToGateway[3] = type;
-  for (int i=0; i<8; i++) MessageToGateway[4+i] = message[i];
-  MessageToGateway[12] = '>';
-
-  return radio.sendWithRetry(NODEID, MessageToGateway, 13);
-
-}
-
-char recieveFromNodes(){
-  if (radio.receiveDone()) {
-    idNode = radio.SENDERID;
-    //Check incremental variable
-    if (radio.DATA[2] == 'k'){
-      sendToNode(idNode,'k',"00000000");
-    }
-    else {
-      if (radio.DATA[2] > CheckTresh) {
-        CheckTresh + 1;
-      }
-      else {
-        return 'z';
-      }
-    }
-
-    TypeFromNode = radio.DATA[3]
-    for (int i=0; i<8; i++) MessageFromNode[i] = radio.DATA[4+i];
-    RSSInode = data.RSSI;
-    return 'a'
-  }
 }
 
 void PrintHex8(uint8_t *data, uint8_t length) // prints 8-bit data in hex
