@@ -77,7 +77,7 @@ void loop() {
       Serial.print(idNode);
       Serial.print(CheckTresh);
       Serial.print((char)TypeFromNode);
-      for (int i=0; i < 8; i++) Serial.print(MessageFromNode[i]);
+      PrintHex8(MessageFromNode);
       Serial.print(RSSInode);
       Serial.println('>');
       break;
