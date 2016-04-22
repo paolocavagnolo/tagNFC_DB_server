@@ -332,8 +332,8 @@ int sendToGateway(char type, byte message[8]) {
 }
 
 char answerFromGateway(long timeOut) {
-  long timeOutAnswer = millis();
-  while ((!radio.receiveDone()) && (millis() - timeOutAnswer) < timeOut) {}
+  //long timeOutAnswer = millis();
+  //while ((!radio.receiveDone()) && (millis() - timeOutAnswer) < timeOut) {}
   if (radio.receiveDone()) {
     //Check incremental variable
     if (radio.DATA[2] > CheckTresh) {

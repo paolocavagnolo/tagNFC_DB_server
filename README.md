@@ -45,6 +45,29 @@ install subversion
 
       sudo apt-get install subversion
 
+## Set-up github on local machine
+
+      sudo apt-get install git-core
+      ssh-keygen -t rsa -b 4096 -C "you@example.com"
+      eval "$(ssh-agent -s)"
+      ssh-add ~/.ssh/id_rsa
+      tail ~/.ssh/id_rsa.pub
+      --copy and paste it to github/settings--
+      git clone git@github.com:paolocavagnolo/tagNFC_DB_server.git
+      git config --global user.email "you@example.com"
+      git config --global user.name "Your Name"
+
+
+
+      
+
+
 ## Set-up VPN for remote controll
 
 https://www.digitalocean.com/community/tutorials/how-to-set-up-an-openvpn-server-on-debian-8
+
+## Platformio
+
+http://www.russelldavis.org/2015/08/01/platformio-on-the-raspberry-pi/
+
+      sudo apt-get install libmpc-dev libelf1 libftdi1

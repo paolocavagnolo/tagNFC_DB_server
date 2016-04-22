@@ -63,24 +63,33 @@ byte TypeFromGateway;
 byte MessageFromNode[8];
 byte MessageToNode[8];
 int8_t RSSInode;
+uint8_t dataRecevied[14];
 
 void loop() {
   //Read from node and sendit to serial
-  switch (recieveFromNodes()) {
-    case 'z':
-      Serial.println("m: Error in check treshold of incremental number **POSSIBLE ATTACK!**");
-      break;
+  if (radio.receiveDone())
+  {
+    for (byte i = 0; i < radio.DATALEN; i++)
+      dataRecevied[i] = radio.DATA[i];
+    idNode = radio.SENDERID;
+    Serial.print('<');
+    Serial.print((int)idNode);
+    Serial.print((int)dataRecevied[2]);
+    Serial.print((char)dataRecevied[3]);
 
-    case 'a':
-      //Send to Serial
-      Serial.print('<');
-      Serial.print(idNode);
-      Serial.print(CheckTresh);
-      Serial.print((char)TypeFromNode);
-      PrintHex8(MessageFromNode,8);
-      Serial.print(RSSInode);
-      Serial.println('>');
-      break;
+    for (int i = 0; i < 8; i++) {
+      MessageFromNode[i] = dataRecevied[4+i];
+      Serial.print(MessageFromNode[i]);
+    }
+
+    Serial.print(dataRecevied[12]);
+    Serial.println('>');
+
+    if (radio.ACKRequested())
+    {
+      byte theNodeID = radio.SENDERID;
+      radio.sendACK();
+    }
   }
   //Read from serial and sendit to node
   if (Serial.available() > 0)
