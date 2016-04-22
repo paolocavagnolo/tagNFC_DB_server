@@ -1,3 +1,9 @@
+// Sample RFM69 receiver/gateway sketch, with ACK and optional encryption, and Automatic Transmission Control
+// Passes through any wireless received messages to the serial port & responds to ACKs
+// It also looks for an onboard FLASH chip, if present
+// RFM69 library and sample code by Felix Rusu - http://LowPowerLab.com/contact
+// Copyright Felix Rusu (2015)
+
 #include <RFM69.h>    //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <RFM69_ATC.h>//get it here: https://www.github.com/lowpowerlab/rfm69
 #include <SPI.h>      //comes with Arduino IDE (www.arduino.cc)
@@ -6,7 +12,7 @@
 //*********************************************************************************************
 //************ IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE *************
 //*********************************************************************************************
-#define GATEWAYID     1
+#define NODEID        1    //unique for each node on same network
 #define NETWORKID     100  //the same on all nodes that talk to each other
 //Match frequency to the hardware version of the radio on your Moteino (uncomment one):
 #define FREQUENCY     RF69_433MHZ
@@ -19,158 +25,163 @@
 
 #define SERIAL_BAUD   115200
 
-#define LED           9 // Moteinos have LEDs on D9
-#define FLASH_SS      8 // and FLASH SS on D8
+#ifdef __AVR_ATmega1284P__
+  #define LED           15 // Moteino MEGAs have LEDs on D15
+  #define FLASH_SS      23 // and FLASH SS on D23
+#else
+  #define LED           9 // Moteinos have LEDs on D9
+  #define FLASH_SS      8 // and FLASH SS on D8
+#endif
 
 #ifdef ENABLE_ATC
-RFM69_ATC radio;
+  RFM69_ATC radio;
 #else
-RFM69 radio;
+  RFM69 radio;
 #endif
 
 SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for 4mbit  Windbond chip (W25X40CL)
 bool promiscuousMode = false; //set to 'true' to sniff all packets on the same network
 
-uint8_t CheckTresh = 0;
-
 void setup() {
   Serial.begin(SERIAL_BAUD);
   delay(10);
-  radio.initialize(FREQUENCY, GATEWAYID, NETWORKID);
+  radio.initialize(FREQUENCY,NODEID,NETWORKID);
 #ifdef IS_RFM69HW
   radio.setHighPower(); //only for RFM69HW!
 #endif
   radio.encrypt(ENCRYPTKEY);
   radio.promiscuous(promiscuousMode);
   //radio.setFrequency(919000000); //set frequency to some custom frequency
+  char buff[50];
+  sprintf(buff, "\nListening at %d Mhz...", FREQUENCY==RF69_433MHZ ? 433 : FREQUENCY==RF69_868MHZ ? 868 : 915);
+  Serial.println(buff);
+  if (flash.initialize())
+  {
+    Serial.print("SPI Flash Init OK. Unique MAC = [");
+    flash.readUniqueId();
+    for (byte i=0;i<8;i++)
+    {
+      Serial.print(flash.UNIQUEID[i], HEX);
+      if (i!=8) Serial.print(':');
+    }
+    Serial.println(']');
 
-  flash.initialize();
+    //alternative way to read it:
+    //byte* MAC = flash.readUniqueId();
+    //for (byte i=0;i<8;i++)
+    //{
+    //  Serial.print(MAC[i], HEX);
+    //  Serial.print(' ');
+    //}
+  }
+  else
+    Serial.println("SPI Flash MEM not found (is chip soldered?)...");
 
+#ifdef ENABLE_ATC
+  Serial.println("RFM69_ATC Enabled (Auto Transmission Control)");
+#endif
 }
 
-byte ackCount = 0;
+byte ackCount=0;
 uint32_t packetCount = 0;
-uint8_t dataRecevied[14];
-int Cr = 0; //credits
-int Ab = 0; //abilitation code
-byte incomingByte[5];
-byte sendSize = 1;
-
-byte serial2radio[12];
-uint8_t idNode = 0;
-byte TypeFromNode;
-byte TypeFromGateway;
-byte MessageFromNode[8];
-byte MessageToNode[8];
-int8_t RSSInode;
-
 void loop() {
-  //Read from node and sendit to serial
-  if (radio.receiveDone())
+  //process any serial input
+  if (Serial.available() > 0)
   {
-    for (byte i = 0; i < radio.DATALEN; i++)
-      dataRecevied[i] = radio.DATA[i];
-    idNode = radio.SENDERID;
-    Serial.print('<');
-    Serial.print((int)idNode);
-    Serial.print((int)dataRecevied[2]);
-    Serial.print((char)dataRecevied[3]);
-
-    for (int i = 0; i < 8; i++) {
-      MessageFromNode[i] = dataRecevied[4+i];
-      Serial.print(MessageFromNode[i]);
+    char input = Serial.read();
+    if (input == 'r') //d=dump all register values
+      radio.readAllRegs();
+    if (input == 'E') //E=enable encryption
+      radio.encrypt(ENCRYPTKEY);
+    if (input == 'e') //e=disable encryption
+      radio.encrypt(null);
+    if (input == 'p')
+    {
+      promiscuousMode = !promiscuousMode;
+      radio.promiscuous(promiscuousMode);
+      Serial.print("Promiscuous mode ");Serial.println(promiscuousMode ? "on" : "off");
     }
 
-    Serial.print(dataRecevied[12]);
-    Serial.println('>');
+    if (input == 'd') //d=dump flash area
+    {
+      Serial.println("Flash content:");
+      int counter = 0;
+
+      while(counter<=256){
+        Serial.print(flash.readByte(counter++), HEX);
+        Serial.print('.');
+      }
+      while(flash.busy());
+      Serial.println();
+    }
+    if (input == 'D')
+    {
+      Serial.print("Deleting Flash chip ... ");
+      flash.chipErase();
+      while(flash.busy());
+      Serial.println("DONE");
+    }
+    if (input == 'i')
+    {
+      Serial.print("DeviceID: ");
+      word jedecid = flash.readDeviceId();
+      Serial.println(jedecid, HEX);
+    }
+    if (input == 't')
+    {
+      byte temperature =  radio.readTemperature(-1); // -1 = user cal factor, adjust for correct ambient
+      byte fTemp = 1.8 * temperature + 32; // 9/5=1.8
+      Serial.print( "Radio Temp is ");
+      Serial.print(temperature);
+      Serial.print("C, ");
+      Serial.print(fTemp); //converting to F loses some resolution, obvious when C is on edge between 2 values (ie 26C=78F, 27C=80F)
+      Serial.println('F');
+    }
+  }
+
+  if (radio.receiveDone())
+  {
+    Serial.print("#[");
+    Serial.print(++packetCount);
+    Serial.print(']');
+    Serial.print('[');Serial.print(radio.SENDERID, DEC);Serial.print("] ");
+    if (promiscuousMode)
+    {
+      Serial.print("to [");Serial.print(radio.TARGETID, DEC);Serial.print("] ");
+    }
+    for (byte i = 0; i < radio.DATALEN; i++)
+      Serial.print((char)radio.DATA[i]);
+    Serial.print("   [RX_RSSI:");Serial.print(radio.RSSI);Serial.print("]");
 
     if (radio.ACKRequested())
     {
       byte theNodeID = radio.SENDERID;
       radio.sendACK();
-    }
-  }
-  //Read from serial and sendit to node
-  if (Serial.available() > 0)
-  {
-    for (int i=0;i<12;i++) {
-      serial2radio[i] = (char)Serial.read();
-    }
-    for (int i=0;i<8;i++) MessageToNode[i] = serial2radio[3+i];
-    sendToNode(serial2radio[1], serial2radio[2], MessageToNode);
-  }
+      Serial.print(" - ACK sent.");
 
+      // When a node requests an ACK, respond to the ACK
+      // and also send a packet requesting an ACK (every 3rd one only)
+      // This way both TX/RX NODE functions are tested on 1 end at the GATEWAY
+      if (ackCount++%3==0)
+      {
+        Serial.print(" Pinging node ");
+        Serial.print(theNodeID);
+        Serial.print(" - ACK...");
+        delay(3); //need this when sending right after reception .. ?
+        if (radio.sendWithRetry(theNodeID, "ACK TEST", 8, 0))  // 0 = only 1 attempt, no retries
+          Serial.print("ok!");
+        else Serial.print("nothing");
+      }
+    }
+    Serial.println();
+    Blink(LED,3);
+  }
 }
 
 void Blink(byte PIN, int DELAY_MS)
 {
   pinMode(PIN, OUTPUT);
-  digitalWrite(PIN, HIGH);
+  digitalWrite(PIN,HIGH);
   delay(DELAY_MS);
-  digitalWrite(PIN, LOW);
-}
-
-int sendToNode(uint8_t nodeid, char type, byte message[8]) {
-  MessageToNode[0] = '<';       //SoC
-  MessageToNode[1] = nodeid;    //Node ID
-  CheckTresh++;
-  if (CheckTresh > 254) {
-    CheckTresh = 0;
-  }
-  MessageToNode[2] = (char)(CheckTresh);  //Security incremental
-  MessageToNode[3] = type;
-  for (int i=0; i<8; i++) MessageToNode[4+i] = message[i];
-  MessageToNode[12] = '>';
-
-  return radio.sendWithRetry(nodeid, MessageToNode, 13);
-
-}
-
-byte zeros[] = {'0','0','0','0','0','0','0','0'};
-
-char recieveFromNodes(){
-  if (radio.receiveDone()) {
-    if (radio.ACKRequested()) radio.sendACK();
-    idNode = radio.SENDERID;
-    //Check incremental variable
-    if (radio.DATA[2] == 'k'){
-      sendToNode(idNode,'k',zeros);
-    }
-    else {
-      if (radio.DATA[2] > CheckTresh) {
-        CheckTresh + 1;
-      }
-      else {
-        return 'z';
-      }
-    }
-
-    TypeFromNode = radio.DATA[3];
-    for (int i=0; i<8; i++) MessageFromNode[i] = radio.DATA[4+i];
-    RSSInode = radio.RSSI;
-    return 'a';
-  }
-}
-
-void PrintHex8(uint8_t *data, uint8_t length) // prints 8-bit data in hex
-{
-  char tmp[length * 5 + 1];
-  byte first;
-  byte second;
-  for (int i = 0; i < length; i++) {
-    first = (data[i] >> 4) & 0x0f;
-    second = data[i] & 0x0f;
-    // base for converting single digit numbers to ASCII is 48
-    // base for 10-16 to become upper-case characters A-F is 55
-    // note: difference is 7
-    tmp[i * 5] = 48; // add leading 0
-    tmp[i * 5 + 1] = 120; // add leading x
-    tmp[i * 5 + 2] = first + 48;
-    tmp[i * 5 + 3] = second + 48;
-    //tmp[i * 5 + 4] = 32; // add trailing space
-    if (first > 9) tmp[i * 5 + 2] += 7;
-    if (second > 9) tmp[i * 5 + 3] += 7;
-  }
-  tmp[length * 5] = 0;
-  Serial.print(tmp);
+  digitalWrite(PIN,LOW);
 }

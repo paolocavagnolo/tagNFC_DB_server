@@ -59,7 +59,7 @@ install subversion
 
 
 
-      
+
 
 
 ## Set-up VPN for remote controll
@@ -69,5 +69,11 @@ https://www.digitalocean.com/community/tutorials/how-to-set-up-an-openvpn-server
 ## Platformio
 
 http://www.russelldavis.org/2015/08/01/platformio-on-the-raspberry-pi/
+https://github.com/deanmao/avrdude-rpi
 
       sudo apt-get install libmpc-dev libelf1 libftdi1
+      sudo python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
+      platformio init --board uno --board uno
+      platformio lib search Adafruit-PN*
+      platformio lib search SPI*
+      platformio lib search RFM69*
