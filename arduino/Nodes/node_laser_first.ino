@@ -16,7 +16,7 @@
 #include <SPIFlash.h>     //get it here: https://www.github.com/lowpowerlab/spiflash
 
 //7Segment side
-#include "LedControl.h"
+#include <LedControl.h>
 
 //*********************************************************************************************
 //************ IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE *************
