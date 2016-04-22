@@ -50,7 +50,7 @@ void setup() {
 
 byte ackCount = 0;
 uint32_t packetCount = 0;
-uint8_t dataRecevied[7];
+uint8_t dataRecevied[14];
 int Cr = 0; //credits
 int Ab = 0; //abilitation code
 byte incomingByte[5];
@@ -63,7 +63,6 @@ byte TypeFromGateway;
 byte MessageFromNode[8];
 byte MessageToNode[8];
 int8_t RSSInode;
-uint8_t dataRecevied[14];
 
 void loop() {
   //Read from node and sendit to serial
