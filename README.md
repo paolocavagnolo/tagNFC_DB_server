@@ -59,6 +59,9 @@ test UART
       git config --global user.email "you@example.com"
       git config --global user.name "Your Name"
 
+## Put scripts in /usr/bin/
+
+
 
 ## Set-up VPN for remote controll
 
