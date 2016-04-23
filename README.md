@@ -35,7 +35,7 @@ from https://openenergymonitor.org/emon/node/12311
       *add* core_freq=250
       *add* dtoverlay=pi3-disable-bt
       sudo systemctl disable hciuart
-      
+
 prevent rpi3 to use UART
 
       sudo nano /boot/cmdline.txt
@@ -46,9 +46,6 @@ test UART
       sudo apt-get install minicom
       sudo minicom -D /dev/ttyAMA0 -b115200
 
-install subversion
-
-      sudo apt-get install subversion
 
 ## Set-up github on local machine
 
@@ -61,10 +58,6 @@ install subversion
       git clone git@github.com:paolocavagnolo/tagNFC_DB_server.git
       git config --global user.email "you@example.com"
       git config --global user.name "Your Name"
-
-
-
-
 
 
 ## Set-up VPN for remote controll
