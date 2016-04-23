@@ -14,6 +14,9 @@ Download raspbian from [here] (https://www.raspberrypi.org/downloads/raspbian/)
 
 Follow all the instructions [here](https://www.raspberrypi.org/documentation/installation/installing-images/)
 
+1- SDFormatter
+
+
 Resize to the max size
       sudo raspi-config
       --resize
@@ -29,17 +32,19 @@ update
 from https://openenergymonitor.org/emon/node/12311
 
       sudo nano /boot/config.txt
-      add core_freq=250
+      *add* core_freq=250
+      *add* dtoverlay=pi3-disable-bt
+      sudo systemctl disable hciuart
+      
+prevent rpi3 to use UART
+
+      sudo nano /boot/cmdline.txt
+      dwc_otg.lpm_enable=0 console=serial1,115200  console=tty1 root=/dev/mmcblk0p2  kgdboc=serial1,115200 rootfstype=ext4 elevator=deadline fsck.repair=yes  rootwait
 
 test UART
 
       sudo apt-get install minicom
       sudo minicom -D /dev/ttyAMA0 -b115200
-
-prevent rpi3 to use UART
-
-      sudo nano /boot/cmdline.txt
-      dwc_otg.lpm_enable=0 console=serial1,115200  console=tty1 root=/dev/mmcblk0p2  kgdboc=serial1,115200 rootfstype=ext4 elevator=deadline fsck.repair=yes  rootwait
 
 install subversion
 
