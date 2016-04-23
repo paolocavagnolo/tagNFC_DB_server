@@ -60,7 +60,8 @@ test UART
       git config --global user.name "Your Name"
 
 ## Put scripts in /usr/bin/
-
+      sudo cp /home/pi/Documents/tagNFC_DB_server/script/updateGateway.sh /usr/bin/
+      sudo chmod 755 /usr/bin/updateGateway.sh
 
 
 ## Set-up VPN for remote controll
