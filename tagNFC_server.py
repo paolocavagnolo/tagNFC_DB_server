@@ -37,11 +37,11 @@ def main():
 
                 radio_log = {
                     "time" : datetime.datetime.now(),
-                    "abs" : linea.split(",")[1],
-                    "ids" : linea.split(",")[2],
-                    "idr" : linea.split(",")[3],
-                    "message" : linea.split(",")[4:9],
-                    "RSSI" : linea.split(",")[10]
+                    "abs" : (int)linea.split(",")[1],
+                    "ids" : (int)linea.split(",")[2],
+                    "idr" : (int)linea.split(",")[3],
+                    "message" : (hex)linea.split(",")[4:10],
+                    "RSSI" : (int)linea.split(",")[10]
                 }
 
                 db.radio_logs.insert(radio_log)
