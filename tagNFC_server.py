@@ -47,6 +47,7 @@ def main():
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
         except (KeyboardInterrupt, SystemExit):
+            client.close()
             ser.close()
 
 if __name__ == "__main__":
