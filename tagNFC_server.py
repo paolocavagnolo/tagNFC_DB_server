@@ -32,7 +32,7 @@ def main():
     while True:
         try:
             if (ser.inWaiting() > 0):
-                linea = ser.readLine()
+                linea = ser.readline()
 
                 radio_log = {
                     "time" : datetime.datetime.now(),
