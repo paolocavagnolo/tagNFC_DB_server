@@ -146,6 +146,7 @@ bool LaserOn = false;
 //NFC side
 uint8_t success;
 uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
+
 uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
 bool ansCr = false;
 bool ansSk = false;
@@ -174,7 +175,10 @@ void loop() {
       Serial.println("Found an ISO14443A card");
       Serial.print("  UID Length: "); Serial.print(sendSize, DEC); Serial.println(" bytes");
       Serial.print("  UID Value: ");
-      nfc.PrintHex(uid, sendSize);
+      for (int i=0; i<(int)sendSize-1; i++) {
+          uid[i] = uid[i+1];
+      }
+      nfc.PrintHex(uid, sendSize-1);
       //send to gateway
       if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
         Serial.print(" ok!");
