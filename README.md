@@ -63,6 +63,8 @@ test UART
       sudo cp /home/pi/Documents/tagNFC_DB_server/script/updateGateway.sh /usr/bin/
       sudo chmod 755 /usr/bin/updateGateway.sh
 
+## Install MongoDB
+http://andyfelong.com/2016/01/mongodb-3-0-9-binaries-for-raspberry-pi-2-jessie/
 
 ## Set-up VPN for remote controll
 
