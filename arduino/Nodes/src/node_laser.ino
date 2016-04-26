@@ -178,7 +178,7 @@ void loop() {
       for (int i=0; i<(int)sendSize-1; i++) {
           uid[i] = uid[i+1];
       }
-      nfc.PrintHex(uid, sendSize-1);
+      nfc.PrintHex(uid, sendSize);
       //send to gateway
       if (radio.sendWithRetry(GATEWAYID, uid, sendSize-1)) {
         Serial.print(" ok!");
