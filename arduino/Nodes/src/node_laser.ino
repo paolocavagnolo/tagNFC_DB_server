@@ -145,7 +145,7 @@ bool readEnable = false;
 bool LaserOn = false;
 //NFC side
 uint8_t success;
-uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
+uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
 uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
 bool ansCr = false;
 bool ansSk = false;
@@ -180,7 +180,6 @@ void loop() {
         Serial.print(" ok!");
       }
       else Serial.print(" nothing...");
-
       //display
       setDisplay(uid);
     }

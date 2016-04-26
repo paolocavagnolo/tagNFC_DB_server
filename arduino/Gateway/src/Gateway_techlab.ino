@@ -57,9 +57,7 @@ void loop() {
     Serial.print(radio.SENDERID,DEC);
     Serial.print(',');
     Serial.print(1);
-    Serial.print(',');
-    Serial.print(radio.DATA[0]);
-    for (byte i = 1; i < radio.DATALEN; i++) {
+    for (byte i = 0; i < radio.DATALEN; i++) {
       Serial.print(',');
       Serial.print(radio.DATA[i],HEX);
     }
