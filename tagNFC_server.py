@@ -15,7 +15,7 @@
 
 import serial
 import pymongo
-from datetime
+import datetime
 
 from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017/')
