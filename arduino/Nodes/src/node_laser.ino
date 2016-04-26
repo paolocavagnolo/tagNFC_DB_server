@@ -176,9 +176,7 @@ void loop() {
       Serial.print("  UID Length: "); Serial.print(sendSize, DEC); Serial.println(" bytes");
       Serial.print("  UID Value: ");
       nfc.PrintHex(uid, sendSize);
-      //for (int i=0; i<(int)sendSize-1; i++) {
-      //    uid[i] = uid[i+1];
-      //}
+
       uid[0] = uid[1];
       uid[1] = uid[2];
       uid[2] = uid[3];
