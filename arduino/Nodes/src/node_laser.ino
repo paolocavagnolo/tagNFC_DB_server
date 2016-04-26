@@ -180,7 +180,7 @@ void loop() {
       }
       nfc.PrintHex(uid, sendSize-1);
       //send to gateway
-      if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
+      if (radio.sendWithRetry(GATEWAYID, uid, sendSize-1)) {
         Serial.print(" ok!");
       }
       else Serial.print(" nothing...");
