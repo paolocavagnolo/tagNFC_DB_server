@@ -55,6 +55,7 @@ void loop() {
   if (radio.receiveDone())
   {
     Serial.print('<');
+    Serial.print(',');
     Serial.print(packetCount++);
     Serial.print(',');
     Serial.print(radio.SENDERID,DEC);
@@ -66,6 +67,7 @@ void loop() {
     }
     Serial.print(',');
     Serial.print(radio.RSSI);
+    Serial.print(',');
     Serial.println('>');
     //Check
     if (radio.ACKRequested()) radio.sendACK();
