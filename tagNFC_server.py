@@ -40,9 +40,8 @@ def main():
                     "abs" : linea.split(",")[1],
                     "ids" : linea.split(",")[2],
                     "idr" : linea.split(",")[3],
-                    "type" : linea.split(",")[4],
-                    "message" : linea.split(",")[5:10],
-                    "RSSI" : linea.split(",")[11]
+                    "message" : linea.split(",")[4:9],
+                    "RSSI" : linea.split(",")[10]
                 }
 
                 db.radio_logs.insert(radio_log)
