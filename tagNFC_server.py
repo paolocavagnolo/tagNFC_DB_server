@@ -15,12 +15,13 @@
 
 import serial
 import pymongo
+from datetime
 
 from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017/')
 db = client['techlab-db']
 
-from datetime import datetime
+
 
 def main():
     try:
