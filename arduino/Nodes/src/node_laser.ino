@@ -175,10 +175,17 @@ void loop() {
       Serial.println("Found an ISO14443A card");
       Serial.print("  UID Length: "); Serial.print(sendSize, DEC); Serial.println(" bytes");
       Serial.print("  UID Value: ");
-      for (int i=0; i<(int)sendSize-1; i++) {
-          uid[i] = uid[i+1];
-      }
       nfc.PrintHex(uid, sendSize);
+      //for (int i=0; i<(int)sendSize-1; i++) {
+      //    uid[i] = uid[i+1];
+      //}
+      uid[0] = uid[1];
+      uid[1] = uid[2];
+      uid[2] = uid[3];
+      uid[3] = uid[4];
+      uid[4] = uid[5];
+      uid[5] = uid[6];
+
       //send to gateway
       if (radio.sendWithRetry(GATEWAYID, uid, sendSize-1)) {
         Serial.print(" ok!");
