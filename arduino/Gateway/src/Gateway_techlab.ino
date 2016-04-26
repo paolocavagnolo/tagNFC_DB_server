@@ -6,7 +6,7 @@
 //*********************************************************************************************
 //************ IMPORTANT SETTINGS *************************************************************
 //*********************************************************************************************
-#define NODEID        1    //unique for each node on same network
+#define GATEWAYID     1
 #define NETWORKID     100  //the same on all nodes that talk to each other
 //Match frequency to the hardware version of the radio on your Moteino (uncomment one):
 #define FREQUENCY     RF69_433MHZ
@@ -33,7 +33,7 @@ uint32_t packetCount = 0;
 void setup() {
   Serial.begin(SERIAL_BAUD);
   delay(10);
-  radio.initialize(FREQUENCY,NODEID,NETWORKID);
+  radio.initialize(FREQUENCY,GATEWAYID,NETWORKID);
 #ifdef IS_RFM69HW
   radio.setHighPower(); //only for RFM69HW!
 #endif
@@ -47,6 +47,9 @@ void setup() {
   Serial.println("RFM69_ATC Enabled (Auto Transmission Control)");
 #endif
 }
+
+uint8_t idNode;
+char payload[7];
 
 void loop() {
   if (radio.receiveDone())
@@ -66,5 +69,12 @@ void loop() {
     Serial.println('>');
     //Check
     if (radio.ACKRequested()) radio.sendACK();
+  }
+
+  if (Serial.available() > 0)
+  {
+     idNode = (int)Serial.read();
+     for (int i=0;i<7;i++) payload[i] = Serial.read();
+     radio.sendWithRetry(idNode, payload, 7);
   }
 }
