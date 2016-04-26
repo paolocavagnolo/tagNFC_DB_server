@@ -7,12 +7,9 @@
 //************ IMPORTANT SETTINGS *************************************************************
 //*********************************************************************************************
 #define NODEID        1    //unique for each node on same network
-#define LASERID       2
 #define NETWORKID     100  //the same on all nodes that talk to each other
 //Match frequency to the hardware version of the radio on your Moteino (uncomment one):
 #define FREQUENCY     RF69_433MHZ
-//#define FREQUENCY     RF69_868MHZ
-//#define FREQUENCY     RF69_915MHZ
 #define ENCRYPTKEY    "sampleEncryptKey" //exactly the same 16 characters/bytes on all nodes!
 #define IS_RFM69HW    //uncomment only for RFM69HW! Leave out if you have RFM69W!
 #define ENABLE_ATC    //comment out this line to disable AUTO TRANSMISSION CONTROL
@@ -70,6 +67,6 @@ void loop() {
     Serial.print(radio.RSSI);
     Serial.println('>');
     //Check
-    if (radio.ACKRequested()) radio.sendACK();    
+    if (radio.ACKRequested()) radio.sendACK();
   }
 }
