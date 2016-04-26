@@ -45,7 +45,7 @@ def main():
                     "RSSI" : linea.split(",")[11]
                 }
 
-                db.radio_logs.insert(radio_log, safe=True)
+                db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
         except (KeyboardInterrupt, SystemExit):
             ser.close()
