@@ -40,7 +40,7 @@ def main():
                     "abs" : int(linea.split(",")[1]),
                     "ids" : int(linea.split(",")[2]),
                     "idr" : int(linea.split(",")[3]),
-                    "message" : int.hex(linea.split(",")[4:10]),
+                    "message" : linea.split(",")[4:10],
                     "RSSI" : int(linea.split(",")[10])
                 }
 
