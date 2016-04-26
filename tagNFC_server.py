@@ -19,12 +19,8 @@ import pymongo
 from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017/')
 db = client['techlab-db']
-soci_collection = db['soci']
-log_collection = db['log']
 
 from datetime import datetime
-from pymongo import Connection
-from pymongo.errors import ConnectionFailure
 
 def main():
     try:
@@ -32,14 +28,6 @@ def main():
     except ConnectionFailure, e:
         sys.stderr.write("Could not use serial: %s" % e)
         sys.exit(1)
-
-    try:
-        c = Connection(host="localhost", port=27017)
-    except ConnectionFailure, e:
-        sys.stderr.write("Could not connect to MongoDB: %s" % e)
-        sys.exit(1)
-    dbh = c['techlab']
-    assert dbh.connection == c
 
     while True:
         try:
@@ -56,7 +44,7 @@ def main():
                     "RSSI" : linea.split(",")[13]
                 }
 
-                dbh.radio_logs.insert(radio_log, safe=True)
+                db.radio_logs.insert(radio_log, safe=True)
                 print "Successfully inserted document: %s" % radio_log
         except (KeyboardInterrupt, SystemExit):
             ser.close()
