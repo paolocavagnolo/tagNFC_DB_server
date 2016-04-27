@@ -33,7 +33,7 @@ def db_pull(tag):
     except:
         print "not found"
 
-def main():
+while True:
     # Gspread!
     try:
         gc = gspread.authorize(credentials)
@@ -73,14 +73,8 @@ def main():
                     "RSSI" : int(linea.split(",")[10])
                 }
 
-                #t = threading.Thread(target=db_pull, args=(message,))
-                #t.start()
-
-                try:
-                    cellTag = worksheet.find(message)
-                    print "found"
-                except:
-                    print "not found"
+                t = threading.Thread(target=db_pull, args=(message,))
+                t.start()
 
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
@@ -89,6 +83,3 @@ def main():
         except (KeyboardInterrupt, SystemExit):
             client.close()
             ser.close()
-
-if __name__ == "__main__":
-    main()
