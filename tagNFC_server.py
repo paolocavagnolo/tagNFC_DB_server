@@ -23,29 +23,15 @@ from oauth2client.service_account import ServiceAccountCredentials
 scope = ['https://spreadsheets.google.com/feeds']
 credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/Documents/techlab-tag-nfc-b3f2a2929d98.json', scope)
 
-
 from pymongo import MongoClient
 
-
-
-def db_pull():
-    t_search = False
-
-    while True:
-        if (t_search):
-            try:
-                t_cellTag = worksheet.find(message)
-                print "found"
-                t_search = False;
-            except:
-                print "not found"
-                t_search = False;
-
-
-
-
-t = threading.Thread(target=db_pull)
-
+# Thread
+def db_pull(tag):
+    try:
+        cellTag = worksheet.find(uid)
+        print "found"
+    except:
+        print "not found"
 
 def main():
     # Gspread!
@@ -70,9 +56,6 @@ def main():
         sys.stderr.write("Could not use serial: %s" % e)
         sys.exit(1)
 
-    # Multithread!
-    #t.start()
-
     # Go
     print "go"
     while True:
@@ -90,7 +73,8 @@ def main():
                     "RSSI" : int(linea.split(",")[10])
                 }
 
-                #t.t_search = True
+                t = threading.Thread(target=db_pull, args=(message,))
+                t.start()
 
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
