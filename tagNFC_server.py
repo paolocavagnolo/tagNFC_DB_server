@@ -71,9 +71,10 @@ def main():
         sys.exit(1)
 
     # Multithread!
-    t.start()
+    #t.start()
 
     # Go
+    print "go"
     while True:
         try:
             if (ser.inWaiting() > 0):
