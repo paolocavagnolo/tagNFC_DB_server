@@ -84,14 +84,16 @@ while True:
 
                 # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
                 # t.start()
+                db.radio_logs.insert(radio_log)
+                print "Successfully inserted document: %s" % radio_log
+
                 cellTag = worksheet.find(message)
                 print "cr = " + worksheet.cell(cellTag.row, 3).value
                 print "sk = " + worksheet.cell(cellTag.row, 4).value
 
 
 
-                db.radio_logs.insert(radio_log)
-                print "Successfully inserted document: %s" % radio_log
+
 
 
         except (KeyboardInterrupt, SystemExit):
