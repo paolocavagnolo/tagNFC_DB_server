@@ -28,15 +28,14 @@ from pymongo import MongoClient
 # read from gdrive
 def db_pull(tag):
     try:
-        cellTag = worksheet.find(tag)
+        values_list = worksheet.row_values(1)
         print "found"
     except:
         print "not found"
-    return cellTag
 
 # sync completely the db with gdrive
 def db_sync(s_worksheet):
-    values_list = worksheet.row_values(1)
+
 
     print values_list
 
@@ -83,10 +82,13 @@ while True:
                     "RSSI" : int(linea.split(",")[10])
                 }
 
+                # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
+                # t.start()
+                cellTag = worksheet.find(message)
+                print "cr = " + worksheet.cell(cellTag.row, 3).value
+                print "sk = " + worksheet.cell(cellTag.row, 4).value
 
-
-                t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
-                t.start()
+                
 
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
