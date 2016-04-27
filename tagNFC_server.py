@@ -73,8 +73,14 @@ def main():
                     "RSSI" : int(linea.split(",")[10])
                 }
 
-                t = threading.Thread(target=db_pull, args=(message,))
-                t.start()
+                #t = threading.Thread(target=db_pull, args=(message,))
+                #t.start()
+
+                try:
+                    cellTag = worksheet.find(tag)
+                    print "found"
+                except:
+                    print "not found"
 
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
