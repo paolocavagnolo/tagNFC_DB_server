@@ -22,13 +22,13 @@ from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017/')
 db = client['techlab-db']
 
-t = threading.Thread(target=sync_db)
-threads.append(t)
-
-
-def sync_db():
-    while not exitFlag:
-
+# t = threading.Thread(target=sync_db)
+# threads.append(t)
+#
+#
+# def sync_db():
+#     while not exitFlag:
+#
 
 
 def main():
