@@ -50,7 +50,7 @@ def main():
         try:
             if (ser.inWaiting() > 0):
                 linea = ser.readline()
-                message = ''.join(linea.split(",")[4:10]);
+                message = ''.join(linea.split(",")[4:8]);
 
                 radio_log = {
                     "time" : datetime.datetime.now(),
@@ -61,7 +61,10 @@ def main():
                     "RSSI" : int(linea.split(",")[10])
                 }
 
-                cellTag = worksheet.find(message)
+                try:
+                    cellTag = worksheet.find(message)
+                except:
+                    print "not found"
 
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log

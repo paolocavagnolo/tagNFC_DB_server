@@ -67,9 +67,11 @@ test UART
 http://andyfelong.com/2016/01/mongodb-3-0-9-binaries-for-raspberry-pi-2-jessie/
 
 ## Install gspread
+      pip install PyOpenSSL
+      pip install --upgrade oauth2client
       sudo pip install gspread
       scp **the json credential to rpi**
-      
+
 
 
 
