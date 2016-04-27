@@ -36,9 +36,6 @@ def db_pull(tag, cellTag):
 
 # sync completely the db with gdrive
 def db_sync(s_worksheet):
-    s_client = MongoClient('mongodb://localhost:27017/')
-    s_db = client['techlab-db']
-
     values_list = worksheet.row_values(1)
 
     print values_list
@@ -57,8 +54,8 @@ while True:
 
     # MongoDB!
     try:
-        l_client = MongoClient('mongodb://localhost:27017/')
-        l_db = client['techlab-db']
+        client = MongoClient('mongodb://localhost:27017/')
+        db = client['techlab-db']
     except:
         print "problem with mongodb"
 
@@ -88,10 +85,10 @@ while True:
 
 
 
-                t = threading.Thread(target=db_pull, args=(message,))
+                t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
                 t.start()
 
-                l_db.radio_logs.insert(radio_log)
+                db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
 
 
