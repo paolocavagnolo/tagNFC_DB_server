@@ -25,19 +25,19 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/Documen
 
 from pymongo import MongoClient
 
-# read from gdrive
-def db_pull(tag):
-    try:
-        values_list = worksheet.row_values(1)
-        print "found"
-    except:
-        print "not found"
-
-# sync completely the db with gdrive
-def db_sync(s_worksheet):
-
-
-    print values_list
+# # read from gdrive
+# def db_pull(tag):
+#     try:
+#         values_list = worksheet.row_values(1)
+#         print "found"
+#     except:
+#         print "not found"
+#
+# # sync completely the db with gdrive
+# def db_sync(s_worksheet):
+#
+#
+#     print values_list
 
 # write on gdrive
 
@@ -88,7 +88,7 @@ while True:
                 print "cr = " + worksheet.cell(cellTag.row, 3).value
                 print "sk = " + worksheet.cell(cellTag.row, 4).value
 
-                
+
 
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
