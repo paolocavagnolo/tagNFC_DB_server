@@ -66,9 +66,20 @@ test UART
 ## Install MongoDB
 http://andyfelong.com/2016/01/mongodb-3-0-9-binaries-for-raspberry-pi-2-jessie/
 
-## Set-up VPN for remote controll
+## Install gspread
+      sudo pip install gspread
+      scp **the json credential to rpi**
+      
 
-https://www.digitalocean.com/community/tutorials/how-to-set-up-an-openvpn-server-on-debian-8
+
+
+
+
+
+
+
+
+
 
 ## Platformio
 
@@ -81,3 +92,12 @@ https://github.com/deanmao/avrdude-rpi
       platformio lib search Adafruit-PN*
       platformio lib search SPI*
       platformio lib search RFM69*
+
+
+
+
+
+
+## Set-up VPN for remote controll
+
+https://www.digitalocean.com/community/tutorials/how-to-set-up-an-openvpn-server-on-debian-8
