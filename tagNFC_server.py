@@ -30,12 +30,17 @@ from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017/')
 db = client['techlab-db']
 
-# t = threading.Thread(target=sync_db)
-# threads.append(t)
-#
-#
-# def sync_db():
+t = threading.Thread(target=db_pull)
+threads.append(t)
+t_cellTag = ""
 
+
+def db_pull():
+    try:
+        t_cellTag = worksheet.find(message)
+        print "found"
+    except:
+        print "not found"
 
 
 
@@ -61,10 +66,7 @@ def main():
                     "RSSI" : int(linea.split(",")[10])
                 }
 
-                try:
-                    cellTag = worksheet.find(message)
-                except:
-                    print "not found"
+
 
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
