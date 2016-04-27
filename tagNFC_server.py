@@ -26,7 +26,7 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/Documen
 from pymongo import MongoClient
 
 # read from gdrive
-def db_pull(tag):
+def db_pull(tag, cellTag):
     try:
         return cellTag = worksheet.find(tag)
         print "found"
