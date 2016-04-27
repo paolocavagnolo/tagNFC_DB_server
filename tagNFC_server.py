@@ -26,9 +26,11 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/Documen
 
 from pymongo import MongoClient
 
-t_search = False
+
 
 def db_pull():
+    t_search = False
+
     while True:
         if (t_search):
             try:
@@ -43,7 +45,6 @@ def db_pull():
 
 
 t = threading.Thread(target=db_pull)
-t_cellTag = ""
 
 
 def main():
@@ -88,8 +89,8 @@ def main():
                     "RSSI" : int(linea.split(",")[10])
                 }
 
-                t_search = True
-
+                t.t_search = True
+                
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
 
