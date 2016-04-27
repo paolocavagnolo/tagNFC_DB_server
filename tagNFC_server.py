@@ -28,7 +28,7 @@ from pymongo import MongoClient
 # Thread
 def db_pull(tag):
     try:
-        cellTag = worksheet.find(uid)
+        cellTag = worksheet.find(tag)
         print "found"
     except:
         print "not found"
