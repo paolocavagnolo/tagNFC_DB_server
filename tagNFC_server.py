@@ -30,17 +30,19 @@ from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017/')
 db = client['techlab-db']
 
-t = threading.Thread(target=db_pull)
-threads.append(t)
-t_cellTag = ""
-
-
 def db_pull():
     try:
         t_cellTag = worksheet.find(message)
         print "found"
     except:
         print "not found"
+
+t = threading.Thread(target=db_pull)
+threads.append(t)
+t_cellTag = ""
+
+
+
 
 
 
