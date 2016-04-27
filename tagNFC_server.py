@@ -22,32 +22,57 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 scope = ['https://spreadsheets.google.com/feeds']
 credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/Documents/techlab-tag-nfc-b3f2a2929d98.json', scope)
-gc = gspread.authorize(credentials)
-sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
-worksheet = sh.worksheet("soci")
+
 
 from pymongo import MongoClient
-client = MongoClient('mongodb://localhost:27017/')
-db = client['techlab-db']
+
+t_search = False
 
 def db_pull():
-    try:
-        t_cellTag = worksheet.find(message)
-        print "found"
-    except:
-        print "not found"
+    while True:
+        if (t_search):
+            try:
+                t_cellTag = worksheet.find(message)
+                print "found"
+                t_search = False;
+            except:
+                print "not found"
+                t_search = False;
+
+
+
 
 t = threading.Thread(target=db_pull)
 t_cellTag = ""
 
 
 def main():
+    # Gspread!
+    try:
+        gc = gspread.authorize(credentials)
+        sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
+        worksheet = sh.worksheet("soci")
+    except:
+        print "problem with gspread"
+
+    # MongoDB!
+    try:
+        client = MongoClient('mongodb://localhost:27017/')
+        db = client['techlab-db']
+    except:
+        print "problem with mongodb"
+
+    # Serial!
     try:
         ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
     except ConnectionFailure, e:
         sys.stderr.write("Could not use serial: %s" % e)
         sys.exit(1)
 
+    # Multithread!
+    t.start()
+
+    # Go
     while True:
         try:
             if (ser.inWaiting() > 0):
@@ -63,12 +88,10 @@ def main():
                     "RSSI" : int(linea.split(",")[10])
                 }
 
-                t.start()
-                
+                t_search = True
 
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
-
 
 
         except (KeyboardInterrupt, SystemExit):
