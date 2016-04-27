@@ -38,12 +38,7 @@ def db_pull():
         print "not found"
 
 t = threading.Thread(target=db_pull)
-threads.append(t)
 t_cellTag = ""
-
-
-
-
 
 
 def main():
@@ -68,7 +63,8 @@ def main():
                     "RSSI" : int(linea.split(",")[10])
                 }
 
-
+                t.start()
+                
 
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
