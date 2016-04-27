@@ -77,7 +77,7 @@ def main():
                 #t.start()
 
                 try:
-                    cellTag = worksheet.find(tag)
+                    cellTag = worksheet.find(message)
                     print "found"
                 except:
                     print "not found"
