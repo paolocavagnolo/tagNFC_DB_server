@@ -25,13 +25,25 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/Documen
 
 from pymongo import MongoClient
 
-# Thread
+# read from gdrive
 def db_pull(tag):
     try:
-        cellTag = worksheet.find(tag)
+        return cellTag = worksheet.find(tag)
         print "found"
     except:
         print "not found"
+
+# sync completely the db with gdrive
+def db_sync(s_worksheet):
+    s_client = MongoClient('mongodb://localhost:27017/')
+    s_db = client['techlab-db']
+
+    values_list = worksheet.row_values(1)
+
+    print values_list
+
+# write on gdrive
+
 
 while True:
     # Gspread!
@@ -44,8 +56,8 @@ while True:
 
     # MongoDB!
     try:
-        client = MongoClient('mongodb://localhost:27017/')
-        db = client['techlab-db']
+        l_client = MongoClient('mongodb://localhost:27017/')
+        l_db = client['techlab-db']
     except:
         print "problem with mongodb"
 
@@ -73,10 +85,12 @@ while True:
                     "RSSI" : int(linea.split(",")[10])
                 }
 
+
+
                 t = threading.Thread(target=db_pull, args=(message,))
                 t.start()
 
-                db.radio_logs.insert(radio_log)
+                l_db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
 
 

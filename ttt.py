@@ -1,12 +1,7 @@
-import threading
-import time
+a = 5
 
-def worker(num):
-    """thread worker function"""
-    print 'Worker: %s' % num
-    return
+b = 7
 
-threads = []
-for i in range(5):
-    t = threading.Thread(target=worker, args=(i,))
-    t.start()
+c = a + b
+
+print c
