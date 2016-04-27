@@ -28,10 +28,11 @@ from pymongo import MongoClient
 # read from gdrive
 def db_pull(tag, cellTag):
     try:
-        return cellTag = worksheet.find(tag)
+        cellTag = worksheet.find(tag)
         print "found"
     except:
         print "not found"
+    return cellTag
 
 # sync completely the db with gdrive
 def db_sync(s_worksheet):
