@@ -70,13 +70,29 @@ void setup() {
 #endif
 }
 
+float float_example = 0;
 
 void loop() {
 
-  Serial.print(analogRead(0));
-  Serial.print(" - ");
-  Serial.print(analogRead(1));
-  Serial.print(" - ");
-  Serial.print(analogRead(2));
+  float_example++;
+  byte bytes[4];
 
+  float2Bytes(float_example,&bytes[0]);
+
+  if (!flash.busy()) flash.writeBytes(0, bytes, 4);
+
+  delay(1000);
+
+}
+
+void float2Bytes(float val,byte* bytes_array){
+  // Create union of shared memory space
+  union {
+    float float_variable;
+    byte temp_array[4];
+  } u;
+  // Overite bytes of union with float variable
+  u.float_variable = val;
+  // Assign bytes to input array
+  memcpy(bytes_array, u.temp_array, 4);
 }
