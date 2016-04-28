@@ -71,7 +71,7 @@ while True:
         try:
             if (ser.inWaiting() > 0):
                 linea = ser.readline()
-                message = ''.join(linea.split(",")[4:8]);
+                message = ''.join(linea.split(",")[4:9]);
 
                 radio_log = {
                     "time" : datetime.datetime.now(),
@@ -86,16 +86,22 @@ while True:
                 # t.start()
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
+                
+                if (ids == 2):
+                    if (message[6] == 'l'):
+                        # we are in the tick mother fucker
 
-                cellTag = worksheet.find(message)
-                print "cr = " + worksheet.cell(cellTag.row, 3).value
-                print "sk = " + worksheet.cell(cellTag.row, 4).value
 
-
-
+                    else:
+                        # we are in the enable process
+                        cellTag = worksheet.find(message)
+                        ser.write(float(worksheet.cell(cellTag.row, 3).value))
+                        ser.write(int(worksheet.cell(cellTag.row, 4).value))
+                        print "valori mandati in seriale"
 
 
 
         except (KeyboardInterrupt, SystemExit):
             client.close()
             ser.close()
+            print "good close"
