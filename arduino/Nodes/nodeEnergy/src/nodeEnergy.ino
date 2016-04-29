@@ -1,5 +1,7 @@
 #include <SPI.h>
 #include <Wire.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 #include <RFM69.h>        //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <RFM69_ATC.h>    //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <SPIFlash.h>     //get it here: https://www.github.com/lowpowerlab/spiflash
@@ -51,6 +53,13 @@ byte totenC_b[4];
 
 void setup() {
   Serial.begin(SERIAL_BAUD);
+
+  cli();
+  TCCR1A = 0;
+  TCCR1B = 0;
+  TIMSK1 = (1 << TOIE1);
+  TCCR1B |= (1 << CS11);
+  sei();
 
   //RFM side
   radio.initialize(FREQUENCY, NODEID, NETWORKID);
@@ -126,12 +135,44 @@ void setup() {
 
 }
 
+float tA, tB, tC;
+bool fA, fB, fC;
 
+ISR(TIMER1_OVF_vect)
+{
+  if (digitalRead(6) && fA) {
+    tA++;
+    fA = false;
+  }
+  else {
+    fA = true;
+  }
+
+  if (digitalRead(5) && fB) {
+    tB++;
+    fB = false;
+  }
+  else {
+    fB = true;
+  }
+
+  if (digitalRead(4) && fC) {
+    tC++;
+    fC = false;
+  }
+  else {
+    fC = true;
+  }
+
+}
+
+char message[7];
 
 void loop() {
 
-  if (digitalRead(6)>0) {
-    totenA = totenA + 0.001;
+  if (tA>10) {
+    tA = tA - 10;
+    totenA = totenA + 0.01;
     //totenA = 21.73;
     float2Bytes(totenA,&totenA_b[0]);
     flash.blockErase4K(MEMA1);
@@ -141,13 +182,27 @@ void loop() {
     while(flash.busy());
     flash.writeBytes(MEMA2,totenA_b,4);
 
+    message[0] = 'e';
+    message[1] = 'a';
+    message[2] = totenA_b[0];
+    message[3] = totenA_b[1];
+    message[4] = totenA_b[2];
+    message[5] = totenA_b[3];
+
+    //send to gateway
+    if (radio.sendWithRetry(GATEWAYID, message, sendSize)) {
+      Serial.print(" ok!");
+    }
+    else Serial.print(" nothing...");
+
     Serial.print("A: ");
     Serial.println(totenA);
     delay(20);
   }
 
-  if (digitalRead(5)>0) {
-    totenB = totenB + 0.001;
+  if (tB>10) {
+    tB = tB - 10;
+    totenB = totenB + 0.01;
     //totenB = 29.11;
     float2Bytes(totenB,&totenB_b[0]);
     flash.blockErase4K(MEMB1);
@@ -157,13 +212,27 @@ void loop() {
     while(flash.busy());
     flash.writeBytes(MEMB2,totenB_b,4);
 
+    message[0] = 'e';
+    message[1] = 'b';
+    message[2] = totenB_b[0];
+    message[3] = totenB_b[1];
+    message[4] = totenB_b[2];
+    message[5] = totenB_b[3];
+
+    //send to gateway
+    if (radio.sendWithRetry(GATEWAYID, message, sendSize)) {
+      Serial.print(" ok!");
+    }
+    else Serial.print(" nothing...");
+
     Serial.print("B: ");
     Serial.println(totenB);
     delay(20);
   }
 
-  if (digitalRead(4)>0) {
-    totenC = totenC + 0.001;
+  if (tC>10) {
+    tC = tC - 10;
+    totenC = totenC + 0.01;
     //totenC = 14.78;
     float2Bytes(totenC,&totenC_b[0]);
     flash.blockErase4K(MEMC1);
@@ -173,16 +242,24 @@ void loop() {
     while(flash.busy());
     flash.writeBytes(MEMC2,totenC_b,4);
 
+    message[0] = 'e';
+    message[1] = 'c';
+    message[2] = totenC_b[0];
+    message[3] = totenC_b[1];
+    message[4] = totenC_b[2];
+    message[5] = totenC_b[3];
+
+    //send to gateway
+    if (radio.sendWithRetry(GATEWAYID, message, sendSize)) {
+      Serial.print(" ok!");
+    }
+    else Serial.print(" nothing...");
+
     Serial.print("C: ");
     Serial.println(totenC);
     delay(20);
   }
 
-  int currPeriod = millis()/TRANSMITPERIOD;
-  if (currPeriod < lastPeriod) {
-     lastPeriod=currPeriod;
-
-   }
 }
 
 void float2Bytes(float val,byte* bytes_array){
