@@ -58,12 +58,16 @@
 #define LED           9 // Moteinos hsave LEDs on D9
 #define FLASH_SS      8 // and FLASH SS on D8
 
-#define MEMA1 48
-#define MEMA2 5048
-#define MEMB1 10048
-#define MEMB2 15048
-#define MEMC1 20048
-#define MEMC2 25048
+uint32_t MEMSHIFT = 100000;
+
+uint32_t MEMA1 = 48+MEMSHIFT;
+uint32_t MEMA2 = 5048+MEMSHIFT;
+uint32_t MEMB1 = 10048+MEMSHIFT;
+uint32_t MEMB2 = 15048+MEMSHIFT;
+uint32_t MEMC1 = 20048+MEMSHIFT;
+uint32_t MEMC2 = 25048+MEMSHIFT;
+
+#define COUNT_TICK 20
 
 byte sendSize = 6;
 boolean requestACK = false;
@@ -203,10 +207,10 @@ void loop(){
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   // Real sketch code here, let's blink the onboard LED
-  if (tA>20) {
-    tA = tA - 20;
+  if (tA>COUNT_TICK) {
+    tA = tA - COUNT_TICK;
     totenA = totenA + 0.01;
-    //totenA = 21.73;
+    //totenA = 48.67;
     float2Bytes(totenA,&totenA_b[0]);
     flash.blockErase4K(MEMA1);
     while(flash.busy());
@@ -232,10 +236,10 @@ void loop(){
     Serial.println(totenA);
   }
 
-  if (tB>20) {
-    tB = tB - 20;
+  if (tB>COUNT_TICK) {
+    tB = tB - COUNT_TICK;
     totenB = totenB + 0.01;
-    //totenB = 29.11;
+    //totenB = 42.00;
     float2Bytes(totenB,&totenB_b[0]);
     flash.blockErase4K(MEMB1);
     while(flash.busy());
@@ -261,10 +265,10 @@ void loop(){
     Serial.println(totenB);
   }
 
-  if (tC>20) {
-    tC = tC - 20;
+  if (tC>COUNT_TICK) {
+    tC = tC - COUNT_TICK;
     totenC = totenC + 0.01;
-    //totenC = 14.78;
+    //totenC = 24.63;
     float2Bytes(totenC,&totenC_b[0]);
     flash.blockErase4K(MEMC1);
     while(flash.busy());
