@@ -90,6 +90,31 @@ long lastPeriod = -1;
 /////////////////////////////////////////////////////////////////////////////
 SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for windbond 4mbit flash
 
+float tA, tB, tC;
+bool fA, fB, fC;
+
+void pciSetup(byte pin)
+{
+    *digitalPinToPCMSK(pin) |= bit (digitalPinToPCMSKbit(pin));  // enable pin
+    PCIFR  |= bit (digitalPinToPCICRbit(pin)); // clear any outstanding interrupt
+    PCICR  |= bit (digitalPinToPCICRbit(pin)); // enable interrupt for the group
+}
+
+ISR (PCINT1_vect) // handle pin change interrupt for A0 to A5 here
+{
+    tA++;
+}
+
+ISR (PCINT0_vect) // handle pin change interrupt for D8 to D13 here
+{
+    tB++;
+}
+
+ISR (PCINT2_vect) // handle pin change interrupt for D0 to D7 here
+{
+   tC++;
+}
+
 void setup(){
   pinMode(LED, OUTPUT);
   Serial.begin(SERIAL_BAUD);
@@ -151,38 +176,18 @@ void setup(){
   else {
     totenC = max;
   }
-}
 
-float tA, tB, tC;
-bool fA, fB, fC;
+  //
 
-ISR(TIMER1_OVF_vect)
-{
-  if (digitalRead(6) && fA) {
-    tA++;
-    fA = false;
-  }
-  else {
-    fA = true;
-  }
 
-  if (digitalRead(5) && fB) {
-    tB++;
-    fB = false;
-  }
-  else {
-    fB = true;
-  }
-
-  if (digitalRead(4) && fC) {
-    tC++;
-    fC = false;
-  }
-  else {
-    fC = true;
-  }
+  //enable interrupt for pin ...
+  pciSetup(4);
+  pciSetup(9);
+  pciSetup(A3);
 
 }
+
+
 
 char message[7];
 
@@ -208,8 +213,8 @@ void loop(){
 
   ////////////////////////////////////////////////////////////////////////////////////////////
   // Real sketch code here, let's blink the onboard LED
-  if (tA>10) {
-    tA = tA - 10;
+  if (tA>20) {
+    tA = tA - 20;
     totenA = totenA + 0.01;
     //totenA = 21.73;
     float2Bytes(totenA,&totenA_b[0]);
@@ -235,11 +240,10 @@ void loop(){
 
     Serial.print("A: ");
     Serial.println(totenA);
-    delay(20);
   }
 
-  if (tB>10) {
-    tB = tB - 10;
+  if (tB>20) {
+    tB = tB - 20;
     totenB = totenB + 0.01;
     //totenB = 29.11;
     float2Bytes(totenB,&totenB_b[0]);
@@ -265,11 +269,10 @@ void loop(){
 
     Serial.print("B: ");
     Serial.println(totenB);
-    delay(20);
   }
 
-  if (tC>10) {
-    tC = tC - 10;
+  if (tC>20) {
+    tC = tC - 20;
     totenC = totenC + 0.01;
     //totenC = 14.78;
     float2Bytes(totenC,&totenC_b[0]);
@@ -295,7 +298,6 @@ void loop(){
 
     Serial.print("C: ");
     Serial.println(totenC);
-    delay(20);
   }
   ////////////////////////////////////////////////////////////////////////////////////////////
 }
