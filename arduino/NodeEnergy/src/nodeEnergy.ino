@@ -1,46 +1,72 @@
+// **********************************************************************************
+// This sketch is an example of how wireless programming can be achieved with a Moteino
+// that was loaded with a custom 1k bootloader (DualOptiboot) that is capable of loading
+// a new sketch from an external SPI flash chip
+// The sketch includes logic to receive the new sketch 'over-the-air' and store it in
+// the FLASH chip, then restart the Moteino so the bootloader can continue the job of
+// actually reflashing the internal flash memory from the external FLASH memory chip flash image
+// The handshake protocol that receives the sketch wirelessly by means of the RFM69 radio
+// is handled by the SPIFLash/WirelessHEX69 library, which also relies on the RFM69 library
+// These libraries and custom 1k Optiboot bootloader are at: http://github.com/lowpowerlab
+// **********************************************************************************
+// Copyright Felix Rusu, LowPowerLab.com
+// Library and code by Felix Rusu - felix@lowpowerlab.com
+// **********************************************************************************
+// License
+// **********************************************************************************
+// This program is free software; you can redistribute it
+// and/or modify it under the terms of the GNU General
+// Public License as published by the Free Software
+// Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will
+// be useful, but WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A
+// PARTICULAR PURPOSE. See the GNU General Public
+// License for more details.
+//
+// You should have received a copy of the GNU General
+// Public License along with this program.
+// If not, see <http://www.gnu.org/licenses/>.
+//
+// Licence can be viewed at
+// http://www.gnu.org/licenses/gpl-3.0.txt
+//
+// Please maintain this license information along with authorship
+// and copyright notices in any redistribution of this code
+// **********************************************************************************
+#include <RFM69.h>         //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <SPI.h>
-#include <Wire.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <RFM69.h>        //get it here: https://www.github.com/lowpowerlab/rfm69
-#include <RFM69_ATC.h>    //get it here: https://www.github.com/lowpowerlab/rfm69
-#include <SPIFlash.h>     //get it here: https://www.github.com/lowpowerlab/spiflash
+#include <SPIFlash.h>      //get it here: https://www.github.com/lowpowerlab/spiflash
+#include <avr/wdt.h>
+#include <WirelessHEX69.h> //get it here: https://github.com/LowPowerLab/WirelessProgramming/tree/master/WirelessHEX69
 
-//*********************************************************************************************
-//************ IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE *************
-//*********************************************************************************************
-//RFM side
-#define NODEID        4    //must be unique for each node on same network (range up to 254, 255 is used for broadcast)
-#define NETWORKID     100  //the same on all nodes that talk to each other (range up to 255)
-#define GATEWAYID     1
+#define NODEID      4       // node ID used for this unit
+#define NETWORKID   100
+#define GATEWAYID   1
+
 #define FREQUENCY   RF69_433MHZ
-#define ENCRYPTKEY    "sampleEncryptKey" //exactly the same 16 characters/bytes on all nodes!
-#define IS_RFM69HW    //uncomment only for RFM69HW! Leave out if you have RFM69W!
-#define ENABLE_ATC    //comment out this line to disable AUTO TRANSMISSION CONTROL
-#define SERIAL_BAUD   115200
-//pinout
-#define LED           9 // Moteinos have LEDs on D9
+
+#define IS_RFM69HW  //uncomment only for RFM69HW! Leave out if you have RFM69W!
+#define SERIAL_BAUD 115200
+#define ACK_TIME    30  // # of ms to wait for an ack
+#define ENCRYPTKEY "sampleEncryptKey" //(16 bytes of your choice - keep the same on all encrypted nodes)
+
+#define LED           9 // Moteinos hsave LEDs on D9
 #define FLASH_SS      8 // and FLASH SS on D8
-//*********************************************************************************************
+
+#define MEMA1 70048
+#define MEMA2 75048
+#define MEMB1 80048
+#define MEMB2 85048
+#define MEMC1 90048
+#define MEMC2 95048
 
 byte sendSize = 6;
 boolean requestACK = false;
-
-//Flash side
-SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for 4mbit  Windbond chip (W25X40CL)
-
-#ifdef ENABLE_ATC
-RFM69_ATC radio;
-#else
-RFM69 radio;
-#endif
-
-#define MEMA1 48
-#define MEMA2 5048
-#define MEMB1 10048
-#define MEMB2 15048
-#define MEMC1 20048
-#define MEMC2 25048
 
 float totenA = 0;
 byte totenA_b[4];
@@ -51,7 +77,21 @@ byte totenB_b[4];
 float totenC = 0;
 byte totenC_b[4];
 
-void setup() {
+RFM69 radio;
+char input = 0;
+long lastPeriod = -1;
+
+/////////////////////////////////////////////////////////////////////////////
+// flash(SPI_CS, MANUFACTURER_ID)
+// SPI_CS          - CS pin attached to SPI flash chip (8 in case of Moteino)
+// MANUFACTURER_ID - OPTIONAL, 0x1F44 for adesto(ex atmel) 4mbit flash
+//                             0xEF30 for windbond 4mbit flash
+//                             0xEF40 for windbond 16/64mbit flash
+/////////////////////////////////////////////////////////////////////////////
+SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for windbond 4mbit flash
+
+void setup(){
+  pinMode(LED, OUTPUT);
   Serial.begin(SERIAL_BAUD);
 
   cli();
@@ -61,38 +101,17 @@ void setup() {
   TCCR1B |= (1 << CS11);
   sei();
 
-  //RFM side
-  radio.initialize(FREQUENCY, NODEID, NETWORKID);
+  radio.initialize(FREQUENCY,NODEID,NETWORKID);
+  radio.encrypt(ENCRYPTKEY); //OPTIONAL
   #ifdef IS_RFM69HW
-    radio.setHighPower(); //uncomment only for RFM69HW!
+    radio.setHighPower(); //only for RFM69HW!
   #endif
-    radio.encrypt(ENCRYPTKEY);
+  Serial.print("Start node...");
 
-  #ifdef ENABLE_ATC
-    radio.enableAutoPower(-70);
-  #endif
-
-    char buff[50];
-    sprintf(buff, "\nTransmitting at %d Mhz...", FREQUENCY == RF69_433MHZ ? 433 : FREQUENCY == RF69_868MHZ ? 868 : 915);
-    Serial.println(buff);
-
-    if (flash.initialize())
-    {
-      Serial.print("SPI Flash Init OK ... UniqueID (MAC): ");
-      flash.readUniqueId();
-      for (byte i = 0; i < 8; i++)
-      {
-        Serial.print(flash.UNIQUEID[i], HEX);
-        Serial.print(' ');
-      }
-      Serial.println();
-    }
-    else
-      Serial.println("SPI Flash MEM not found (is chip soldered?)...");
-
-  #ifdef ENABLE_ATC
-    Serial.println("RFM69_ATC Enabled (Auto Transmission Control)\n");
-  #endif
+  if (flash.initialize())
+    Serial.println("SPI Flash Init OK!");
+  else
+    Serial.println("SPI Flash Init FAIL!");
 
   byte max_b[4], max2_b[4];
   float max, max2;
@@ -132,7 +151,6 @@ void setup() {
   else {
     totenC = max;
   }
-
 }
 
 float tA, tB, tC;
@@ -168,8 +186,28 @@ ISR(TIMER1_OVF_vect)
 
 char message[7];
 
-void loop() {
+void loop(){
 
+  // Check for existing RF data, potentially for a new sketch wireless upload
+  // For this to work this check has to be done often enough to be
+  // picked up when a GATEWAY is trying hard to reach this node for a new sketch wireless upload
+  if (radio.receiveDone())
+  {
+    Serial.print("Got [");
+    Serial.print(radio.SENDERID);
+    Serial.print(':');
+    Serial.print(radio.DATALEN);
+    Serial.print("] > ");
+    for (byte i = 0; i < radio.DATALEN; i++)
+      Serial.print((char)radio.DATA[i], HEX);
+    Serial.println();
+    CheckForWirelessHEX(radio, flash, true);
+    Serial.println();
+  }
+  //else Serial.print('.');
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // Real sketch code here, let's blink the onboard LED
   if (tA>10) {
     tA = tA - 10;
     totenA = totenA + 0.01;
@@ -259,7 +297,7 @@ void loop() {
     Serial.println(totenC);
     delay(20);
   }
-
+  ////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 void float2Bytes(float val,byte* bytes_array){

@@ -35,12 +35,12 @@ RFM69_ATC radio;
 RFM69 radio;
 #endif
 
-#define MEMA1 70048
-#define MEMA2 75048
-#define MEMB1 80048
-#define MEMB2 85048
-#define MEMC1 90048
-#define MEMC2 95048
+#define MEMA1 48
+#define MEMA2 5048
+#define MEMB1 10048
+#define MEMB2 15048
+#define MEMC1 20048
+#define MEMC2 25048
 
 float totenA = 0;
 byte totenA_b[4];
