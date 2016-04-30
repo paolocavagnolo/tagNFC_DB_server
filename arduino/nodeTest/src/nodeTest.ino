@@ -2,13 +2,12 @@
 // This sketch is an example of how wireless programming can be achieved with a Moteino
 // that was loaded with a custom 1k bootloader (DualOptiboot) that is capable of loading
 // a new sketch from an external SPI flash chip
-// This is the GATEWAY node, it does not need a custom Optiboot nor any external FLASH memory chip
-// (ONLY the target node will need those)
-// The sketch includes logic to receive the new sketch from the serial port (from a host computer) and
-// transmit it wirelessly to the target node
-// The handshake protocol that receives the sketch from the serial port
+// The sketch includes logic to receive the new sketch 'over-the-air' and store it in
+// the FLASH chip, then restart the Moteino so the bootloader can continue the job of
+// actually reflashing the internal flash memory from the external FLASH memory chip flash image
+// The handshake protocol that receives the sketch wirelessly by means of the RFM69 radio
 // is handled by the SPIFLash/WirelessHEX69 library, which also relies on the RFM69 library
-// These libraries and custom 1k Optiboot bootloader for the target node are at: http://github.com/lowpowerlab
+// These libraries and custom 1k Optiboot bootloader are at: http://github.com/lowpowerlab
 // **********************************************************************************
 // Copyright Felix Rusu, LowPowerLab.com
 // Library and code by Felix Rusu - felix@lowpowerlab.com
@@ -37,102 +36,132 @@
 // Please maintain this license information along with authorship
 // and copyright notices in any redistribution of this code
 // **********************************************************************************
-#include <RFM69.h>          //get it here: https://www.github.com/lowpowerlab/rfm69
+#include <RFM69.h>         //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <SPI.h>
 #include <SPIFlash.h>      //get it here: https://www.github.com/lowpowerlab/spiflash
+#include <avr/wdt.h>
 #include <WirelessHEX69.h> //get it here: https://github.com/LowPowerLab/WirelessProgramming/tree/master/WirelessHEX69
 
-#define NODEID             254  //this node's ID, should be unique among nodes on this NETWORKID
-#define NETWORKID          250  //what network this node is on
+#define NODEID      123       // node ID used for this unit
+#define NETWORKID   250
 //Match frequency to the hardware version of the radio on your Moteino (uncomment one):
-//#define FREQUENCY   RF69_433MHZ
+#define FREQUENCY   RF69_433MHZ
 //#define FREQUENCY   RF69_868MHZ
-#define FREQUENCY     RF69_915MHZ
-#define ENCRYPTKEY "sampleEncryptKey" //(16 bytes of your choice - keep the same on all encrypted nodes)
-//#define IS_RFM69HW             //uncomment only for RFM69HW! Leave out if you have RFM69W!
-
+//#define FREQUENCY     RF69_915MHZ
+#define IS_RFM69HW  //uncomment only for RFM69HW! Leave out if you have RFM69W!
 #define SERIAL_BAUD 115200
-#define ACK_TIME    50  // # of ms to wait for an ack
-#define TIMEOUT     3000
+#define ACK_TIME    30  // # of ms to wait for an ack
+#define ENCRYPTKEY "sampleEncryptKey" //(16 bytes of your choice - keep the same on all encrypted nodes)
+#define BLINKPERIOD 500
 
 #ifdef __AVR_ATmega1284P__
   #define LED           15 // Moteino MEGAs have LEDs on D15
+  #define FLASH_SS      23 // and FLASH SS on D23
 #else
   #define LED           9 // Moteinos hsave LEDs on D9
+  #define FLASH_SS      8 // and FLASH SS on D8
 #endif
 
 RFM69 radio;
-char c = 0;
-char input[64]; //serial input buffer
-byte targetID=0;
+char input = 0;
+long lastPeriod = -1;
+
+/////////////////////////////////////////////////////////////////////////////
+// flash(SPI_CS, MANUFACTURER_ID)
+// SPI_CS          - CS pin attached to SPI flash chip (8 in case of Moteino)
+// MANUFACTURER_ID - OPTIONAL, 0x1F44 for adesto(ex atmel) 4mbit flash
+//                             0xEF30 for windbond 4mbit flash
+//                             0xEF40 for windbond 16/64mbit flash
+/////////////////////////////////////////////////////////////////////////////
+SPIFlash flash(FLASH_SS, 0xEF30); //EF30 for windbond 4mbit flash
 
 void setup(){
+  pinMode(LED, OUTPUT);
   Serial.begin(SERIAL_BAUD);
   radio.initialize(FREQUENCY,NODEID,NETWORKID);
   radio.encrypt(ENCRYPTKEY); //OPTIONAL
 #ifdef IS_RFM69HW
   radio.setHighPower(); //only for RFM69HW!
 #endif
-  Serial.println("Start wireless gateway...");
+  Serial.print("Start node...");
+
+  if (flash.initialize())
+    Serial.println("SPI Flash Init OK!");
+  else
+    Serial.println("SPI Flash Init FAIL!");
 }
 
 void loop(){
-  byte inputLen = readSerialLine(input, 10, 64, 100); //readSerialLine(char* input, char endOfLineChar=10, byte maxLength=64, uint16_t timeout=1000);
+  // This part is optional, useful for some debugging.
+  // Handle serial input (to allow basic DEBUGGING of FLASH chip)
+  // ie: display first 256 bytes in FLASH, erase chip, write bytes at first 10 positions, etc
+  if (Serial.available() > 0) {
+    input = Serial.read();
+    if (input == 'd') //d=dump first page
+    {
+      Serial.println("Flash content:");
+      int counter = 0;
 
-  if (inputLen==4 && input[0]=='F' && input[1]=='L' && input[2]=='X' && input[3]=='?') {
-    if (targetID==0)
-      Serial.println("TO?");
-    else
-      CheckForSerialHEX((byte*)input, inputLen, radio, targetID, TIMEOUT, ACK_TIME, false);
-  }
-  else if (inputLen>3 && inputLen<=6 && input[0]=='T' && input[1]=='O' && input[2]==':')
-  {
-    byte newTarget=0;
-    for (byte i = 3; i<inputLen; i++) //up to 3 characters for target ID
-      if (input[i] >=48 && input[i]<=57)
-        newTarget = newTarget*10+input[i]-48;
-      else
-      {
-        newTarget=0;
-        break;
+      while(counter<=256){
+        Serial.print(flash.readByte(counter++), HEX);
+        Serial.print('.');
       }
-    if (newTarget>0)
-    {
-      targetID = newTarget;
-      Serial.print("TO:");
-      Serial.print(newTarget);
-      Serial.println(":OK");
+
+      Serial.println();
     }
-    else
+    else if (input == 'e')
     {
-      Serial.print(input);
-      Serial.print(":INV");
+      Serial.print("Erasing Flash chip ... ");
+      flash.chipErase();
+      while(flash.busy());
+      Serial.println("DONE");
     }
-  }
-  else if (inputLen>0) { //just echo back
-    Serial.print("SERIAL IN > ");Serial.println(input);
+    else if (input == 'i')
+    {
+      Serial.print("DeviceID: ");
+      Serial.println(flash.readDeviceId(), HEX);
+    }
+    else if (input == 'r')
+    {
+      Serial.print("Rebooting");
+      resetUsingWatchdog(true);
+    }
+    else if (input == 'R')
+    {
+      Serial.print("RFM69 registers:");
+      radio.readAllRegs();
+    }
+    else if (input >= 48 && input <= 57) //0-9
+    {
+      Serial.print("\nWriteByte("); Serial.print(input); Serial.print(")");
+      flash.writeByte(input-48, millis()%2 ? 0xaa : 0xbb);
+    }
   }
 
+  // Check for existing RF data, potentially for a new sketch wireless upload
+  // For this to work this check has to be done often enough to be
+  // picked up when a GATEWAY is trying hard to reach this node for a new sketch wireless upload
   if (radio.receiveDone())
   {
+    Serial.print("Got [");
+    Serial.print(radio.SENDERID);
+    Serial.print(':');
+    Serial.print(radio.DATALEN);
+    Serial.print("] > ");
     for (byte i = 0; i < radio.DATALEN; i++)
-      Serial.print((char)radio.DATA[i]);
-
-    if (radio.ACK_REQUESTED)
-    {
-      radio.sendACK();
-      Serial.print(" - ACK sent");
-    }
-
+      Serial.print((char)radio.DATA[i], HEX);
+    Serial.println();
+    CheckForWirelessHEX(radio, flash, true);
     Serial.println();
   }
-  Blink(LED,5); //heartbeat
-}
+  //else Serial.print('.');
 
-void Blink(byte PIN, int DELAY_MS)
-{
-  pinMode(PIN, OUTPUT);
-  digitalWrite(PIN,HIGH);
-  delay(DELAY_MS);
-  digitalWrite(PIN,LOW);
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  // Real sketch code here, let's blink the onboard LED
+  if ((int)(millis()/BLINKPERIOD) > lastPeriod)
+  {
+    lastPeriod++;
+    digitalWrite(LED, lastPeriod%2);
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////
 }
