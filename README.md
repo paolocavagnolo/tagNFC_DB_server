@@ -103,3 +103,9 @@ https://github.com/deanmao/avrdude-rpi
 ## Set-up VPN for remote controll
 
 https://www.digitalocean.com/community/tutorials/how-to-set-up-an-openvpn-server-on-debian-8
+
+
+
+
+## CRONTAB
+sudo service mongodb start
