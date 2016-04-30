@@ -58,12 +58,12 @@
 #define LED           9 // Moteinos hsave LEDs on D9
 #define FLASH_SS      8 // and FLASH SS on D8
 
-#define MEMA1 70048
-#define MEMA2 75048
-#define MEMB1 80048
-#define MEMB2 85048
-#define MEMC1 90048
-#define MEMC2 95048
+#define MEMA1 48
+#define MEMA2 5048
+#define MEMB1 10048
+#define MEMB2 15048
+#define MEMC1 20048
+#define MEMC2 25048
 
 byte sendSize = 6;
 boolean requestACK = false;
@@ -119,13 +119,6 @@ void setup(){
   pinMode(LED, OUTPUT);
   Serial.begin(SERIAL_BAUD);
 
-  cli();
-  TCCR1A = 0;
-  TCCR1B = 0;
-  TIMSK1 = (1 << TOIE1);
-  TCCR1B |= (1 << CS11);
-  sei();
-
   radio.initialize(FREQUENCY,NODEID,NETWORKID);
   radio.encrypt(ENCRYPTKEY); //OPTIONAL
   #ifdef IS_RFM69HW
@@ -177,13 +170,10 @@ void setup(){
     totenC = max;
   }
 
-  //
-
-
   //enable interrupt for pin ...
   pciSetup(4);
   pciSetup(9);
-  pciSetup(A3);
+  pciSetup(A2);
 
 }
 
