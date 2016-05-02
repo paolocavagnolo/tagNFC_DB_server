@@ -172,32 +172,3 @@ void loop(){
   }
   ////////////////////////////////////////////////////////////////////////////////////////////
 }
-
-void float2Bytes(float val,byte* bytes_array){
-  // Create union of shared memory space
-  union {
-    float float_variable;
-    byte temp_array[4];
-  } u;
-  // Overite bytes of union with float variable
-  u.float_variable = val;
-  // Assign bytes to input array
-  memcpy(bytes_array, u.temp_array, 4);
-}
-
-float bytes2Float(byte* bytes_array) {
-  float val;
-
-  union {
-    float fval;
-    byte b[4];
-  } u;
-
-  u.b[0] = bytes_array[0];
-  u.b[1] = bytes_array[1];
-  u.b[2] = bytes_array[2];
-  u.b[3] = bytes_array[3];
-
-  val = u.fval;
-  return val;
-}
