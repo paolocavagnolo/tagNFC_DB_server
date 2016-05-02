@@ -42,10 +42,12 @@
 #include <SPIFlash.h>      //get it here: https://www.github.com/lowpowerlab/spiflash
 #include <WirelessHEX69.h> //get it here: https://github.com/LowPowerLab/WirelessProgramming/tree/master/WirelessHEX69
 
-#define GATEWAYID          1
+#define NODEID             1  //this node's ID, should be unique among nodes on this NETWORKID
 #define NETWORKID          100  //what network this node is on
 //Match frequency to the hardware version of the radio on your Moteino (uncomment one):
 #define FREQUENCY   RF69_433MHZ
+//#define FREQUENCY   RF69_868MHZ
+//#define FREQUENCY     RF69_915MHZ
 #define ENCRYPTKEY "sampleEncryptKey" //(16 bytes of your choice - keep the same on all encrypted nodes)
 #define IS_RFM69HW             //uncomment only for RFM69HW! Leave out if you have RFM69W!
 
@@ -53,12 +55,13 @@
 #define ACK_TIME    50  // # of ms to wait for an ack
 #define TIMEOUT     3000
 
-#define LED           9 // Moteinos hsave LEDs on D9
+#ifdef __AVR_ATmega1284P__
+  #define LED           15 // Moteino MEGAs have LEDs on D15
+#else
+  #define LED           9 // Moteinos hsave LEDs on D9
+#endif
 
 RFM69 radio;
-
-uint32_t packetCount = 0;
-
 char c = 0;
 char input[64]; //serial input buffer
 byte targetID=0;
@@ -73,12 +76,7 @@ void setup(){
   Serial.println("Start wireless gateway...");
 }
 
-uint8_t idNode;
-char payload[7];
-
 void loop(){
-
-  //python-flash to
   byte inputLen = readSerialLine(input, 10, 64, 100); //readSerialLine(char* input, char endOfLineChar=10, byte maxLength=64, uint16_t timeout=1000);
 
   if (inputLen==4 && input[0]=='F' && input[1]=='L' && input[2]=='X' && input[3]=='?') {
@@ -115,28 +113,19 @@ void loop(){
     Serial.print("SERIAL IN > ");Serial.println(input);
   }
 
-  //nodes to python-ok
   if (radio.receiveDone())
   {
-    Serial.print('<');
-    Serial.print(',');
-    Serial.print(packetCount++);
-    Serial.print(',');
-    Serial.print(radio.SENDERID,DEC);
-    Serial.print(',');
-    Serial.print(1);
-    for (byte i = 0; i < radio.DATALEN; i++) {
-      Serial.print(',');
-      Serial.print(radio.DATA[i],HEX);
-    }
-    Serial.print(',');
-    Serial.print(radio.RSSI);
-    Serial.print(',');
-    Serial.println('>');
-    //Check
-    if (radio.ACKRequested()) radio.sendACK();
-  }
+    for (byte i = 0; i < radio.DATALEN; i++)
+      Serial.print((char)radio.DATA[i]);
 
+    if (radio.ACK_REQUESTED)
+    {
+      radio.sendACK();
+      Serial.print(" - ACK sent");
+    }
+
+    Serial.println();
+  }
   Blink(LED,5); //heartbeat
 }
 
