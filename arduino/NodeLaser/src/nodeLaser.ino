@@ -8,22 +8,25 @@
 #include <SPIFlash.h>     //get it here: https://www.github.com/lowpowerlab/spiflash
 #include <LedControl.h>
 
-//*********************************************************************************************
+//**********************************************************************************************
 //************ IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE *************
-//*********************************************************************************************
+//*********************************************************************************************+
+
 //NFC side
 #define PN532_IRQ   (3)
 #define PN532_RESET (4)
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
+
 //RFM side
 #define NODEID        2    //must be unique for each node on same network (range up to 254, 255 is used for broadcast)
 #define NETWORKID     100  //the same on all nodes that talk to each other (range up to 255)
 #define GATEWAYID     1
-#define FREQUENCY   RF69_433MHZ
+#define FREQUENCY     RF69_433MHZ
 #define ENCRYPTKEY    "sampleEncryptKey" //exactly the same 16 characters/bytes on all nodes!
 #define IS_RFM69HW    //uncomment only for RFM69HW! Leave out if you have RFM69W!
 #define ENABLE_ATC    //comment out this line to disable AUTO TRANSMISSION CONTROL
 #define SERIAL_BAUD   115200
+
 //pinout
 #define LED           9 // Moteinos have LEDs on D9
 #define FLASH_SS      8 // and FLASH SS on D8
