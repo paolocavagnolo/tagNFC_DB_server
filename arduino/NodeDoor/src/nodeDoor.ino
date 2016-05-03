@@ -130,9 +130,11 @@ void loop() {
       //send to gateway
       if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
         Serial.print(" ok!");
+        digitalWrite(7,HIGH);
+        delay(2000);
       }
       else Serial.print(" nothing...");
-      
+
     }
     readEnable = false;
   }
