@@ -93,7 +93,7 @@ while True:
                 if (ids == 4):
                     print "tag: ", message[0:2].decode("hex")
                     print "phase: ", message[2:4].decode("hex")
-                    print "quantity: ", struc.unpack('>f',message[4:12])
+                    print "quantity: ", struct.unpack('>f',message[4:12])
 
                 # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
                 # t.start()
