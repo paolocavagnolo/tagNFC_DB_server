@@ -47,6 +47,7 @@ test UART
       sudo minicom -D /dev/ttyAMA0 -b115200
 
 
+
 ## Set-up github on local machine
 
       sudo apt-get install git-core

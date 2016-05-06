@@ -1,6 +1,5 @@
 #include <SPI.h>
 #include <Wire.h>
-#include <Adafruit_PN532.h>
 #include <RFM69.h>        //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <RFM69_ATC.h>    //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <SPIFlash.h>     //get it here: https://www.github.com/lowpowerlab/spiflash
@@ -8,10 +7,6 @@
 //*********************************************************************************************
 //************ IMPORTANT SETTINGS - YOU MUST CHANGE/CONFIGURE TO FIT YOUR HARDWARE *************
 //*********************************************************************************************
-//NFC side
-#define PN532_IRQ   (3)
-#define PN532_RESET (4)
-Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 //RFM side
 #define NODEID        3    //must be unique for each node on same network (range up to 254, 255 is used for broadcast)
 #define NETWORKID     100  //the same on all nodes that talk to each other (range up to 255)
@@ -22,6 +17,7 @@ Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 #define ENABLE_ATC    //comment out this line to disable AUTO TRANSMISSION CONTROL
 #define SERIAL_BAUD   115200
 //pinout
+#define DOOR          7 // Linear actuator
 #define LED           9 // Moteinos have LEDs on D9
 #define FLASH_SS      8 // and FLASH SS on D8
 //*********************************************************************************************
@@ -42,21 +38,6 @@ void setup() {
   pinMode(7, OUTPUT);
 
   Serial.begin(SERIAL_BAUD);
-
-  //NFC side
-  nfc.begin();
-  uint32_t versiondata = nfc.getFirmwareVersion();
-  if (! versiondata) {
-    Serial.print("Didn't find PN53x board");
-    while (1); // halt
-  }
-  Serial.print("Found chip PN5"); Serial.println((versiondata >> 24) & 0xFF, HEX);
-  Serial.print("Firmware ver. "); Serial.print((versiondata >> 16) & 0xFF, DEC);
-  Serial.print('.'); Serial.println((versiondata >> 8) & 0xFF, DEC);
-
-  // configure board to read RFID tags
-  nfc.SAMConfig();
-  Serial.println("Waiting for an ISO14443A Card ...");
 
   //RFM side
   radio.initialize(FREQUENCY, NODEID, NETWORKID);
@@ -93,7 +74,7 @@ void setup() {
 
 }
 
-void Blink(byte PIN, int DELAY_MS)
+void OpenDoor(byte PIN, int DELAY_MS)
 {
   pinMode(PIN, OUTPUT);
   digitalWrite(PIN, HIGH);
@@ -102,42 +83,16 @@ void Blink(byte PIN, int DELAY_MS)
 }
 
 
-//NFC side
-uint8_t success;
-uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
-uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
-
-bool readEnable = true;
-
 void loop() {
 
-  //laser off
-  digitalWrite(7, LOW);
-  readEnable = true;
-
-  if (readEnable) {
-    //read tag
-    success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &sendSize);
-    if (success) {
-      // Display some basic information about the card
-      Serial.println("Found an ISO14443A card");
-      Serial.print("  UID Length: "); Serial.print(sendSize, DEC); Serial.println(" bytes");
-      Serial.print("  UID Value: ");
-      nfc.PrintHex(uid, sendSize);
-
-      uid[0] = 'n';
-
-      //send to gateway
-      if (radio.sendWithRetry(GATEWAYID, uid, sendSize)) {
-        Serial.print(" ok!");
-        digitalWrite(7,HIGH);
-        delay(2000);
+  if (radio.receiveDone()) {
+    if (radio.DATA[0] == 'd') {
+      OpenDoor(7,2000);
+      if (radio.ACKRequested())
+      {
+        radio.sendACK();
       }
-      else Serial.print(" nothing...");
-
     }
-    readEnable = false;
   }
-  //end loop
 
 }
