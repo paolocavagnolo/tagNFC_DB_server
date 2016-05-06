@@ -83,8 +83,8 @@ while True:
                     "RSSI" : int(linea.split(",")[10])
                 }
 
-                #print struct.pack('4f',message[1:4])
-
+                if (ids == 4):
+                    print struct.pack('4f',message[1:5])
 
                 # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
                 # t.start()
