@@ -17,6 +17,7 @@ import serial
 import pymongo
 import datetime
 import threading
+import struct
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -81,6 +82,9 @@ while True:
                     "message" : message,
                     "RSSI" : int(linea.split(",")[10])
                 }
+
+                print struct.pack('4f',message[1:4])
+
 
                 # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
                 # t.start()
