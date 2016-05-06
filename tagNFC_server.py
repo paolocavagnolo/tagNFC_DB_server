@@ -72,15 +72,22 @@ while True:
         try:
             if (ser.inWaiting() > 0):
                 linea = ser.readline()
-                message = ''.join(linea.split(",")[4:9]);
+
+
+                time = datetime.datetime.now()
+                abss = int(linea.split(",")[1])
+                ids = int(linea.split(",")[2])
+                idr = int(linea.split(",")[3])
+                message = ''.join(linea.split(",")[4:9])
+                RSSI = int(linea.split(",")[10])
 
                 radio_log = {
-                    "time" : datetime.datetime.now(),
-                    "abs" : int(linea.split(",")[1]),
-                    "ids" : int(linea.split(",")[2]),
-                    "idr" : int(linea.split(",")[3]),
+                    "time" : time,
+                    "abs" : abss,
+                    "ids" : ids
+                    "idr" : idr,
                     "message" : message,
-                    "RSSI" : int(linea.split(",")[10])
+                    "RSSI" : RSSI
                 }
 
                 if (ids == 4):
