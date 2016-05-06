@@ -91,7 +91,8 @@ while True:
                 }
 
                 if (ids == 4):
-                    print struct.unpack('>f',message[1:5])
+                    dataa = message[1:4].reverse()
+                    print struct.unpack('>f',dataa)
 
                 # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
                 # t.start()

@@ -1,7 +1,6 @@
-a = 5
+import struct
 
-b = 7
+data = [65, 203, 96, 66]
+b = ''.join(chr(i) for i in data)
 
-c = a + b
-
-print c
+print struct.unpack('>f', b[4:0])
