@@ -84,7 +84,7 @@ while True:
                 radio_log = {
                     "time" : time,
                     "abs" : abss,
-                    "ids" : ids
+                    "ids" : ids,
                     "idr" : idr,
                     "message" : message,
                     "RSSI" : RSSI
