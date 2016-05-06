@@ -86,18 +86,18 @@ while True:
                 # t.start()
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
-                
-                if (ids == 2):
-                    if (message[6] == 'l'):
-                        # we are in the tick mother fucker
 
-
-                    else:
-                        # we are in the enable process
-                        cellTag = worksheet.find(message)
-                        ser.write(float(worksheet.cell(cellTag.row, 3).value))
-                        ser.write(int(worksheet.cell(cellTag.row, 4).value))
-                        print "valori mandati in seriale"
+                # if (ids == 2):
+                #     if (message[6] == 'l'):
+                #         # we are in the tick mother fucker
+                #
+                #
+                #     else:
+                #         # we are in the enable process
+                #         cellTag = worksheet.find(message)
+                #         ser.write(float(worksheet.cell(cellTag.row, 3).value))
+                #         ser.write(int(worksheet.cell(cellTag.row, 4).value))
+                #         print "valori mandati in seriale"
 
 
 
