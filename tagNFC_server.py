@@ -78,7 +78,7 @@ while True:
                 abss = int(linea.split(",")[1])
                 ids = int(linea.split(",")[2])
                 idr = int(linea.split(",")[3])
-                message = ''.join(linea.split(",")[4:9])
+                message = ''.join(linea.split(",")[4:10])
                 RSSI = int(linea.split(",")[10])
 
                 radio_log = {
@@ -91,8 +91,8 @@ while True:
                 }
 
                 if (ids == 4):
-                    print "tag: ", message[0:2]
-                    print "phase: ", message[2:4]
+                    print "tag: ", message[0:2].decode("hex")
+                    print "phase: ", message[2:4].decode("hex")
                     print "quantity: ", message[4:12]
 
                 # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
