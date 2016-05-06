@@ -91,9 +91,9 @@ while True:
                 }
 
                 if (ids == 4):
-                    print "tag: ", chr(int(message[0]))
-                    print "phase: ", chr(int(message[1]))
-                    print "quantity: ", struct.unpack('>f',message[2:6][::-1])
+                    print "tag: ", chr(message[0:1].decode("hex"))
+                    print "phase: ", chr(message[1:2].decode("hex"))
+                    #print "quantity: ", struct.unpack('>f',message[2:6][::-1])
 
                 # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
                 # t.start()
