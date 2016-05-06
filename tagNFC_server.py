@@ -91,7 +91,7 @@ while True:
                 }
 
                 if (ids == 4):
-                    print struct.pack('4f',message[1:5])
+                    print struct.pack('4f',message[1],message[2],message[3],message[4])
 
                 # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
                 # t.start()
