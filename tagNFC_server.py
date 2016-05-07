@@ -42,6 +42,18 @@ from pymongo import MongoClient
 
 # write on gdrive
 
+def byte2float( bytess ):
+
+    data = bytess
+    byte1 = ord(data[0:2].decode("HEX"))
+    byte2 = ord(data[2:4].decode("HEX"))
+    byte3 = ord(data[4:6].decode("HEX"))
+    byte4 = ord(data[6:8].decode("HEX"))
+
+    bytecc = [byte4, byte3, byte2, byte1]
+    b = ''.join(chr(i) for i in bytecc)
+
+    return struct.unpack('>f', b)[0]
 
 while True:
     # Gspread!
@@ -73,7 +85,6 @@ while True:
             if (ser.inWaiting() > 0):
                 linea = ser.readline()
 
-
                 time = datetime.datetime.now()
                 abss = int(linea.split(",")[1])
                 ids = int(linea.split(",")[2])
@@ -93,7 +104,7 @@ while True:
                 if (ids == 4):
                     print "tag: ", message[0:2].decode("hex")
                     print "phase: ", message[2:4].decode("hex")
-                    print "quantity: ", struct.unpack('>f',message[4:12].decode("hex"))
+                    print "quantity: ", byte2float(message[4:12])
 
                 # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
                 # t.start()
