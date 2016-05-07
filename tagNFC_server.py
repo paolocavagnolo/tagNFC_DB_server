@@ -42,18 +42,46 @@ from pymongo import MongoClient
 
 # write on gdrive
 
+abss = 0
+ids = 0
+idr = 0
+message = [0,1,2,3,4,5]
+RSSI = 0
+energyAmount = 0
+
 def byte2float( bytess ):
 
     data = bytess
-    byte1 = ord(data[0:2].decode("HEX"))
-    byte2 = ord(data[2:4].decode("HEX"))
-    byte3 = ord(data[4:6].decode("HEX"))
-    byte4 = ord(data[6:8].decode("HEX"))
+    byte1 = ord(data[2].decode("HEX"))
+    byte2 = ord(data[3].decode("HEX"))
+    byte3 = ord(data[4].decode("HEX"))
+    byte4 = ord(data[5].decode("HEX"))
 
     bytecc = [byte4, byte3, byte2, byte1]
     b = ''.join(chr(i) for i in bytecc)
 
-    return struct.unpack('>f', b)[0]
+    return float("{0:.2f}".format(struct.unpack('>f', b)[0]))
+
+def readDeliveryData ( line ):
+
+    abss = int(linea.split(",")[1])
+    ids = int(linea.split(",")[2])
+    idr = int(linea.split(",")[3])
+    message[0] = linea.split(",")[4]
+    message[1] = linea.split(",")[5]
+    message[2] = linea.split(",")[6]
+    if (len(message[2])<2):
+        message[2] = '0'+message[2]
+    message[3] = linea.split(",")[7]
+    if (len(message[3])<2):
+        message[3] = '0'+message[3]
+    message[4] = linea.split(",")[8]
+    if (len(message[4])<2):
+        message[4] = '0'+message[4]
+    message[5] = linea.split(",")[9]
+    if (len(message[5])<2):
+        message[5] = '0'+message[5]
+    RSSI = int(linea.split(",")[10])
 
 while True:
     # Gspread!
@@ -82,46 +110,34 @@ while True:
     print "go"
     while True:
         try:
+            #read from gateway
             if (ser.inWaiting() > 0):
                 linea = ser.readline()
 
-                time = datetime.datetime.now()
-                abss = int(linea.split(",")[1])
-                ids = int(linea.split(",")[2])
-                idr = int(linea.split(",")[3])
-                message = ''.join(linea.split(",")[4:10])
-                RSSI = int(linea.split(",")[10])
-
-                radio_log = {
-                    "time" : time,
-                    "abs" : abss,
-                    "ids" : ids,
-                    "idr" : idr,
-                    "message" : message,
-                    "RSSI" : RSSI
-                }
-
+                #read delivery data
+                readDeliveryData( linea )
+                #recode
                 if (ids == 4):
-                    print "tag: ", message[0:2].decode("hex")
-                    print "phase: ", message[2:4].decode("hex")
-                    print "quantity: ", byte2float(message[4:12])
-
-                # t = threading.Thread(name="dbPull", target=db_pull, args=(message,))
-                # t.start()
+                    energyAmount = byte2float( message )
+                    radio_log = {
+                        "time" : time,
+                        "abs" : abss,
+                        "ids" : ids,
+                        "idr" : idr,
+                        "idm" : message[0],
+                        "idfase": message[1],
+                        "enAmount": energyAmount,
+                        "RSSI" : RSSI
+                    }
+                #put line in db
                 db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
+                #do actions to internet
 
-                # if (ids == 2):
-                #     if (message[6] == 'l'):
-                #         # we are in the tick mother fucker
-                #
-                #
-                #     else:
-                #         # we are in the enable process
-                #         cellTag = worksheet.find(message)
-                #         ser.write(float(worksheet.cell(cellTag.row, 3).value))
-                #         ser.write(int(worksheet.cell(cellTag.row, 4).value))
-                #         print "valori mandati in seriale"
+
+
+            #read from internet
+
 
 
 
