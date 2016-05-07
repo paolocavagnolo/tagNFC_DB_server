@@ -113,9 +113,10 @@ while True:
             #read from gateway
             if (ser.inWaiting() > 0):
                 linea = ser.readline()
-
+                print linea
                 #read delivery data
                 readDeliveryData( linea )
+                print ids
                 #recode
                 if (ids == 4):
                     energyAmount = byte2float( message )
@@ -130,7 +131,7 @@ while True:
                         "RSSI" : RSSI
                     }
                 #put line in db
-                db.radio_logs.insert(radio_log)
+                #db.radio_logs.insert(radio_log)
                 print "Successfully inserted document: %s" % radio_log
                 #do actions to internet
 
