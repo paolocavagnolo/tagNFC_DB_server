@@ -97,6 +97,7 @@ while True:
                 abss = int(linea.split(",")[1])
                 ids = int(linea.split(",")[2])
                 idr = int(linea.split(",")[3])
+                time = datetime.datetime.now().time()
                 message[0] = linea.split(",")[4]
                 message[1] = linea.split(",")[5]
                 message[2] = linea.split(",")[6]
