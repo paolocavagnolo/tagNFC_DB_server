@@ -122,8 +122,8 @@ while True:
                         "abs" : abss,
                         "ids" : ids,
                         "idr" : idr,
-                        "idm" : message[0],
-                        "idfase": message[1],
+                        "idm" : message[0].decode("HEX"),
+                        "idfase": message[1].decode("HEX"),
                         "enAmount": energyAmount,
                         "RSSI" : RSSI
                     }
