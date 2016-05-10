@@ -14,4 +14,5 @@ while True:
             buff.write(linea)
     except (KeyboardInterrupt, SystemExit):
         ser.close()
+        buff.close()
         print "good close"
