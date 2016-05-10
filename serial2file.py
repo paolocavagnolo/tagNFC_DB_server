@@ -11,7 +11,7 @@ while True:
     try:
         if (ser.inWaiting() > 0):
             linea = ser.readline()
-            print linea
+            buff.write(linea)
     except (KeyboardInterrupt, SystemExit):
         ser.close()
         print "good close"
