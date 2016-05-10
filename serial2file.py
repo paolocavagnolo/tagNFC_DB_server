@@ -10,4 +10,4 @@ buff = open(filename,'a+')
 while True:
     if (ser.inWaiting() > 0):
         linea = ser.readline()
-        buff.write(linea)
+        print linea
