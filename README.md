@@ -64,19 +64,23 @@ test UART
       sudo cp /home/pi/Documents/tagNFC_DB_server/script/updateGateway.sh /usr/bin/
       sudo chmod 755 /usr/bin/updateGateway.sh
 
-## Install MongoDB
+## Setup machine for python big program
+
+      sudo apt-get install python-nose
+
+### Install MongoDB
 http://andyfelong.com/2016/01/mongodb-3-0-9-binaries-for-raspberry-pi-2-jessie/
 
-## Install gspread
+### Install gspread
       sudo pip install PyOpenSSL
       sudo pip install --upgrade oauth2client
       sudo pip install gspread
       scp **the json credential to rpi**
 
-## Install plotly
+### Install plotly
 
       sudo pip install plotly
-      
+
 
 
 

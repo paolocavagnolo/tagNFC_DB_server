@@ -1,16 +1,3 @@
-# Thread1:
-# Leggo seriale
-# Scrivo MongoDB
-# Leggo MongoDB
-# Scrivo seriale
-#
-#
-# Thread2:
-# Leggo gsheet
-# Scrivo MongoDB
-# Leggo MongoDB
-# Scrivo serial
-
 #!/usr/bin/python
 
 import serial
@@ -26,21 +13,6 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/Documen
 
 from pymongo import MongoClient
 
-# # read from gdrive
-# def db_pull(tag):
-#     try:
-#         values_list = worksheet.row_values(1)
-#         print "found"
-#     except:
-#         print "not found"
-#
-# # sync completely the db with gdrive
-# def db_sync(s_worksheet):
-#
-#
-#     print values_list
-
-# write on gdrive
 
 abss = 0
 ids = 0
@@ -68,6 +40,7 @@ while True:
         gc = gspread.authorize(credentials)
         sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
         worksheet = sh.worksheet("soci")
+
     except:
         print "problem with gspread"
 
@@ -75,6 +48,7 @@ while True:
     try:
         client = MongoClient('mongodb://localhost:27017/')
         db = client['techlab-db']
+
     except:
         print "problem with mongodb"
 
