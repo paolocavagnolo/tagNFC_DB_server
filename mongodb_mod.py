@@ -5,6 +5,9 @@ from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017/')
 db = client['techlab-db']
 
+def close():
+    client.close()
+
 def write( document ):
     db.radio_logs.insert(document)
 
