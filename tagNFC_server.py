@@ -63,7 +63,7 @@ try:
                 db.write(dict(del_info.__dict__.items() + message.__dict__.items()))
                 try:
                     print ''.join(message.__dict__['tag'][:4])
-                    cellTag = excel.find(''.join(message.__dict__['tag'][:5]))
+                    cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
                 except:
                     print "no one"
                 else:
