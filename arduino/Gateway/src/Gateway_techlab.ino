@@ -61,12 +61,12 @@ void loop() {
     Serial.print(radio.SENDERID,DEC);
     Serial.print(',');
     Serial.print(1);
+    Serial.print(',');
+    Serial.print(radio.RSSI);
     for (byte i = 0; i < radio.DATALEN; i++) {
       Serial.print(',');
       Serial.print(radio.DATA[i],HEX);
     }
-    Serial.print(',');
-    Serial.print(radio.RSSI);
     Serial.print(',');
     Serial.println('>');
     //Check

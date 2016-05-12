@@ -183,7 +183,7 @@ void setup(){
 
 
 
-char message[7];
+char message[5];
 
 void loop(){
 
