@@ -24,7 +24,7 @@ print "Aggiungi un documento semplice semplice? %r" % db.write({"nome": "paolo",
 print "#"*20
 
 print "test serial"
-print "qualcosa in seriale? %r" % ser.read()
+print "qualcosa in seriale? %r" % ser.readline()
 
 
 

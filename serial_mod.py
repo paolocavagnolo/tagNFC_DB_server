@@ -2,13 +2,16 @@ import serial
 import sys
 
 try:
-    ser = serial.Serial('/dev/ttyAMA0',115200,timeout=1)
+    ser = serial.Serial('/dev/ttyAMA0',115200,timeout=10)
 except ConnectionFailure, e:
     sys.stderr.write("Could not use serial: %s" % e)
     sys.exit(1)
 
 def close():
     ser.close()
+
+def readline():
+    return ser.readline()
 
 def byte2float( data ):
 
