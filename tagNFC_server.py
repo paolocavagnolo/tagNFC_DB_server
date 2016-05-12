@@ -72,7 +72,11 @@ try:
                 #ciao
 
             else:
+                #ciao
                 print "no recog"
+
+        else:
+            print "null"
 
 
 except KeyboardInterrupt:
