@@ -25,7 +25,7 @@ class Energy_m(Delivery_info):
 class Laser_m(Delivery_info):
 
     def __init__(self, payload):
-        self.tag = payload.split(',')[7:12]
+        self.tag = payload.split(',')[6:12]
 
 
 def byte2float( data ):
@@ -63,7 +63,7 @@ try:
                 db.write(dict(del_info.__dict__.items() + message.__dict__.items()))
                 try:
                     print message.__dict__['tag']
-                    cellTag = excel.find(message.__dict__['tag'])        
+                    cellTag = excel.find(message.__dict__['tag'])
                 except:
                     print "no one"
                 else:
