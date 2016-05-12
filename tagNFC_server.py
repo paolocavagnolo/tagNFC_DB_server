@@ -58,7 +58,7 @@ try:
             pl = ser.readline(int(decision.split(' ')[1]))
             print pl
             message = Energy_m(pl)
-            print message
+            print message.__dict__
 
 
         else:
