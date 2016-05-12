@@ -15,12 +15,12 @@ class Delivery_info(object):
         self.ids = payload.split(',')[2]
         self.idr = payload.split(',')[3]
         self.RSSI = payload.split(',')[4]
-        self.idm = payload.split(',')[5]
+        self.idm = payload.split(',')[5].decode("HEX")
 
 class Energy_m(Delivery_info):
 
     def __init__(self, payload):
-        self.idphase = payload.split(',')[6]
+        self.idphase = payload.split(',')[6].decode("HEX")
         self.count = byte2float(payload.split(',')[7:11])
 
 
@@ -51,6 +51,7 @@ try:
 
         pl = ser.readline(1)
         if len(pl) > 2:
+            print pl
             message = Energy_m(pl)
             print message.__dict__
             db.write(message.__dict__)
@@ -58,6 +59,6 @@ try:
         else:
             pass
 
-except EOFError:
+except EOFError, KeyboardInterrupt:
     db.close()
     print "\nBye"
