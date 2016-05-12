@@ -33,9 +33,9 @@ try:
             #open door
             ser.writeline("ciao")
             print "scritto"
-        elif decision.split(' ')[1] == 'r':
+        elif decision.split(' ')[0] == 'r':
             #read one line from serial and print it
-            print ser.readline(decision.split(' ')[2])
+            print ser.readline(decision.split(' ')[1])
         else:
             #ammazzati
             print "ammazzati"
