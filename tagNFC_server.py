@@ -8,10 +8,16 @@ import serial_mod as ser
 import datetime
 import struct
 
-
+print "test gdrive"
 print "Trovi dei Cavagnolo? %r" % excel.find("Cavagnolo")
-print "Cosa c\'e\' in 3,2? %r" % excel.read(3,2)
+print "Cosa c\'e\' in 5,2? %r" % excel.read(3,2)
 print "Scrivi qualcosa in 3,3? %r" % excel.write(3,3,52)
+
+print "-"*10
+
+print "test mongodb"
+print "Trovi dei 2? quanti? %r cosa? %r" % db.read({"ids": "2"})
+print "Aggiungi un documento semplice semplice? %r" % db.write({"nome": "paolo", "cognome": "cavagnolo"})
 
 
 ser.close()
