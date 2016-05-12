@@ -61,6 +61,12 @@ try:
                 #Tag NFC
                 message = Laser_m(pl)
                 db.write(dict(del_info.__dict__.items() + message.__dict__.items()))
+                try:
+                    cellTag = excel.find(message.__dict__['tag'])
+                except:
+                    print "no one"
+                else:
+                    print "Trovato %r %r" % (excel.read(cellTag.row,9),excel.read(cellTag.row,10))
                 print "wrote tag nfc on db"
 
 
