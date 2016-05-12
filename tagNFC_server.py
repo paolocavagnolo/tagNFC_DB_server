@@ -9,7 +9,7 @@ import datetime
 import struct
 
 """<,13110,4,1,65,63,E8,45,90,42,-47,>"""
-class Message(object):
+class Delivery_info(object):
 
     def __init__(self, payload):
         self.abs = payload.split(',')[1]
@@ -18,13 +18,13 @@ class Message(object):
         self.idm = payload.split(',')[4]
         self.RSSI = payload.split(',')[5]
 
-class Energy(Message):
+class Energy_m(Delivery_info):
 
     def __init__(self, payload):
         self.idphase = payload.split(',')[6]
         self.count = byte2float(payload.split(',')[7:11])
 
-class Laser(Message):
+class Laser_m(Delivery_info):
 
     def __init__(self):
         self.idtag = "000000000000"
@@ -66,8 +66,8 @@ try:
         elif primo == 'r' and lenDecision > 1:
             #read one line from serial and put it in the db print it
             pl = ser.readline(int(decision.split(' ')[1]))
-
-            db.write()
+            messagge = Energy_m(pl)
+            print message
 
 
         else:
