@@ -62,7 +62,7 @@ try:
                 message = Laser_m(pl)
                 db.write(dict(del_info.__dict__.items() + message.__dict__.items()))
                 try:
-                    print message.__dict__['tag']
+                    print ''.join(message.__dict__['tag'][:4])
                     cellTag = excel.find(''.join(message.__dict__['tag'][:5]))
                 except:
                     print "no one"
