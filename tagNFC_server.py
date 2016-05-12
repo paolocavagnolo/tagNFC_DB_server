@@ -70,7 +70,7 @@ try:
 
             elif del_info.__dict__['idm'] == 't':
                 #ciao
-
+                print "tick"
             else:
                 #ciao
                 print "no recog"
