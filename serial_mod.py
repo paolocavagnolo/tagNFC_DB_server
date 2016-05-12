@@ -2,21 +2,17 @@ import serial
 import sys
 
 def readline( to ):
-    try:
-        ser = serial.Serial('/dev/ttyAMA0',115200,timeout=to)
-    except ConnectionFailure, e:
-        sys.stderr.write("Could not use serial: %s" % e)
-        sys.exit(1)
+
+    ser = serial.Serial('/dev/ttyAMA0',115200,timeout=to)
+
     line = ser.readline()
     ser.close()
     return line
 
 def writeline( message ):
-    try:
-        ser = serial.Serial('/dev/ttyAMA0',115200,timeout=to)
-    except ConnectionFailure, e:
-        sys.stderr.write("Could not use serial: %s" % e)
-        sys.exit(1)
+
+    ser = serial.Serial('/dev/ttyAMA0',115200,timeout=3)
+
     ser.write(message)
     ser.close()
 
