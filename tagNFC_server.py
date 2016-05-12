@@ -23,6 +23,11 @@ class Energy_m(Delivery_info):
         self.idphase = payload.split(',')[6].decode("HEX")
         self.count = byte2float(payload.split(',')[7:11])
 
+class Laser_m(Delivery_info):
+
+    def __init__(self, payload):
+        self.tag = payload.split(',')[7:13]
+
 
 def byte2float( data ):
 
@@ -51,10 +56,23 @@ try:
 
         pl = ser.readline(1)
         if len(pl) > 2:
-            print pl
-            message = Energy_m(pl)
-            print message.__dict__
-            db.write(message.__dict__)
+            del_info = Delivery_info(pl)
+
+            if del_info.__dict__['idm'] == 'n'
+                #Tag NFC
+                message = Laser_m(pl)
+                print dict(del_info.__dict__.items() + message.__dict__.items())
+
+            elif del_info.__dict__['idm'] == 'e'
+                #Energy Tick
+                message = Energy_m(pl)
+                print dict(del_info.__dict__.items() + message.__dict__.items())
+
+            elif del_info.__dict__['idm'] == 't'
+                #ciao
+
+            else:
+                print "no recog"
 
 
 except KeyboardInterrupt:
