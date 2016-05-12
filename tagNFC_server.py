@@ -16,7 +16,7 @@ print "Scrivi qualcosa in 3,3? %r" % excel.write(3,3,52)
 print "-"*10
 
 print "test mongodb"
-print "Trovi dei 2? quanti? %r cosa? %r" % db.read({"ids": "2"})
+print "Trovi dei 2? quanti? %r cosa? %r" % db.read({"ids": 2})
 print "Aggiungi un documento semplice semplice? %r" % db.write({"nome": "paolo", "cognome": "cavagnolo"})
 
 
