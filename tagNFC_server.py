@@ -58,17 +58,17 @@ try:
         if len(pl) > 2:
             del_info = Delivery_info(pl)
 
-            if del_info.__dict__['idm'] == 'n'
+            if del_info.__dict__['idm'] == 'n':
                 #Tag NFC
                 message = Laser_m(pl)
                 print dict(del_info.__dict__.items() + message.__dict__.items())
 
-            elif del_info.__dict__['idm'] == 'e'
+            elif del_info.__dict__['idm'] == 'e':
                 #Energy Tick
                 message = Energy_m(pl)
                 print dict(del_info.__dict__.items() + message.__dict__.items())
 
-            elif del_info.__dict__['idm'] == 't'
+            elif del_info.__dict__['idm'] == 't':
                 #ciao
 
             else:
