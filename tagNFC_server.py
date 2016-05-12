@@ -35,7 +35,7 @@ try:
             print "scritto"
         elif decision == 'r':
             #read one line from serial and print it
-            print ser.readLine()
+            print ser.readline()
         else:
             #ammazzati
             print "ammazzati"
