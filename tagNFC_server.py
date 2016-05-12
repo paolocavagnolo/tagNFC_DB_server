@@ -7,7 +7,6 @@ import serial_mod as ser
 import datetime
 import struct
 
-"""<,198,4,1,-40,65,62,FC,89,FB,42,>"""
 class Delivery_info(object):
 
     def __init__(self, payload):
@@ -26,7 +25,7 @@ class Energy_m(Delivery_info):
 class Laser_m(Delivery_info):
 
     def __init__(self, payload):
-        self.tag = payload.split(',')[7:13]
+        self.tag = payload.split(',')[7:12]
 
 
 def byte2float( data ):
@@ -61,16 +60,20 @@ try:
             if del_info.__dict__['idm'] == 'n':
                 #Tag NFC
                 message = Laser_m(pl)
-                print dict(del_info.__dict__.items() + message.__dict__.items())
+                db.write(dict(del_info.__dict__.items() + message.__dict__.items()))
+                print "wrote tag nfc on db"
+
 
             elif del_info.__dict__['idm'] == 'e':
                 #Energy Tick
                 message = Energy_m(pl)
-                print dict(del_info.__dict__.items() + message.__dict__.items())
+                db.write(dict(del_info.__dict__.items() + message.__dict__.items()))
+                print "wrote energy tic on db"
 
             elif del_info.__dict__['idm'] == 't':
-                #ciao
+                #Laser Tick
                 print "tick"
+
             else:
                 #ciao
                 print "no recog"
