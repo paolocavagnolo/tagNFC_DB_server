@@ -8,8 +8,7 @@ import serial_mod as ser
 import datetime
 import struct
 
-"""<,13110,4,1,65,63,E8,45,90,42,-47,>"""
-class Delivery_info(object):
+class Energy_m(object):
 
     def __init__(self, payload):
         self.abs = payload.split(',')[1]
@@ -17,10 +16,6 @@ class Delivery_info(object):
         self.idr = payload.split(',')[3]
         self.idm = payload.split(',')[4]
         self.RSSI = payload.split(',')[5]
-
-class Energy_m(Delivery_info):
-
-    def __init__(self, payload):
         self.idphase = payload.split(',')[6]
         self.count = byte2float(payload.split(',')[7:11])
 
