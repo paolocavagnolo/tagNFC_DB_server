@@ -66,6 +66,7 @@ try:
                     cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
                 except:
                     print "no one"
+                    ser.write()
                 else:
                     print "Trovato %r %r" % (excel.read(cellTag.row,9),excel.read(cellTag.row,10))
                 print "wrote tag nfc on db"

@@ -143,6 +143,23 @@ void Blink(byte PIN, int DELAY_MS)
   digitalWrite(PIN, LOW);
 }
 
+float bytes2float(byte a, byte b, byte c, byte d) {
+  float snelheid;
+
+  union u_tag {
+     byte b[4];
+     float fval;
+  } u;
+
+  u.b[0] = a;
+  u.b[1] = b;
+  u.b[2] = c;
+  u.b[3] = d;
+
+  return snelheid = u.fval;
+}
+
+
 long lastPeriod = 0;
 bool readEnable = false;
 bool LaserOn = false;
@@ -157,21 +174,26 @@ bool answered = false;
 bool answered2 = false;
 char tagLife = ' ';
 String mode = "";
-int Cr = 0;
+float Cr = 0;
 int Sk = 0;
-bool timeout = false;
+bool timeout = true;
+long timeout_tick = 0;
 
 
 void loop() {
 
-  //laser off
-  digitalWrite(7, LOW);
-  readEnable = true;
-  answered = false;
-  answered2 = false;
-  timeout = false;
+  //init state
+  if (timeout) {
+    digitalWrite(7, LOW);
+    lc.clearDisplay(0);
+    readEnable = true;
+    answered = false;
+    answered2 = false;
+    timeout = false;
+  }
 
   if (readEnable) {
+    timeout_tick = millis();
     //read tag
     success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &sendSize);
     if (success) {
@@ -200,8 +222,28 @@ void loop() {
     }
     readEnable = false;
   }
-  //end loop
 
+  if (radio.receiveDone()) {
+    timeout_tick = millis();
+    if (radio.ACKRequested()) radio.sendACK();
+    if (radio.DATA[0] == 'c') {
+      Cr = bytes2float(radio.DATA[1],radio.DATA[2],radio.DATA[3],radio.DATA[4]);
+      Sk = int(radio.DATA[5]);
+      printCr((int)(Cr*10),Sk);
+    }
+    else if (radio.DATA[0] == 'o') {
+      Blink(6,1000);
+    }
+
+  }
+
+  //se non succede nulla per più di 5 minuti riparti da capo?
+  if ((millis()-timeout_tick)>30000) {
+    timeout = true;
+    //reset all??
+  }
+
+  //end loop
 }
 
 String hexify(unsigned int n)
@@ -229,13 +271,18 @@ void setDisplay(uint8_t id[]) {
 }
 
 void printCr(int number, int sk) {
-  uint8_t ones, tens, hundreds;
+  uint8_t ones, tens, hundreds, thousands;
+
+
+  thousands = number / 1000;
+  number = number - thousands * 1000;
 
   hundreds = number / 100;
   number = number - hundreds * 100;
 
   tens = number / 10;
   ones = number - tens * 10;
+
 
   lc.clearDisplay(0);
   if (sk == 0) {
@@ -244,7 +291,8 @@ void printCr(int number, int sk) {
   else {
     lc.setChar(0, 7, 'A', false);
   }
+  lc.setDigit(0, 3, thousands, false);
   lc.setDigit(0, 2, hundreds, false);
-  lc.setDigit(0, 1, tens, false);
+  lc.setDigit(0, 1, tens, true);
   lc.setDigit(0, 0, ones, false);
 }
