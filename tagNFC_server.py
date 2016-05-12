@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-
 import gdrive_mod as excel
 import mongodb_mod as db
 import serial_mod as ser
@@ -9,15 +8,19 @@ import datetime
 import struct
 
 """<,198,4,1,-40,65,62,FC,89,FB,42,>"""
-class Energy_m(object):
+class Delivery_info(object):
 
     def __init__(self, payload):
         self.abs = payload.split(',')[1]
         self.ids = payload.split(',')[2]
         self.idr = payload.split(',')[3]
         self.RSSI = payload.split(',')[4]
-        self.idm = payload.split(',')[5].decode("HEX")
-        self.idphase = payload.split(',')[6].decode("HEX")
+        self.idm = payload.split(',')[5]
+
+class Energy_m(Delivery_info):
+
+    def __init__(self, payload):
+        self.idphase = payload.split(',')[6]
         self.count = byte2float(payload.split(',')[7:11])
 
 
@@ -45,26 +48,14 @@ def byte2float( data ):
 
 try:
     while True:
-        decision = raw_input('> ')
-        lenDecision = len(decision.split(' '))
-        primo = decision.split(' ')[0]
 
-        if primo == 'd':
-            #open door
-            ser.writeline("ciao")
-            print "scritto"
-
-        elif primo == 'r' and lenDecision > 1:
-            #read one line from serial and put it in the db print it
-            pl = ser.readline(int(decision.split(' ')[1]))
-            print pl
+        pl = ser.readline(1)
+        if len(pl) > 2:
             message = Energy_m(pl)
-            print message.__dict__
-
+            db.write(message.__dict__)
 
         else:
-            #ammazzati
-            print "ammazzati"
+            pass
 
 except EOFError:
     db.close()
