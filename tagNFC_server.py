@@ -59,6 +59,6 @@ try:
         else:
             pass
 
-except EOFError, KeyboardInterrupt:
+except KeyboardInterrupt:
     db.close()
     print "\nBye"
