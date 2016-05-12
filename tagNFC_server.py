@@ -8,14 +8,15 @@ import serial_mod as ser
 import datetime
 import struct
 
+"""<,198,4,1,-40,65,62,FC,89,FB,42,>"""
 class Energy_m(object):
 
     def __init__(self, payload):
         self.abs = payload.split(',')[1]
         self.ids = payload.split(',')[2]
         self.idr = payload.split(',')[3]
-        self.idm = payload.split(',')[4]
-        self.RSSI = payload.split(',')[5]
+        self.RSSI = payload.split(',')[4]
+        self.idm = payload.split(',')[5].decode("HEX")
         self.idphase = payload.split(',')[6].decode("HEX")
         self.count = byte2float(payload.split(',')[7:11])
 
