@@ -56,8 +56,6 @@ try:
             print message.__dict__
             db.write(message.__dict__)
 
-        else:
-            pass
 
 except KeyboardInterrupt:
     db.close()
