@@ -16,7 +16,7 @@ class Energy_m(object):
         self.idr = payload.split(',')[3]
         self.idm = payload.split(',')[4]
         self.RSSI = payload.split(',')[5]
-        self.idphase = payload.split(',')[6]
+        self.idphase = payload.split(',')[6].decode("HEX")
         self.count = byte2float(payload.split(',')[7:11])
 
 
