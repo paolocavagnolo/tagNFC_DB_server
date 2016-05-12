@@ -52,6 +52,7 @@ try:
         pl = ser.readline(1)
         if len(pl) > 2:
             message = Energy_m(pl)
+            print message.__dict__
             db.write(message.__dict__)
 
         else:
