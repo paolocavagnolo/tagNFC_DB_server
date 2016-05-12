@@ -41,6 +41,5 @@ try:
             print "ammazzati"
 
 except EOFError:
-    ser.close()
     db.close()
     print "\nBye"
