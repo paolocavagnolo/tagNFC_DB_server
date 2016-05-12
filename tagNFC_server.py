@@ -29,13 +29,13 @@ import struct
 try:
     while True:
         decision = raw_input('> ')
-        if decision == 'd':
+        if decision.split(' ')[0] == 'd':
             #open door
             ser.writeline("ciao")
             print "scritto"
-        elif decision == 'r':
+        elif decision.split(' ')[1] == 'r':
             #read one line from serial and print it
-            print ser.readline(20)
+            print ser.readline(decision.split(' ')[2])
         else:
             #ammazzati
             print "ammazzati"
