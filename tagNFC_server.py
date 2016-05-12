@@ -66,6 +66,7 @@ try:
         elif primo == 'r' and lenDecision > 1:
             #read one line from serial and put it in the db print it
             pl = ser.readline(int(decision.split(' ')[1]))
+            print pl
             messagge = Energy_m(pl)
             print message
 
