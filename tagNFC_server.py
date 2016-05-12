@@ -19,11 +19,6 @@ class Energy_m(object):
         self.idphase = payload.split(',')[6]
         self.count = byte2float(payload.split(',')[7:11])
 
-class Laser_m(Delivery_info):
-
-    def __init__(self):
-        self.idtag = "000000000000"
-
 
 def byte2float( data ):
 
