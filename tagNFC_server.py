@@ -59,7 +59,7 @@ try:
     while True:
         #ser.write('i2'+'\0')
         ser.write('j1234567'+'\0')
-        time.sleep(1)
+        #time.sleep(1)
         # pl = ser.readline()
         # if len(pl) > 5:
         #     print "1: read from serial: %r" % pl
