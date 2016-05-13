@@ -8,7 +8,9 @@ import datetime
 import struct
 
 class Delivery_info(object):
-
+"""First part of the transmitted message,
+regarding just the transmission information
+and the kind of data transmitted"""
     def __init__(self, payload):
         self.abs = payload.split(',')[1]
         self.ids = payload.split(',')[2]
@@ -17,19 +19,19 @@ class Delivery_info(object):
         self.idm = payload.split(',')[5].decode("HEX")
 
 class Energy_m(Delivery_info):
-
+"""The phase and the amount of energy"""
     def __init__(self, payload):
         self.idphase = payload.split(',')[6].decode("HEX")
-        self.count = byte2float(payload.split(',')[7:11])
+        self.count = bytes2float(payload.split(',')[7:11])
 
 class Laser_m(Delivery_info):
-
+"""The ID of the tag"""
     def __init__(self, payload):
         self.tag = payload.split(',')[6:12]
 
 
-def byte2float( data ):
-
+def bytes2float( data ):
+"""Pass from 4 bytes to 1 float, with 2 decimal"""
     if (len(data[0])<2):
         data[0] = '0'+data[0]
     if (len(data[1])<2):
@@ -49,12 +51,26 @@ def byte2float( data ):
     return float("{0:.2f}".format(struct.unpack('>f', b)[0]))
 
 
+def float2bytes( data ):
+"""From 4 bytes to 1 float"""
+    byte = [0,0,0,0]
+
+    up = struct.pack('<f', data)
+
+    byte[0] = up[0].encode("HEX")
+    byte[1] = up[1].encode("HEX")
+    byte[2] = up[2].encode("HEX")
+    byte[3] = up[3].encode("HEX")
+
+    return ''.join(byte)
+
+
 
 try:
     while True:
 
         pl = ser.readline(1)
-        if len(pl) > 2:
+        if len(pl) > 2
             print "1: read from serial: %r" % pl
             del_info = Delivery_info(pl)
             print "2: dictionary format: %r" % del_info.__dict__
@@ -69,12 +85,16 @@ try:
                     cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
                 except:
                     print "6: no one"
-                    #ser.write('o')
+                    ser.write('o')
                 else:
                     user = excel.read_row(cellTag.row)
+                    #0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
+                    #1: tagID   #5: Data acc    #9: Cognome     #13: CF         #17: Data annullamento
+                    #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
+                    #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
                     print "6: user: %r" % user
-
-                print "wrote tag nfc on db"
+                    ser.write('c'+float2bytes(float(user[2]))+user[3])
+                    print "7: "
 
 
             elif del_info.__dict__['idm'] == 'e':

@@ -15,7 +15,7 @@ class Energy_m(Delivery_info):
         self.idphase = payload.split(',')[6]
         self.count = byte2float(payload.split(',')[7:11])
 
-def byte2float( data ):
+def bytes2float( data ):
 
     if (len(data[0])<2):
         data[0] = '0'+data[0]
@@ -35,7 +35,17 @@ def byte2float( data ):
 
     return float("{0:.2f}".format(struct.unpack('>f', b)[0]))
 
+def float2bytes( data ):
+    byte = [0,0,0,0]
+    up = struct.pack('<f', data)
+    byte[0] = up[0].encode("HEX")
+    byte[1] = up[1].encode("HEX")
+    byte[2] = up[2].encode("HEX")
+    byte[3] = up[3].encode("HEX")
+    return byte
 
+ex = ['e1', 'fa', '55', '43']
 
-ciao = Energy_m(raw_input('> '))
-print ciao.__dict__
+print bytes2float(ex)
+print ex
+print float2bytes(float(raw_input('f2b> ')))
