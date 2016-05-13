@@ -48,7 +48,7 @@ void setup() {
 #endif
 }
 
-uint8_t idNode;
+int idNode;
 char payload[7];
 
 void loop() {
@@ -75,8 +75,9 @@ void loop() {
 
   if (Serial.available() > 0)
   {
-     idNode = atoi(Serial.read());
+     //char c = Serial.read();
+     //idNode = int(c);
      for (int i=0;i<7;i++) payload[i] = Serial.read();
-     radio.sendWithRetry(idNode, payload, 7);
+     radio.sendWithRetry(2, payload, 7);
   }
 }
