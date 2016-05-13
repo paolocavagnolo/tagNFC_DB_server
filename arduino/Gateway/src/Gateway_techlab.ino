@@ -76,6 +76,6 @@ void loop() {
   if (Serial.available() > 0)
   {
      String message = Serial.readString();
-     radio.sendWithRetry(2, message, len);
+     radio.sendWithRetry(2, message, message.length());
   }
 }
