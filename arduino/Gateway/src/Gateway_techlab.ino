@@ -75,7 +75,13 @@ void loop() {
 
   if (Serial.available() > 0)
   {
-     payload = {0,1,2,3,4,5,6};
+     payload[0] = '0';
+     payload[1] = '0';
+     payload[2] = '0';
+     payload[3] = '0';
+     payload[4] = '0';
+     payload[5] = '0';
+     payload[6] = '1';
      radio.sendWithRetry(2, payload, 7);
   }
 }
