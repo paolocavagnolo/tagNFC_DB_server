@@ -57,8 +57,8 @@ def float2bytes( data ):
 
 try:
     while True:
-        ser.write('i2')
-        ser.write(raw_input('> '))
+        ser.write('i2'+'\0')
+        ser.write(raw_input('> ')+'\0')
     #     pl = ser.readline()
     #     if len(pl) > 5:
     #         print "1: read from serial: %r" % pl
