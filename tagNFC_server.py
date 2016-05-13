@@ -7,6 +7,7 @@ import datetime
 import struct
 import serial
 import sys
+import time
 
 ser = serial.Serial('/dev/ttyAMA0',115200)
 
@@ -56,8 +57,9 @@ def float2bytes( data ):
 
 try:
     while True:
-        ser.write('i2'+'\0')
+        #ser.write('i2'+'\0')
         ser.write('j1234567'+'\0')
+        time.sleep(1)
         # pl = ser.readline()
         # if len(pl) > 5:
         #     print "1: read from serial: %r" % pl
