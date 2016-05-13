@@ -49,7 +49,7 @@ void setup() {
 }
 
 int idNode;
-uint8_t payload[7];
+
 void loop() {
   if (radio.receiveDone())
   {
@@ -81,8 +81,10 @@ void loop() {
        idNode = message.toInt();
      }
      else if (message[0] == 'j') {
-       for (int i=1; i<message.length()-1; i++) {
-         payload[i-1] = message[i];
+       uint8_t payload[7];
+       message.remove(0,1);
+       for (int i=0; i<message.length(); i++) {
+         payload[i] = message[i];
        }
        radio.sendWithRetry(idNode, payload, message.length());
      }
