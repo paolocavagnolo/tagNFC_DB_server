@@ -4,7 +4,6 @@ import sys
 def readline( to ):
 
     ser = serial.Serial('/dev/ttyAMA0',115200,timeout=to)
-
     line = ser.readline()
     ser.close()
     return line
@@ -12,7 +11,6 @@ def readline( to ):
 def writeline( message ):
 
     ser = serial.Serial('/dev/ttyAMA0',115200,timeout=3)
-
     ser.write(message)
     ser.close()
 
