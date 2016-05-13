@@ -87,7 +87,7 @@ try:
                     #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
                     print "6: user: %r" % user
                     ser.writeline('c'+float2bytes(float(user[2]))+user[3])
-                    print "7: "
+                    print "7: %r" % ('c'+float2bytes(float(user[2]))+user[3])
 
 
             elif del_info.__dict__['idm'] == 'e':
