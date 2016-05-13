@@ -56,57 +56,57 @@ def float2bytes( data ):
 
 try:
     while True:
-
-        pl = ser.readline()
-        if len(pl) > 5:
-            print "1: read from serial: %r" % pl
-            incoming = Delivery_info(pl)
-            print "2: dictionary format: %r" % incoming.__dict__
-            if incoming.__dict__['idm'] == 'n':
-                #Tag NFC
-                message = Laser_m(pl)
-                print "3: retrieve important info: %r" % message.__dict__
-                db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
-                print "4: wrote to mongodb: %r" % dict(incoming.__dict__.items() + message.__dict__.items())
-                try:
-                    print "5: finding this tag in gdrive: %r" % ''.join(message.__dict__['tag'][:4])
-                    cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
-                except:
-                    print "6: no one"
-                    ser.write('i'+incoming.__dict__['ids'])
-                    ser.write('o')
-                else:
-                    user = excel.read_row(cellTag.row)
-                    #0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
-                    #1: tagID   #5: Data acc    #9: Cognome     #13: CF         #17: Data annullamento
-                    #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
-                    #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
-                    print "6: user: %r" % user
-                    print "7: Credits: %r" % float(user[2])
-                    print "8: Skill: %r" % user[3]
-                    print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
-                    print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
-                    #ser.write('i'+'2'+'\0') #incoming.__dict__['ids']
-                    #ser.write('j'+'1234'+'\0') #float2bytes(float(user[2]))+user[3]
-                    ser.write('i2'+'\0')
-                    ser.write(raw_input('> ')+'\0')
-
-            elif incoming.__dict__['idm'] == 'e':
-                #Energy Tick
-                message = Energy_m(pl)
-                db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
-                print "wrote energy tic on db"
-
-            elif incoming.__dict__['idm'] == 't':
-                #Laser Tick
-                print "tick"
-
-            else:
-                #ciao
-                print "no recog"
-
-        else:
-            print "0: null"
+        ser.write('i2'+'\0')
+        ser.write('j1234567'+'\0')
+        # pl = ser.readline()
+        # if len(pl) > 5:
+        #     print "1: read from serial: %r" % pl
+        #     incoming = Delivery_info(pl)
+        #     print "2: dictionary format: %r" % incoming.__dict__
+        #     if incoming.__dict__['idm'] == 'n':
+        #         #Tag NFC
+        #         message = Laser_m(pl)
+        #         print "3: retrieve important info: %r" % message.__dict__
+        #         db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
+        #         print "4: wrote to mongodb: %r" % dict(incoming.__dict__.items() + message.__dict__.items())
+        #         try:
+        #             print "5: finding this tag in gdrive: %r" % ''.join(message.__dict__['tag'][:4])
+        #             cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
+        #         except:
+        #             print "6: no one"
+        #             ser.write('i'+incoming.__dict__['ids'])
+        #             ser.write('o')
+        #         else:
+        #             user = excel.read_row(cellTag.row)
+        #             #0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
+        #             #1: tagID   #5: Data acc    #9: Cognome     #13: CF         #17: Data annullamento
+        #             #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
+        #             #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
+        #             print "6: user: %r" % user
+        #             print "7: Credits: %r" % float(user[2])
+        #             print "8: Skill: %r" % user[3]
+        #             print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
+        #             print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
+        #             #ser.write('i'+'2'+'\0') #incoming.__dict__['ids']
+        #             #ser.write('j'+'1234'+'\0') #float2bytes(float(user[2]))+user[3]
+        #
+        #
+        #     elif incoming.__dict__['idm'] == 'e':
+        #         #Energy Tick
+        #         message = Energy_m(pl)
+        #         db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
+        #         print "wrote energy tic on db"
+        #
+        #     elif incoming.__dict__['idm'] == 't':
+        #         #Laser Tick
+        #         print "tick"
+        #
+        #     else:
+        #         #ciao
+        #         print "no recog"
+        #
+        # else:
+        #     print "0: null"
 
 
 except KeyboardInterrupt:
