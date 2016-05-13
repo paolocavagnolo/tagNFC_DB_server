@@ -6,6 +6,10 @@ import serial_mod as ser
 #import plotly_mod as plot
 import datetime
 import struct
+import serial
+import sys
+
+ser = serial.Serial('/dev/ttyAMA0',115200)
 
 class Delivery_info(object):
     def __init__(self, payload):
@@ -54,16 +58,13 @@ def float2bytes( data ):
 
 try:
     while True:
-        ser.writeline('j0')
         pl = ser.readline()
         if len(pl) > 5:
-            ser.writeline('j2')
             print "1: read from serial: %r" % pl
             incoming = Delivery_info(pl)
             print "2: dictionary format: %r" % incoming.__dict__
             if incoming.__dict__['idm'] == 'n':
                 #Tag NFC
-                ser.writeline('j4')
                 message = Laser_m(pl)
                 print "3: retrieve important info: %r" % message.__dict__
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
@@ -73,8 +74,8 @@ try:
                     cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
                 except:
                     print "6: no one"
-                    ser.writeline('i'+incoming.__dict__['ids'])
-                    ser.writeline('o')
+                    ser.write('i'+incoming.__dict__['ids'])
+                    ser.write('o')
                 else:
                     user = excel.read_row(cellTag.row)
                     #0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
@@ -86,8 +87,8 @@ try:
                     print "8: Skill: %r" % user[3]
                     print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
                     print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
-                    ser.writeline(''.join('i'+incoming.__dict__['ids']))
-                    ser.writeline(''.join('j'+float2bytes(float(user[2]))+user[3]))
+                    ser.write(''.join('i'+incoming.__dict__['ids']))
+                    ser.write(''.join('j'+float2bytes(float(user[2]))+user[3]))
 
 
             elif incoming.__dict__['idm'] == 'e':
@@ -110,5 +111,6 @@ try:
 
 except KeyboardInterrupt:
     db.close()
+    ser.close()
 
     print "\nBye"
