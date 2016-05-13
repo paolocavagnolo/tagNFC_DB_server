@@ -75,7 +75,7 @@ void loop() {
 
   if (Serial.available() > 0)
   {
-    len = Serial.available();
+     byte len = Serial.available();
      char payload[len];
      for (byte i=0; i<len; i++) {
        payload[i] = Serial.read();
