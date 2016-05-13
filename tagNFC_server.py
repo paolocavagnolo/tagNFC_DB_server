@@ -88,7 +88,7 @@ try:
                     print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
                     print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
                     ser.write('i'+'2'+'\0') #incoming.__dict__['ids']
-                    ser.write('j'+float2bytes(float(user[2]))+user[3]+'\0')
+                    ser.write('j'+'1234'+'\0') #float2bytes(float(user[2]))+user[3]
 
             elif incoming.__dict__['idm'] == 'e':
                 #Energy Tick
