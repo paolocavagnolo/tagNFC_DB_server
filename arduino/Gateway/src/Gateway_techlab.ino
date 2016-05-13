@@ -78,13 +78,13 @@ void loop() {
      String message = Serial.readString();
      if (message[0] == 'i') {
        message.remove(0);
-       idNode = atoi(message);
+       idNode = message.toInt();
      }
      else if (messagge[0] == 'j') {
        for (int i=1; i<message.length(); i++) {
          payload[i-1] = message[i];
        }
        radio.sendWithRetry(idNode, payload, message.length());
-     }   
+     }
   }
 }
