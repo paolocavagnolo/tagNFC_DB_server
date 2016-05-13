@@ -54,7 +54,6 @@ def float2bytes( data ):
     return struct.pack('<f', data)
 
 
-
 try:
     while True:
 
@@ -87,8 +86,10 @@ try:
                     print "8: Skill: %r" % user[3]
                     print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
                     print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
-                    ser.write('i'+'2'+'\0') #incoming.__dict__['ids']
-                    ser.write('j'+'1234'+'\0') #float2bytes(float(user[2]))+user[3]
+                    #ser.write('i'+'2'+'\0') #incoming.__dict__['ids']
+                    #ser.write('j'+'1234'+'\0') #float2bytes(float(user[2]))+user[3]
+                    ser.write('i2'+'\0')
+                    ser.write('j2222'+'\0')
 
             elif incoming.__dict__['idm'] == 'e':
                 #Energy Tick
