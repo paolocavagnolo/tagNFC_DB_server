@@ -87,13 +87,8 @@ try:
                     print "8: Skill: %r" % user[3]
                     print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
                     print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
-                    #ser.write(''.join('i'+incoming.__dict__['ids']+'\0'))
-                    #ser.write(''.join('j'+float2bytes(float(user[2]))+user[3]+'\0'))
-                    ser.write('i2'+'\0')
-                    ser.write(raw_input('> ')+'\0')
-
-
-
+                    ser.write('i'+2+'\0') #incoming.__dict__['ids']
+                    ser.write('j'+float2bytes(float(user[2]))+user[3]+'\0')
 
             elif incoming.__dict__['idm'] == 'e':
                 #Energy Tick
