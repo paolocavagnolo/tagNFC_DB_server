@@ -49,7 +49,7 @@ void setup() {
 }
 
 int idNode;
-
+uint8_t payload[7];
 void loop() {
   if (radio.receiveDone())
   {
@@ -76,6 +76,15 @@ void loop() {
   if (Serial.available() > 0)
   {
      String message = Serial.readString();
-     radio.sendWithRetry(2, message, message.length());
+
+     payload[0] = message[0];
+     payload[1] = message[1];
+     payload[2] = message[2];
+     payload[3] = message[3];
+     payload[4] = message[4];
+     payload[5] = message[5];
+     payload[6] = message[6];
+
+     radio.sendWithRetry(2, payload, message.length());
   }
 }
