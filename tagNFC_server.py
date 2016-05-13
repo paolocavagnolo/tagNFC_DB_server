@@ -25,6 +25,7 @@ class Laser_m(Delivery_info):
         self.tag = payload.split(',')[6:12]
 
 
+
 def bytes2float( data ):
     if (len(data[0])<2):
         data[0] = '0'+data[0]
@@ -57,20 +58,22 @@ try:
         pl = ser.readline()
         if len(pl) > 5:
             print "1: read from serial: %r" % pl
-            del_info = Delivery_info(pl)
-            print "2: dictionary format: %r" % del_info.__dict__
-            if del_info.__dict__['idm'] == 'n':
+            incoming = Delivery_info(pl)
+            print "2: dictionary format: %r" % incoming.__dict__
+            if incoming.__dict__['idm'] == 'n':
                 #Tag NFC
                 message = Laser_m(pl)
                 print "3: retrieve important info: %r" % message.__dict__
-                db.write(dict(del_info.__dict__.items() + message.__dict__.items()))
-                print "4: wrote to mongodb: %r" % dict(del_info.__dict__.items() + message.__dict__.items())
+                db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
+                print "4: wrote to mongodb: %r" % dict(incoming.__dict__.items() + message.__dict__.items())
                 try:
                     print "5: finding this tag in gdrive: %r" % ''.join(message.__dict__['tag'][:4])
                     cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
                 except:
+                    outgoing =
                     print "6: no one"
-                    ser.write('o')
+                    ser.writeline('i'+incoming.__dict__['ids'])
+                    ser.writeline('o')
                 else:
                     user = excel.read_row(cellTag.row)
                     #0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
@@ -80,17 +83,18 @@ try:
                     print "6: user: %r" % user
                     print "7: Credits: %r" % float(user[2])
                     print "8: Skill: %r" % user[3]
-                    ser.writeline('cc')
+                    ser.writeline('i'+incoming.__dict__['ids'])
+                    ser.writeline('j'+float2bytes(float(user[2]))+user[3])
                     print "9: %r" % ('c'+float2bytes(float(user[2]))+user[3])
 
 
-            elif del_info.__dict__['idm'] == 'e':
+            elif incoming.__dict__['idm'] == 'e':
                 #Energy Tick
                 message = Energy_m(pl)
-                db.write(dict(del_info.__dict__.items() + message.__dict__.items()))
+                db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
                 print "wrote energy tic on db"
 
-            elif del_info.__dict__['idm'] == 't':
+            elif incoming.__dict__['idm'] == 't':
                 #Laser Tick
                 print "tick"
 
