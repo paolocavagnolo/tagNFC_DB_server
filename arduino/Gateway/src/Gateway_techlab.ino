@@ -75,9 +75,7 @@ void loop() {
 
   if (Serial.available() > 0)
   {
-     //char c = Serial.read();
-     //idNode = int(c);
-     for (int i=0;i<7;i++) payload[i] = Serial.read();
+     payload = {0,1,2,3,4,5,6};
      radio.sendWithRetry(2, payload, 7);
   }
 }

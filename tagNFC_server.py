@@ -54,7 +54,7 @@ def float2bytes( data ):
 try:
     while True:
 
-        pl = ser.readline(1)
+        pl = ser.readline()
         if len(pl) > 5:
             print "1: read from serial: %r" % pl
             del_info = Delivery_info(pl)
@@ -80,7 +80,7 @@ try:
                     print "6: user: %r" % user
                     print "7: Credits: %r" % float(user[2])
                     print "8: Skill: %r" % user[3]
-                    ser.writeline('c'+'\x00')
+                    ser.writeline('cc')
                     print "9: %r" % ('c'+float2bytes(float(user[2]))+user[3])
 
 
@@ -104,4 +104,6 @@ try:
 
 except KeyboardInterrupt:
     db.close()
+    ser.close()
+
     print "\nBye"
