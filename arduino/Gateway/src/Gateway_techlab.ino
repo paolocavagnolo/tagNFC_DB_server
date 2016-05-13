@@ -75,6 +75,7 @@ void loop() {
 
   if (Serial.available() > 0)
   {
+     Serial.read();
      payload[0] = '0';
      payload[1] = '0';
      payload[2] = '0';
