@@ -77,14 +77,11 @@ void loop() {
   {
      String message = Serial.readString();
 
-     payload[0] = message[0];
-     payload[1] = message[1];
-     payload[2] = message[2];
-     payload[3] = message[3];
-     payload[4] = message[4];
-     payload[5] = message[5];
-     payload[6] = message[6];
+     char id = message[0];
+     for (int i=1; i<message.length(); i++) {
+       payload[i-1] = message[i];
+     }
 
-     radio.sendWithRetry(atoi(message[0]), payload, message.length());
+     radio.sendWithRetry(atoi(id), payload, message.length());
   }
 }
