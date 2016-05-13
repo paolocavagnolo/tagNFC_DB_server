@@ -75,11 +75,7 @@ void loop() {
 
   if (Serial.available() > 0)
   {
-     byte len = Serial.available();
-     char payload[len];
-     for (byte i=0; i<len; i++) {
-       payload[i] = Serial.read();
-     }
-     radio.sendWithRetry(2, payload, len);
+     String message = Serial.readString()
+     radio.sendWithRetry(2, message, len);
   }
 }
