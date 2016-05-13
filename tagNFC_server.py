@@ -55,7 +55,7 @@ try:
     while True:
 
         pl = ser.readline(1)
-        if len(pl) > 2:
+        if len(pl) > 5:
             print "1: read from serial: %r" % pl
             del_info = Delivery_info(pl)
             print "2: dictionary format: %r" % del_info.__dict__
@@ -79,7 +79,7 @@ try:
                     #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
                     print "6: user: %r" % user
                     ser.writeline('c'+float2bytes(float(user[2]))+user[3])
-                    print "7: %r" % ('c'+float2bytes(float(user[2]))+user[3])
+                    print "7: %r" % ('2'+'c'+float2bytes(float(user[2]))+user[3])
 
 
             elif del_info.__dict__['idm'] == 'e':
