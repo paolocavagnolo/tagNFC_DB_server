@@ -34,7 +34,6 @@ Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
 byte sendSize = 0;
 boolean requestACK = false;
-
 //7Segment side
 LedControl lc = LedControl(17, 16, 15, 1);
 
@@ -127,7 +126,7 @@ ISR(TIMER1_OVF_vect)
   if (ar > 15) {
     if (!trig) trigTime = millis();
     trig = true;
-    if ((millis() - trigTime) > (2023-ar)) {
+    if ((millis() - trigTime) > (2023 - ar)) {
       tick++;
       trigTime = 0;
       trig = false;
@@ -147,8 +146,8 @@ float bytes2float(byte a, byte b, byte c, byte d) {
   float snelheid;
 
   union u_tag {
-     byte b[4];
-     float fval;
+    byte b[4];
+    float fval;
   } u;
 
   u.b[0] = a;
@@ -225,20 +224,18 @@ void loop() {
 
   if (radio.receiveDone()) {
     timeout_tick = millis();
+    byte inByte[5];
+    for (byte i = 0; i < radio.DATALEN; i++) {
+      inByte[i] = radio.DATA[i];
+    }
+    Cr = bytes2float(inByte[0],inByte[1],inByte[2],inByte[3]);
+    Sk = (int)inByte[4]-48;
+    printCr(Cr,Sk);
     if (radio.ACKRequested()) radio.sendACK();
-    if (radio.DATA[0] == 'c') {
-      Cr = bytes2float(radio.DATA[1],radio.DATA[2],radio.DATA[3],radio.DATA[4]);
-      Sk = int(radio.DATA[5]);
-      printCr((int)(Cr*10),Sk);
-    }
-    else if (radio.DATA[0] == 'o') {
-      Blink(6,1000);
-    }
-
   }
 
   //se non succede nulla per più di 5 minuti riparti da capo?
-  if ((millis()-timeout_tick)>30000) {
+  if ((millis() - timeout_tick) > 300000) {
     timeout = true;
     //reset all??
   }
@@ -270,9 +267,9 @@ void setDisplay(uint8_t id[]) {
   lc.setChar(0, 0, hexify(id[3])[0], false);
 }
 
-void printCr(int number, int sk) {
+void printCr(float num, int sk) {
   uint8_t ones, tens, hundreds, thousands;
-
+  int number = num * 10;
 
   thousands = number / 1000;
   number = number - thousands * 1000;
@@ -291,8 +288,22 @@ void printCr(int number, int sk) {
   else {
     lc.setChar(0, 7, 'A', false);
   }
-  lc.setDigit(0, 3, thousands, false);
-  lc.setDigit(0, 2, hundreds, false);
-  lc.setDigit(0, 1, tens, true);
-  lc.setDigit(0, 0, ones, false);
+  if (num > 0) {
+    lc.setDigit(0, 0, ones, false);
+    lc.setDigit(0, 1, tens, true);
+    if (num >= 10) {
+      lc.setDigit(0, 2, hundreds, false);
+      if (num >= 100) {
+        lc.setDigit(0, 3, thousands, false);
+      }
+    }
+  }
+  else {
+    lc.setDigit(0, 0, 0, false);
+    lc.setDigit(0, 1, 0, true);
+  }
+  
+  
+  
+  
 }
