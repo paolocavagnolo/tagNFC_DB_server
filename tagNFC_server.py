@@ -80,7 +80,7 @@ try:
                     print "6: user: %r" % user
                     print "7: Credits: %r" % float(user[2])
                     print "8: Skill: %r" % user[3]
-                    ser.writeline('c'+float2bytes(float(user[2]))+user[3])
+                    ser.writeline('abcde')
                     print "9: %r" % ('c'+float2bytes(float(user[2]))+user[3])
 
 
