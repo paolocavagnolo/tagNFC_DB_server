@@ -54,14 +54,16 @@ def float2bytes( data ):
 
 try:
     while True:
-
+        ser.writeline('j0')
         pl = ser.readline()
         if len(pl) > 5:
+            ser.writeline('j2')
             print "1: read from serial: %r" % pl
             incoming = Delivery_info(pl)
             print "2: dictionary format: %r" % incoming.__dict__
             if incoming.__dict__['idm'] == 'n':
                 #Tag NFC
+                ser.writeline('j4')
                 message = Laser_m(pl)
                 print "3: retrieve important info: %r" % message.__dict__
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
