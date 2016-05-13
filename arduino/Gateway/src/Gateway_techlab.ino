@@ -49,7 +49,6 @@ void setup() {
 }
 
 int idNode;
-char payload[7];
 
 void loop() {
   if (radio.receiveDone())
@@ -73,16 +72,13 @@ void loop() {
     if (radio.ACKRequested()) radio.sendACK();
   }
 
-  if (Serial.available() > 0)
+  byte len = Serial.available()
+  if (len > 0)
   {
-     Serial.read();
-     payload[0] = '0';
-     payload[1] = '0';
-     payload[2] = '0';
-     payload[3] = '0';
-     payload[4] = '0';
-     payload[5] = '0';
-     payload[6] = '1';
-     radio.sendWithRetry(2, payload, 7);
+     char payload[len];
+     for (byte i=0; i<len; i++) {
+       payload[i] = Serial.read();
+     }
+     radio.sendWithRetry(2, payload, len);
   }
 }
