@@ -72,9 +72,10 @@ void loop() {
     if (radio.ACKRequested()) radio.sendACK();
   }
 
-  byte len = Serial.available();
-  if (len > 0)
+
+  if (Serial.available() > 0)
   {
+    len = Serial.available();
      char payload[len];
      for (byte i=0; i<len; i++) {
        payload[i] = Serial.read();
