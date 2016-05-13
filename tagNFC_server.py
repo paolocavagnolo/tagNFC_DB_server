@@ -8,9 +8,6 @@ import datetime
 import struct
 
 class Delivery_info(object):
-"""First part of the transmitted message,
-regarding just the transmission information
-and the kind of data transmitted"""
     def __init__(self, payload):
         self.abs = payload.split(',')[1]
         self.ids = payload.split(',')[2]
@@ -19,19 +16,16 @@ and the kind of data transmitted"""
         self.idm = payload.split(',')[5].decode("HEX")
 
 class Energy_m(Delivery_info):
-"""The phase and the amount of energy"""
     def __init__(self, payload):
         self.idphase = payload.split(',')[6].decode("HEX")
         self.count = bytes2float(payload.split(',')[7:11])
 
 class Laser_m(Delivery_info):
-"""The ID of the tag"""
     def __init__(self, payload):
         self.tag = payload.split(',')[6:12]
 
 
 def bytes2float( data ):
-"""Pass from 4 bytes to 1 float, with 2 decimal"""
     if (len(data[0])<2):
         data[0] = '0'+data[0]
     if (len(data[1])<2):
@@ -52,7 +46,6 @@ def bytes2float( data ):
 
 
 def float2bytes( data ):
-"""From 4 bytes to 1 float"""
     byte = [0,0,0,0]
 
     up = struct.pack('<f', data)
