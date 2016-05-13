@@ -80,7 +80,7 @@ void loop() {
        message.remove(0);
        idNode = message.toInt();
      }
-     else if (messagge[0] == 'j') {
+     else if (message[0] == 'j') {
        for (int i=1; i<message.length(); i++) {
          payload[i-1] = message[i];
        }
