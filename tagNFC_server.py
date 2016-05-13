@@ -82,9 +82,10 @@ try:
                     print "6: user: %r" % user
                     print "7: Credits: %r" % float(user[2])
                     print "8: Skill: %r" % user[3]
+                    print "9: %r" % 'i'+incoming.__dict__['ids']
+                    print "10: %r" % 'j'+float2bytes(float(user[2]))+user[3]
                     ser.writeline('i'+incoming.__dict__['ids'])
                     ser.writeline('j'+float2bytes(float(user[2]))+user[3])
-                    print "9: %r" % ('c'+float2bytes(float(user[2]))+user[3])
 
 
             elif incoming.__dict__['idm'] == 'e':
