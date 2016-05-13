@@ -55,20 +55,25 @@ try:
 
         pl = ser.readline(1)
         if len(pl) > 2:
+            print "1: read from serial: %r" % pl
             del_info = Delivery_info(pl)
-
+            print "2: dictionary format: %r" % del_info.__dict__
             if del_info.__dict__['idm'] == 'n':
                 #Tag NFC
                 message = Laser_m(pl)
+                print "3: retrieve important info: %r" % message.__dict__
                 db.write(dict(del_info.__dict__.items() + message.__dict__.items()))
+                print "4: wrote to mongodb: %r" % dict(del_info.__dict__.items() + message.__dict__.items())
                 try:
-                    print ''.join(message.__dict__['tag'][:4])
+                    print "5: finding this tag in gdrive: %r" % ''.join(message.__dict__['tag'][:4])
                     cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
                 except:
-                    print "no one"
-                    ser.write()
+                    print "6: no one"
+                    #ser.write('o')
                 else:
-                    print "Trovato %r %r" % (excel.read(cellTag.row,9),excel.read(cellTag.row,10))
+                    user = excel.read_row(cellTag.row)
+                    print "6: user: %r" % user
+
                 print "wrote tag nfc on db"
 
 
@@ -87,7 +92,7 @@ try:
                 print "no recog"
 
         else:
-            print "null"
+            print "0: null"
 
 
 except KeyboardInterrupt:

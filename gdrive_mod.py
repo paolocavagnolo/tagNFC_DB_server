@@ -14,8 +14,11 @@ worksheet = sh.worksheet("soci")
 def find( string ):
     return worksheet.find(string)
 
-def read( row, col ):
+def read_one( row, col ):
     return worksheet.cell(row, col).value
+
+def read_row( row ):
+    return worksheet.row_values(row)
 
 def write( row, col, value):
     return worksheet.update_cell(row, col, value)
