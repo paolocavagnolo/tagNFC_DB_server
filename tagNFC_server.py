@@ -63,7 +63,7 @@ try:
     while True:
 
         pl = ser.readline(1)
-        if len(pl) > 2
+        if len(pl) > 2:
             print "1: read from serial: %r" % pl
             del_info = Delivery_info(pl)
             print "2: dictionary format: %r" % del_info.__dict__
