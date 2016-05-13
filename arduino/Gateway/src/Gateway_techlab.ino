@@ -76,12 +76,15 @@ void loop() {
   if (Serial.available() > 0)
   {
      String message = Serial.readString();
-
-     String id = message[0];
-     for (int i=1; i<message.length(); i++) {
-       payload[i-1] = message[i];
+     if (message[0] == 'i') {
+       message.remove(0);
+       idNode = atoi(message);
      }
-
-     radio.sendWithRetry(atoi(id), payload, message.length());
+     else if (messagge[0] == 'j') {
+       for (int i=1; i<message.length(); i++) {
+         payload[i-1] = message[i];
+       }
+       radio.sendWithRetry(idNode, payload, message.length());
+     }   
   }
 }
