@@ -70,7 +70,6 @@ try:
                     print "5: finding this tag in gdrive: %r" % ''.join(message.__dict__['tag'][:4])
                     cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
                 except:
-                    outgoing =
                     print "6: no one"
                     ser.writeline('i'+incoming.__dict__['ids'])
                     ser.writeline('o')
