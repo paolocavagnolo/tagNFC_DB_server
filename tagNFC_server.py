@@ -74,8 +74,12 @@ try:
                     cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
                 except:
                     print "6: no one"
-                    ser.write('i'+incoming.__dict__['ids'])
-                    ser.write('o')
+                    #'a': ok        #'e': energy tick   #'i': node id       #'m': debug msg         #'q':           #'u':           #'y':
+                    #'b':           #'f':               #'j': serial msg    #'n': NFC id            #'r':           #'v':           #'z':
+                    #'c': credit    #'g':               #'k': test          #'o': no one            #'s':           #'w':
+                    #'d':           #'h':               #'l': laser tick    #'p': 3d print tick     #'t': timeout   #'x':
+                    ser.write('i'+incoming.__dict__['ids']+'\0')
+                    ser.write('j'+'o'+'\0')
                 else:
                     user = excel.read_row(cellTag.row)
                     #0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
@@ -89,7 +93,7 @@ try:
                     print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
                     ser.write('i'+incoming.__dict__['ids']+'\0')
                     time.sleep(1)
-                    ser.write('j'+float2bytes(float(user[2]))+user[3]+'\0') 
+                    ser.write('j'+float2bytes(float(user[2]))+user[3]+'\0')
 
 
             elif incoming.__dict__['idm'] == 'e':

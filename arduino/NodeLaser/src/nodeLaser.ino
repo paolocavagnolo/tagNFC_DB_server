@@ -29,6 +29,9 @@ Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
 //pinout
 #define LED           9 // Moteinos have LEDs on D9
+#define RED           5 // Led
+#define GREEN         6 // Led
+#define LASER         7 // Relay
 #define FLASH_SS      8 // and FLASH SS on D8
 //*********************************************************************************************
 
@@ -47,9 +50,9 @@ RFM69 radio;
 #endif
 
 void setup() {
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
-  pinMode(7, OUTPUT);
+  pinMode(RED, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+  pinMode(LASER, OUTPUT);
 
   Serial.begin(SERIAL_BAUD);
 
@@ -183,12 +186,16 @@ void loop() {
 
   //init state
   if (timeout) {
-    digitalWrite(7, LOW);
+    digitalWrite(LASER, LOW);
+    digitalWrite(6, LOW);
+    digitalWrite(5, LOW);
     lc.clearDisplay(0);
     readEnable = true;
     answered = false;
     answered2 = false;
     timeout = false;
+    Cr = -1;
+    Sk = 0;
   }
 
   if (readEnable) {
@@ -218,20 +225,50 @@ void loop() {
       uiDisp[5] = uid[6];
       setDisplay(uiDisp);
 
+      readEnable = false;
     }
-    readEnable = false;
   }
 
   if (radio.receiveDone()) {
     timeout_tick = millis();
-    byte inByte[5];
-    for (byte i = 0; i < radio.DATALEN; i++) {
-      inByte[i] = radio.DATA[i];
-    }
-    Cr = bytes2float(inByte[0],inByte[1],inByte[2],inByte[3]);
-    Sk = (int)inByte[4]-48;
-    printCr(Cr,Sk);
+    byte inByte[radio.DATALEN];
     if (radio.ACKRequested()) radio.sendACK();
+
+    if (radio.DATALEN) > 2 {
+      for (byte i = 0; i < radio.DATALEN; i++) {
+        inByte[i] = radio.DATA[i];
+      }
+
+      Cr = bytes2float(inByte[0],inByte[1],inByte[2],inByte[3]);
+      Sk = (int)inByte[4]-48;
+      printCr(Cr,Sk);
+    }
+    else {
+      Blink(RED,1000);
+    }
+    
+
+  }
+
+
+
+  if (Cr >= 0) {
+    printCr(Cr,Sk);
+    digitalWrite(GREEN, HIGH);
+    digitalWrite(LASER, HIGH);
+
+    if (tick > 10) {
+      timeout_tick = millis();
+      if (radio.sendWithRetry(GATEWAYID, "t", 1)) {
+        Serial.print(" ok!");
+        tick -= 10;
+      }
+    }
+
+  }
+  else {
+    digitalWrite(LASER, LOW);
+    digitalWrite(GREEN, LOW);
   }
 
   //se non succede nulla per più di 5 minuti riparti da capo?
@@ -302,8 +339,8 @@ void printCr(float num, int sk) {
     lc.setDigit(0, 0, 0, false);
     lc.setDigit(0, 1, 0, true);
   }
-  
-  
-  
-  
+
+
+
+
 }
