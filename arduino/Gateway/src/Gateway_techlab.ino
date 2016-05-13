@@ -77,7 +77,7 @@ void loop() {
   {
      String message = Serial.readString();
 
-     char id = message[0];
+     String id = message[0];
      for (int i=1; i<message.length(); i++) {
        payload[i-1] = message[i];
      }
