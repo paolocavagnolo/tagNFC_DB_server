@@ -10,5 +10,5 @@ def readline():
 def writeline( message ):
     ser.write(message)
 
-def close()
+def close():
     ser.close()
