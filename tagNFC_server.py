@@ -78,8 +78,10 @@ try:
                     #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
                     #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
                     print "6: user: %r" % user
+                    print "7: Credits: %r" % float(user[2])
+                    print "8: Skill: %r" % user[3]
                     ser.writeline('c'+float2bytes(float(user[2]))+user[3])
-                    print "7: %r" % ('c'+float2bytes(float(user[2]))+user[3])
+                    print "9: %r" % ('c'+float2bytes(float(user[2]))+user[3])
 
 
             elif del_info.__dict__['idm'] == 'e':
