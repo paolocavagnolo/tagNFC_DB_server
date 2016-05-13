@@ -107,6 +107,5 @@ try:
 
 except KeyboardInterrupt:
     db.close()
-    ser.close()
 
     print "\nBye"
