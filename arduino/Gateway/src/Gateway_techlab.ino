@@ -77,7 +77,7 @@ void loop() {
   {
      String message = Serial.readString();
      if (message[0] == 'i') {
-       message.remove(0);
+       message.remove(0,1);
        idNode = message.toInt();
      }
      else if (message[0] == 'j') {
