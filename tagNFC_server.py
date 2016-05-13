@@ -89,7 +89,7 @@ try:
                     #ser.write('i'+'2'+'\0') #incoming.__dict__['ids']
                     #ser.write('j'+'1234'+'\0') #float2bytes(float(user[2]))+user[3]
                     ser.write('i2'+'\0')
-                    ser.write('j2222'+'\0')
+                    ser.write(raw_input('> ')+'\0')
 
             elif incoming.__dict__['idm'] == 'e':
                 #Energy Tick
