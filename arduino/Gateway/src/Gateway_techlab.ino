@@ -85,6 +85,6 @@ void loop() {
      payload[5] = message[5];
      payload[6] = message[6];
 
-     radio.sendWithRetry((int)payload[0], payload, message.length());
+     radio.sendWithRetry(payload[0], payload, message.length());
   }
 }
