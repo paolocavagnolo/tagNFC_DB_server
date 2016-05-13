@@ -46,16 +46,8 @@ def bytes2float( data ):
 
 
 def float2bytes( data ):
-    byte = [0,0,0,0]
 
-    up = struct.pack('<f', data)
-
-    byte[0] = up[0].encode("HEX")
-    byte[1] = up[1].encode("HEX")
-    byte[2] = up[2].encode("HEX")
-    byte[3] = up[3].encode("HEX")
-
-    return ''.join(byte)
+    return struct.pack('<f', data)
 
 
 
