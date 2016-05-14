@@ -79,6 +79,7 @@ try:
                     #'c': credit    #'g':               #'k': test          #'o': no one            #'s':           #'w':
                     #'d':           #'h':               #'l': laser tick    #'p': 3d print tick     #'t': timeout   #'x':
                     ser.write('i'+incoming.__dict__['ids']+'\0')
+                    time.sleep(1)
                     ser.write('j'+float2bytes(float('1.1'))+'0'+'\0')
                 else:
                     user = excel.read_row(cellTag.row)
