@@ -23,5 +23,4 @@ scheduler.start()
 
 
 while True:
-    gdrive.open()
     open('testGdrivex.txt','a+').write(gdrive.read_one(5,5)+' '+now.strftime("%Y-%m-%d %H:%M"))
