@@ -54,18 +54,20 @@ def float2bytes( data ):
 
     return struct.pack('<f', data)
 
-def sync_db_gdrive():
-
-    #read last row of gdrive
-    excel.read_row_log()
-    #take from there to end from mongodb and put it to gdrive
-
+# def sync_db_gdrive():
+#
+#     #read last row of gdrive
+#     id_list = excel.read_col_log(1)
+#     last = id_list[-1]
+#
+#     #take from there to end from mongodb and put it to gdrive
+#
 
 
 
 scheduler = BackgroundScheduler()
 reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=50)
-sync_db_gdrive = scheduler.add_job(sync_db_gdrive, 'interval', minutes=30)
+# sync_db_gdrive = scheduler.add_job(sync_db_gdrive, 'interval', minutes=30)
 scheduler.start()
 
 try:
@@ -96,8 +98,7 @@ try:
                     ser.write('i'+incoming.__dict__['ids']+'\0')
                     time.sleep(1)
                     ser.write('j'+float2bytes(float('-1.1'))+'0'+'\0')
-                    #write on DB the message sent
-                    excel.write_log()
+
 
                 else:
                     user = excel.read_row(cellTag.row)

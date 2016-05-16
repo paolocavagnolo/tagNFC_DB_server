@@ -16,5 +16,5 @@ def read( document ):
     f = db.radio_logs.find(document)
     return c, f
 
-def read_all():
-    return db.radio_logs.find()
+def read_one():
+    return db.radio_logs.find_one()

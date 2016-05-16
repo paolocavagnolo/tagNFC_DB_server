@@ -34,6 +34,11 @@ def read_col_log( col ):
     worksheet = sh.worksheet("log")
     return worksheet.col_values(col)
 
+def read_raw_log( raw ):
+
+    worksheet = sh.worksheet("log")
+    return worksheet.raw_values(raw)
+
 def write( row, col, value):
 
     worksheet = sh.worksheet("soci")
