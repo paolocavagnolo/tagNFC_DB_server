@@ -81,6 +81,9 @@ try:
                     ser.write('i'+incoming.__dict__['ids']+'\0')
                     time.sleep(1)
                     ser.write('j'+float2bytes(float('-1.1'))+'0'+'\0')
+
+                    
+
                 else:
                     user = excel.read_row(cellTag.row)
                     #0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
