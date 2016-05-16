@@ -11,7 +11,7 @@ for item in linea:
     print "guardo %r" % item,
     for titolo in titoli:
         print "e lo confronto con %r" % titolo
-        j++
+        j = j + 1
         if item == titolo:
             excel.write_log(2,j,linea[item])
     j = 0
