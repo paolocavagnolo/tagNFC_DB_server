@@ -8,6 +8,7 @@ import struct
 import serial
 import sys
 import time
+from apscheduler.schedulers.background import BackgroundScheduler
 
 ser = serial.Serial('/dev/ttyAMA0',115200)
 
@@ -27,7 +28,6 @@ class Energy_m(Delivery_info):
 class Laser_m(Delivery_info):
     def __init__(self, payload):
         self.tag = payload.split(',')[6:12]
-
 
 
 def bytes2float( data ):
@@ -54,6 +54,19 @@ def float2bytes( data ):
 
     return struct.pack('<f', data)
 
+def sync_db_gdrive():
+
+    #read last row of gdrive
+    excel.read_row_log()
+    #take from there to end from mongodb and put it to gdrive
+
+
+
+
+scheduler = BackgroundScheduler()
+reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=50)
+sync_db_gdrive = scheduler.add_job(sync_db_gdrive, 'interval', minutes=30)
+scheduler.start()
 
 try:
     while True:
@@ -63,11 +76,13 @@ try:
             print "1: read from serial: %r" % pl
             incoming = Delivery_info(pl)
             print "2: dictionary format: %r" % incoming.__dict__
+
             if incoming.__dict__['idm'] == 'n':
                 #Tag NFC
                 message = Laser_m(pl)
                 print "3: retrieve important info: %r" % message.__dict__
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
+
                 print "4: wrote to mongodb: %r" % dict(incoming.__dict__.items() + message.__dict__.items())
                 try:
                     print "5: finding this tag in gdrive: %r" % ''.join(message.__dict__['tag'][:4])
@@ -81,8 +96,8 @@ try:
                     ser.write('i'+incoming.__dict__['ids']+'\0')
                     time.sleep(1)
                     ser.write('j'+float2bytes(float('-1.1'))+'0'+'\0')
-
-                    
+                    #write on DB the message sent
+                    excel.write_log()
 
                 else:
                     user = excel.read_row(cellTag.row)
