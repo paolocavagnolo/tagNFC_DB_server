@@ -15,3 +15,6 @@ def read( document ):
     c = db.radio_logs.find(document).count()
     f = db.radio_logs.find(document)
     return c, f
+
+def read_all():
+    return db.radio_logs.find()
