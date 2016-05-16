@@ -10,7 +10,8 @@ for item in linea:
     print "guardo %r" % item,
     for titolo in titoli:
         print "e lo confronto con %r" % titolo
-
+        if item == titolo:
+            print "beccato"
 
 
 #write
