@@ -34,10 +34,10 @@ def read_col_log( col ):
     worksheet = sh.worksheet("log")
     return worksheet.col_values(col)
 
-def read_raw_log( raw ):
+def read_raw_log( row ):
 
     worksheet = sh.worksheet("log")
-    return worksheet.raw_values(raw)
+    return worksheet.row_values(row)
 
 def write( row, col, value):
 
