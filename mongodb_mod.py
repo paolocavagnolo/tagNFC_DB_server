@@ -20,5 +20,5 @@ def read_one():
     return db.radio_logs.find_one()
 
 def read_last():
-    tutti = db.radio_logs.find({abs:{$gt: 0}})
+    tutti = db.radio_logs.find({'abs':{'$gt': 0}})
     return tutti
