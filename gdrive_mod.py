@@ -34,7 +34,7 @@ def read_col_log( col ):
     worksheet = sh.worksheet("log")
     return worksheet.col_values(col)
 
-def read_raw_log( row ):
+def read_row_log( row ):
 
     worksheet = sh.worksheet("log")
     return worksheet.row_values(row)
@@ -44,14 +44,7 @@ def write( row, col, value):
     worksheet = sh.worksheet("soci")
     return worksheet.update_cell(row, col, value)
 
-def write_log( row, value):
+def write_log( row, col, value):
 
     worksheet = sh.worksheet("log")
-    # Select a range
-    cell_list = worksheet.range(''.join('A'+row+':'+'D'+row))  #('A1:C7')
-
-    for cell in cell_list:
-        cell.value = value[cell]
-
-    # Update in batch
-    return worksheet.update_cells(cell_list)
+    return worksheet.update_cell(row, col, value)
