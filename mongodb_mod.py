@@ -21,4 +21,4 @@ def read_one():
 
 def read_last():
     tutti = db.radio_logs.find({})
-    return tutti[-1]
+    return tutti
