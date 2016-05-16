@@ -28,7 +28,7 @@ def read_row( row ):
     return worksheet.row_values(row)
 
 def write( row, col, value):
-    
+
     sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
     worksheet = sh.worksheet("soci")
     return worksheet.update_cell(row, col, value)
