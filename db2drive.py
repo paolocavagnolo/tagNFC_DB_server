@@ -1,20 +1,20 @@
 import gdrive_mod as excel
 import mongodb_mod as db
 
-#read a line
-linea = db.read_one()
+#read the first line
 titoli = excel.read_row_log(1)
 
 #match key with column
-j = 0
-for item in linea:
-    print "guardo %r" % item,
-    for titolo in titoli:
-        print "e lo confronto con %r" % titolo
-        j = j + 1
-        if item == titolo:
-            excel.write_log(2,j,linea[item])
+def update_linea( row , linea):
     j = 0
+    for item in linea:
+        print "guardo %r" % item,
+        for titolo in titoli:
+            print "e lo confronto con %r" % titolo
+            j = j + 1
+            if item == titolo:
+                excel.write_log(row,j,linea[item])
 
-
-#write
+#
+l = db.read_last()
+print l
