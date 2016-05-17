@@ -52,7 +52,7 @@ def write_log( row, col, value):
     worksheet = sh.worksheet("log")
     return worksheet.update_cell(row, col, value)
 
-def update_linea( row , linea):
+def update_linea( row , linea, titoli):
 
     for item in linea:
         print "guardo %r" % item,

@@ -31,6 +31,13 @@ class Laser_m(Delivery_info):
     def __init__(self, payload):
         self.tag = ''.join(payload.split(',')[6:12])
 
+class Session(object):
+    def __init__(self, num, tempo, tagID):
+        self.id = num
+        self.time = tempo
+        self.tag = tagID
+        self.nome = ""
+
 
 def bytes2float( data ):
     if (len(data[0])<2):
@@ -98,6 +105,8 @@ scheduler.start()
 #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
 #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
 
+id_session = 0
+
 try:
     while True:
         print "waiting for serial bytes"
@@ -112,6 +121,8 @@ try:
                 #Tag NFC
                 message = Laser_m(pl)
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)]))
+                id_session = id_session + 1
+                new_session = Session(id_session, now, message.__dict__['tag'])
                 print "wrote on db: %r" % dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)])
                 try:
                     print "search for user with that tag: %r" % message.__dict__['tag'][:8]
@@ -148,11 +159,13 @@ try:
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)]))
                 print "wrote on db_log: %r" % dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)])
                 db.write_energy(dict(message.__dict__.items() + [('time',now)] + [('nodeID',4)]))
-                open('buffer_plot.txt','a+').write(now.strftime('%Y/%m/%d %H:%M:%S') + ',' + '4' + ',' + ',' + message.__dict__['idphase'] + ',' + str(message.__dict__['count']) + '\n')
+                open('buffer_plot.txt','a+').write(now.strftime('%Y/%m/%d %H:%M:%S') + ',' + '4' + ',' + message.__dict__['idphase'] + ',' + str(message.__dict__['count']) + '\n')
 
             elif incoming.__dict__['idm'] == 't':
                 #Laser Tick
                 print "laser tick"
+                #open a session
+
 
 
 
