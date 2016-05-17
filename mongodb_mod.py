@@ -25,3 +25,11 @@ def read_last_N( N ):
     for item in tutti:
         malloppo.append(item)
     return malloppo
+
+def write_energy():
+    db.energy.insert(document)
+    
+def read_energy():
+    c = db.energy.find(document).count()
+    f = db.energy.find(document)
+    return c, f

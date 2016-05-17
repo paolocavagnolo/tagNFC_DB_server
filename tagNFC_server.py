@@ -55,6 +55,9 @@ def float2bytes( data ):
     return struct.pack('<f', data)
 
 def db2drive_log():
+    print '#'*10
+    print "DB2DRIVE_LOG!!!"
+    print '#'*10
     titoli = excel.read_row_log(1)
     records = db.read_last_N(50)
     l = 2
@@ -62,11 +65,25 @@ def db2drive_log():
         excel.update_linea(l, document)
         l = l + 1
 
+def plotgo:
+    x = []
 
+    #prendi roba dal file
+    ff = open('buffer_plot.txt','a+')
+
+    for line in ff:
+        if line.split(',')[1] == '4'
+
+    #manda su plotly
+
+    #tronca il file
+    ff.truncate()
+    ff.close()
 
 scheduler = BackgroundScheduler()
-reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=50)
-sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', minutes=30)
+reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=60)
+sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', seconds=10)
+#data2plotly = scheduler.add_job(plotgo, 'interval', minutes=60)
 scheduler.start()
 
 #'a': ok        #'e': energy tick   #'i': node id       #'m': debug msg         #'q':           #'u':           #'y':
@@ -127,11 +144,15 @@ try:
                 print "energy tick"
                 message = Energy_m(pl)
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)]))
-                print "wrote on db: %r" % dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)])
+                print "wrote on db_log: %r" % dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)])
+                db.write_energy(dict(message.__dict__.items() + [('time',now)] + [('nodeID',4)]))
+                open('buffer_plot.txt','a+').write(now + ',' + '4' + ',' + ',' + message.__dict__['idphase'] + ',' + message.__dict__['count'])
 
             elif incoming.__dict__['idm'] == 't':
                 #Laser Tick
                 print "laser tick"
+
+
 
             else:
                 #ciao

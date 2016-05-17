@@ -22,7 +22,7 @@ def byte2float( bytess ):
 
     bytecc = [byte4, byte3, byte2, byte1]
     b = ''.join(chr(i) for i in bytecc)
-
+    
     return float("{0:.2f}".format(struct.unpack('>f', b)[0]))
 
 #collect point

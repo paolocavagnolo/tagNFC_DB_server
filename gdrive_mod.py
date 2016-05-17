@@ -9,6 +9,9 @@ sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjN
 
 
 def open():
+    print "#"*20
+    print "REOPENED DRIVE!!!!"
+    print "#"*20
     scope = ['https://spreadsheets.google.com/feeds']
     credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/Documents/techlab-tag-nfc-b3f2a2929d98.json', scope)
     gc = gspread.authorize(credentials)
@@ -59,4 +62,3 @@ def update_linea( row , linea):
             j = j + 1
             if item == titolo:
                 write_log(row,j,linea[item])
-    
