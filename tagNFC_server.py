@@ -108,7 +108,7 @@ scheduler.start()
 #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
 #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
 
-id_session = excel.read_session(1,1)
+id_session = int(excel.read_session(1,1))
 
 try:
     while True:
