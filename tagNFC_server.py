@@ -134,9 +134,10 @@ try:
 
             else:
                 #ciao
+                print "cose strane"
 
         else:
-
+            print "waiting for serial bytes"
 
 except KeyboardInterrupt:
     db.close()
