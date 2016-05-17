@@ -67,6 +67,6 @@ def read_session( row, col):
     worksheet = sh.worksheet("open_session")
     return worksheet.cell(row, col).value
 
-def write_session( row, col):
+def write_session( row, col, value):
     worksheet = sh.worksheet("open_session")
     return worksheet.update_cell(row, col, value)
