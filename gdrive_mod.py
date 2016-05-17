@@ -48,3 +48,15 @@ def write_log( row, col, value):
 
     worksheet = sh.worksheet("log")
     return worksheet.update_cell(row, col, value)
+
+def update_linea( row , linea):
+
+    for item in linea:
+        print "guardo %r" % item,
+        j = 0
+        for titolo in titoli:
+            print "e lo confronto con %r" % titolo
+            j = j + 1
+            if item == titolo:
+                write_log(row,j,linea[item])
+    

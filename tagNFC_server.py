@@ -54,21 +54,20 @@ def float2bytes( data ):
 
     return struct.pack('<f', data)
 
-# def sync_db_gdrive():
-#
-#     #read last row of gdrive
-#     id_list = excel.read_col_log(1)
-#     last = id_list[-1]
-#
-#     #take from there to end from mongodb and put it to gdrive
-#
+def db2drive_log():
+    titoli = excel.read_row_log(1)
+    records = db.read_last_N(10)
+    l = 2
+    for document in records:
+        excel.update_linea(l, document)
+        l = l + 1
 
 
 
 scheduler = BackgroundScheduler()
-reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=50)
-# sync_db_gdrive = scheduler.add_job(sync_db_gdrive, 'interval', minutes=30)
-scheduler.start()
+#reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=50)
+#sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', minutes=30)
+#scheduler.start()
 
 try:
     while True:
@@ -84,20 +83,20 @@ try:
                 message = Laser_m(pl)
                 print "3: retrieve important info: %r" % message.__dict__
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
-
                 print "4: wrote to mongodb: %r" % dict(incoming.__dict__.items() + message.__dict__.items())
+                
                 try:
                     print "5: finding this tag in gdrive: %r" % ''.join(message.__dict__['tag'][:4])
-                    cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
+                    #cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
                 except:
                     print "6: no one"
                     #'a': ok        #'e': energy tick   #'i': node id       #'m': debug msg         #'q':           #'u':           #'y':
                     #'b':           #'f':               #'j': serial msg    #'n': NFC id            #'r':           #'v':           #'z':
                     #'c': credit    #'g':               #'k': test          #'o': no one            #'s':           #'w':
                     #'d':           #'h':               #'l': laser tick    #'p': 3d print tick     #'t': timeout   #'x':
-                    ser.write('i'+incoming.__dict__['ids']+'\0')
-                    time.sleep(1)
-                    ser.write('j'+float2bytes(float('-1.1'))+'0'+'\0')
+                    #ser.write('i'+incoming.__dict__['ids']+'\0')
+                    #time.sleep(1)
+                    #ser.write('j'+float2bytes(float('-1.1'))+'0'+'\0')
 
 
                 else:
@@ -111,16 +110,16 @@ try:
                     print "8: Skill: %r" % user[3]
                     print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
                     print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
-                    ser.write('i'+incoming.__dict__['ids']+'\0')
-                    time.sleep(1)
-                    ser.write('j'+float2bytes(float(user[2]))+user[3]+'\0')
+                    #ser.write('i'+incoming.__dict__['ids']+'\0')
+                    #time.sleep(1)
+                    #ser.write('j'+float2bytes(float(user[2]))+user[3]+'\0')
 
 
             elif incoming.__dict__['idm'] == 'e':
                 #Energy Tick
                 message = Energy_m(pl)
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
-                print "wrote energy tic on db"
+                print "wrote energy tic on db: %r \n" % dict(incoming.__dict__.items() + message.__dict__.items())
 
             elif incoming.__dict__['idm'] == 't':
                 #Laser Tick
