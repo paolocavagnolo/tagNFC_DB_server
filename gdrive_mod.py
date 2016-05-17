@@ -62,3 +62,11 @@ def update_linea( row , linea, titoli):
             j = j + 1
             if item == titolo:
                 write_log(row,j,linea[item])
+
+def read_session( row, col):
+    worksheet = sh.worksheet("open_session")
+    return worksheet.cell(row, col).value
+
+def write_session( row, col):
+    worksheet = sh.worksheet("open_session")
+    return worksheet.update_cell(row, col, value)

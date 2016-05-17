@@ -32,11 +32,14 @@ class Laser_m(Delivery_info):
         self.tag = ''.join(payload.split(',')[6:12])
 
 class Session(object):
-    def __init__(self, num, tempo, tagID):
+    def __init__(self, num, tempo, tagID, cr):
         self.id = num
         self.time = tempo
         self.tag = tagID
-        self.nome = ""
+        self.cr = 0
+
+    mail = ""
+
 
 
 def bytes2float( data ):
@@ -68,10 +71,10 @@ def db2drive_log():
     print "DB2DRIVE_LOG!!!"
     print '#'*10
     titoli = excel.read_row_log(1)
-    records = db.read_last_N(50)
+    records = db.read_last_N(3)
     l = 2
     for document in records:
-        excel.update_linea(l, document)
+        excel.update_linea(l, document, titoli)
         l = l + 1
 
 # def plotgo():
@@ -90,8 +93,8 @@ def db2drive_log():
 #     ff.close()
 
 scheduler = BackgroundScheduler()
-reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=60)
-sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', minutes=30)
+#reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=2)
+sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', minutes=1)
 #data2plotly = scheduler.add_job(plotgo, 'interval', minutes=60)
 scheduler.start()
 
@@ -105,7 +108,7 @@ scheduler.start()
 #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
 #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
 
-id_session = 0
+id_session = excel.read_session(1,1)
 
 try:
     while True:
@@ -120,9 +123,15 @@ try:
                 print "laser: %r" % (incoming.__dict__)
                 #Tag NFC
                 message = Laser_m(pl)
+
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)]))
+
                 id_session = id_session + 1
-                new_session = Session(id_session, now, message.__dict__['tag'])
+                laser_session = Session(id_session, now, message.__dict__['tag'],0)
+                excel.write_session(id_session+1,1,id_session)
+                excel.write_session(id_session+1,2,now)
+                excel.write_session(id_session+1,3,laser_session.tag)
+
                 print "wrote on db: %r" % dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)])
                 try:
                     print "search for user with that tag: %r" % message.__dict__['tag'][:8]
@@ -143,6 +152,8 @@ try:
                     #fine someone!
                     print "find someone!"
                     user = excel.read_row(cellTag.row)
+                    laser_session.mail = user[7]
+                    excel.write_session(id_session+1,4,laser_session.mail)
 
                     ser.write('i'+incoming.__dict__['ids']+'\0')
                     time.sleep(1)
@@ -164,7 +175,26 @@ try:
             elif incoming.__dict__['idm'] == 't':
                 #Laser Tick
                 print "laser tick"
-                #open a session
+
+                # update credit
+                Cr_old = user[2]
+                Cr_new = Cr_old-(0.2-(0.1*user[3]))
+
+                laser_session.cr = laser_session.cr + (0.2-(0.1*user[3]))
+
+                # write it on excel
+                excel.write(cellTag.row, 2, Cr_new)
+
+                # send the new credit on the laser display
+                ser.write('i'+incoming.__dict__['ids']+'\0')
+                time.sleep(1)
+                ser.write('j'+float2bytes(float(Cr_new))+user[3]+'\0')
+
+                # update the session
+                excel.write_session(id_session+1,5,laser_session.cr)
+
+                db.write(dict(incoming.__dict__.items() + [('time',now)]))
+
 
 
 
