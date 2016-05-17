@@ -71,7 +71,7 @@ def db2drive_log():
     print "DB2DRIVE_LOG!!!"
     print '#'*10
     titoli = excel.read_row_log(1)
-    records = db.read_last_N(3)
+    records = db.read_last_N(10)
     l = 2
     for document in records:
         excel.update_linea(l, document, titoli)
@@ -94,7 +94,7 @@ def db2drive_log():
 
 scheduler = BackgroundScheduler()
 #reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=2)
-sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', minutes=1)
+sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', minutes=5)
 #data2plotly = scheduler.add_job(plotgo, 'interval', minutes=60)
 scheduler.start()
 
