@@ -22,4 +22,5 @@ def read_one():
 def read_last():
     tutti = db.radio_logs.find().skip(db.radio_logs.count() - 1)
     for item in tutti:
-        return item
+        print item
+        
