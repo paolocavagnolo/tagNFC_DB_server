@@ -84,7 +84,7 @@ try:
                 print "3: retrieve important info: %r" % message.__dict__
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
                 print "4: wrote to mongodb: %r" % dict(incoming.__dict__.items() + message.__dict__.items())
-                
+
                 try:
                     print "5: finding this tag in gdrive: %r" % ''.join(message.__dict__['tag'][:4])
                     #cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
@@ -100,7 +100,7 @@ try:
 
 
                 else:
-                    user = excel.read_row(cellTag.row)
+                    #user = excel.read_row(cellTag.row)
                     #0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
                     #1: tagID   #5: Data acc    #9: Cognome     #13: CF         #17: Data annullamento
                     #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
