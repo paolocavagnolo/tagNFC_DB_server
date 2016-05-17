@@ -1,7 +1,7 @@
 import gdrive_mod as excel
 import mongodb_mod as db
 
-read the first line
+# read the first line
 titoli = excel.read_row_log(1)
 
 #match key with column
