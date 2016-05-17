@@ -27,7 +27,7 @@ class Energy_m(Delivery_info):
 
 class Laser_m(Delivery_info):
     def __init__(self, payload):
-        self.tag = payload.split(',')[6:12]
+        self.tag = ''.join(payload.split(',')[6:12])
 
 
 def bytes2float( data ):
@@ -74,6 +74,7 @@ try:
 
         pl = ser.readline()
         if len(pl) > 5:
+            now = datetime.datetime.now()
             print "1: read from serial: %r" % pl
             incoming = Delivery_info(pl)
             print "2: dictionary format: %r" % incoming.__dict__
@@ -82,12 +83,11 @@ try:
                 #Tag NFC
                 message = Laser_m(pl)
                 print "3: retrieve important info: %r" % message.__dict__
-                db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
-                print "4: wrote to mongodb: %r" % dict(incoming.__dict__.items() + message.__dict__.items())
+                db.write(dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)]))
 
                 try:
-                    print "5: finding this tag in gdrive: %r" % ''.join(message.__dict__['tag'][:4])
-                    cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
+                    print "5: finding this tag in gdrive: %r" % message.__dict__['tag'][:4]
+                    cellTag = excel.find(message.__dict__['tag'][:4])
                 except:
                     print "6: no one"
                     #'a': ok        #'e': energy tick   #'i': node id       #'m': debug msg         #'q':           #'u':           #'y':
@@ -118,8 +118,7 @@ try:
             elif incoming.__dict__['idm'] == 'e':
                 #Energy Tick
                 message = Energy_m(pl)
-                db.write(dict(incoming.__dict__.items() + message.__dict__.items()))
-                print "wrote energy tic on db: %r \n" % dict(incoming.__dict__.items() + message.__dict__.items())
+                db.write(dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)]))
 
             elif incoming.__dict__['idm'] == 't':
                 #Laser Tick
