@@ -131,6 +131,7 @@ try:
 
             elif incoming.__dict__['idm'] == 't':
                 #Laser Tick
+                print "laser tick"
 
             else:
                 #ciao
