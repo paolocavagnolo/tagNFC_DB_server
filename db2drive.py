@@ -16,12 +16,10 @@ def update_linea( row , linea):
                 excel.write_log(row,j,linea[item])
 
 
-records = db.read_last_N(100)
+records = db.read_last_N(20)
 
 l = 1
 
 for document in records:
-    print document
-    print l
+    update_linea(l, document)
     l = l + 1
-    #update_linea(l, document)
