@@ -8,9 +8,11 @@ import struct
 import serial
 import sys
 import time
+import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 
 ser = serial.Serial('/dev/ttyAMA0',115200)
+logging.basicConfig()
 
 class Delivery_info(object):
     def __init__(self, payload):
@@ -82,7 +84,7 @@ def db2drive_log():
 
 scheduler = BackgroundScheduler()
 reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=60)
-sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', seconds=10)
+sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', minutes=30)
 #data2plotly = scheduler.add_job(plotgo, 'interval', minutes=60)
 scheduler.start()
 
@@ -146,7 +148,7 @@ try:
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)]))
                 print "wrote on db_log: %r" % dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)])
                 db.write_energy(dict(message.__dict__.items() + [('time',now)] + [('nodeID',4)]))
-                open('buffer_plot.txt','a+').write(now.strftime('%Y/%m/%d %H:%M:%S') + ',' + '4' + ',' + ',' + message.__dict__['idphase'] + ',' + str(message.__dict__['count']))
+                open('buffer_plot.txt','a+').write(now.strftime('%Y/%m/%d %H:%M:%S') + ',' + '4' + ',' + ',' + message.__dict__['idphase'] + ',' + str(message.__dict__['count']) + '\n')
 
             elif incoming.__dict__['idm'] == 't':
                 #Laser Tick
