@@ -105,11 +105,11 @@ try:
                     #1: tagID   #5: Data acc    #9: Cognome     #13: CF         #17: Data annullamento
                     #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
                     #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
-                    print "6: user: %r" % user
-                    print "7: Credits: %r" % float(user[2])
-                    print "8: Skill: %r" % user[3]
-                    print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
-                    print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
+                    # print "6: user: %r" % user
+                    # print "7: Credits: %r" % float(user[2])
+                    # print "8: Skill: %r" % user[3]
+                    # print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
+                    # print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
                     #ser.write('i'+incoming.__dict__['ids']+'\0')
                     #time.sleep(1)
                     #ser.write('j'+float2bytes(float(user[2]))+user[3]+'\0')
