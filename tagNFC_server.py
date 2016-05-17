@@ -69,67 +69,73 @@ scheduler = BackgroundScheduler()
 #sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', minutes=30)
 #scheduler.start()
 
+#'a': ok        #'e': energy tick   #'i': node id       #'m': debug msg         #'q':           #'u':           #'y':
+#'b':           #'f':               #'j': serial msg    #'n': NFC id            #'r':           #'v':           #'z':
+#'c': credit    #'g':               #'k': test          #'o': no one            #'s':           #'w':
+#'d':           #'h':               #'l': laser tick    #'p': 3d print tick     #'t': timeout   #'x':
+
+#0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
+#1: tagID   #5: Data acc    #9: Cognome     #13: CF         #17: Data annullamento
+#2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
+#3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
+
 try:
     while True:
-
+        print "waiting for serial bytes"
         pl = ser.readline()
         if len(pl) > 5:
+            print "recieved %r" % (pl)
             now = datetime.datetime.now()
-            print "1: read from serial: %r" % pl
             incoming = Delivery_info(pl)
-            print "2: dictionary format: %r" % incoming.__dict__
 
             if incoming.__dict__['idm'] == 'n':
+                print "laser: %r" % (incoming.__dict__)
                 #Tag NFC
                 message = Laser_m(pl)
-                print "3: retrieve important info: %r" % message.__dict__
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)]))
-
+                print "wrote on db: %r" % dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)])
                 try:
-                    print "5: finding this tag in gdrive: %r" % message.__dict__['tag'][:4]
-                    cellTag = excel.find(message.__dict__['tag'][:4])
+                    print "search for user with that tag: %r" % message.__dict__['tag'][:8]
+                    cellTag = excel.find(message.__dict__['tag'][:8])
+
                 except:
-                    print "6: no one"
-                    #'a': ok        #'e': energy tick   #'i': node id       #'m': debug msg         #'q':           #'u':           #'y':
-                    #'b':           #'f':               #'j': serial msg    #'n': NFC id            #'r':           #'v':           #'z':
-                    #'c': credit    #'g':               #'k': test          #'o': no one            #'s':           #'w':
-                    #'d':           #'h':               #'l': laser tick    #'p': 3d print tick     #'t': timeout   #'x':
+                    #no one
+                    print "no one"
                     ser.write('i'+incoming.__dict__['ids']+'\0')
                     time.sleep(1)
                     ser.write('j'+float2bytes(float('-1.1'))+'0'+'\0')
 
+                    now = datetime.datetime.now()
+                    db.write({'time':now, 'ids':1, 'idr':2, 'idm':'c', 'Cr':-1.1, 'Sk':0})
+                    print "wrote on db: %r" % {'time':now, 'ids':1, 'idr':2, 'idm':'c', 'Cr':-1.1, 'Sk':0}
 
                 else:
+                    #fine someone!
+                    print "find someone!"
                     user = excel.read_row(cellTag.row)
-                    #0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
-                    #1: tagID   #5: Data acc    #9: Cognome     #13: CF         #17: Data annullamento
-                    #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
-                    #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
-                    print "6: user: %r" % user
-                    print "7: Credits: %r" % float(user[2])
-                    print "8: Skill: %r" % user[3]
-                    print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
-                    print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
+
                     ser.write('i'+incoming.__dict__['ids']+'\0')
                     time.sleep(1)
                     ser.write('j'+float2bytes(float(user[2]))+user[3]+'\0')
 
+                    now = datetime.datetime.now()
+                    db.write({'time':now, 'ids':1, 'idr':2, 'idm':'c', 'Cr':float(user[2]), 'Sk':user[3]})
+                    print "wrote on db: %r" % {'time':now, 'ids':1, 'idr':2, 'idm':'c', 'Cr':float(user[2]), 'Sk':user[3]}
 
             elif incoming.__dict__['idm'] == 'e':
                 #Energy Tick
+                print "energy tick"
                 message = Energy_m(pl)
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)]))
+                print "wrote on db: %r" % dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)])
 
             elif incoming.__dict__['idm'] == 't':
                 #Laser Tick
-                print "tick"
 
             else:
                 #ciao
-                print "no recog"
 
         else:
-            print "0: null"
 
 
 except KeyboardInterrupt:
