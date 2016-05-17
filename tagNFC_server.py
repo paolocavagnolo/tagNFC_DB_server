@@ -178,7 +178,7 @@ try:
 
                 # update credit
                 Cr_old = user[2]
-                Cr_new = Cr_old-(0.2-(0.1*user[3]))
+                Cr_new = Cr_old-(0.2-(0.1*float(user[3])))
 
                 laser_session.cr = laser_session.cr + (0.2-(0.1*user[3]))
 
