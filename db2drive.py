@@ -18,7 +18,7 @@ def update_linea( row , linea):
 
 records = db.read_last_N(1)
 
-l = 1
+l = 2
 
 for document in records:
     update_linea(l, document)
