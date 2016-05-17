@@ -16,5 +16,5 @@ import mongodb_mod as db
 #                 excel.write_log(row,j,linea[item])
 
 #
-l = db.read_last()
+l = db.read_last_N(100)
 print l
