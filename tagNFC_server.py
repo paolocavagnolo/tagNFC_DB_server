@@ -56,7 +56,7 @@ def float2bytes( data ):
 
 def db2drive_log():
     titoli = excel.read_row_log(1)
-    records = db.read_last_N(10)
+    records = db.read_last_N(50)
     l = 2
     for document in records:
         excel.update_linea(l, document)
@@ -65,9 +65,9 @@ def db2drive_log():
 
 
 scheduler = BackgroundScheduler()
-#reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=50)
-#sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', minutes=30)
-#scheduler.start()
+reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=50)
+sync_db_gdrive_log = scheduler.add_job(db2drive_log, 'interval', minutes=30)
+scheduler.start()
 
 #'a': ok        #'e': energy tick   #'i': node id       #'m': debug msg         #'q':           #'u':           #'y':
 #'b':           #'f':               #'j': serial msg    #'n': NFC id            #'r':           #'v':           #'z':
