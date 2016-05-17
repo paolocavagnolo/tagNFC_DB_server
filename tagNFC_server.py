@@ -146,7 +146,7 @@ try:
                 db.write(dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)]))
                 print "wrote on db_log: %r" % dict(incoming.__dict__.items() + message.__dict__.items() + [('time',now)])
                 db.write_energy(dict(message.__dict__.items() + [('time',now)] + [('nodeID',4)]))
-                open('buffer_plot.txt','a+').write(now.strftime('%Y/%m/%d %H:%M:%S') + ',' + '4' + ',' + ',' + message.__dict__['idphase'] + ',' + message.__dict__['count'])
+                open('buffer_plot.txt','a+').write(now.strftime('%Y/%m/%d %H:%M:%S') + ',' + '4' + ',' + ',' + message.__dict__['idphase'] + ',' + str(message.__dict__['count'])
 
             elif incoming.__dict__['idm'] == 't':
                 #Laser Tick
