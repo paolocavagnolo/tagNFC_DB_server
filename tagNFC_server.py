@@ -87,32 +87,32 @@ try:
 
                 try:
                     print "5: finding this tag in gdrive: %r" % ''.join(message.__dict__['tag'][:4])
-                    #cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
+                    cellTag = excel.find(''.join(message.__dict__['tag'][:4]))
                 except:
                     print "6: no one"
                     #'a': ok        #'e': energy tick   #'i': node id       #'m': debug msg         #'q':           #'u':           #'y':
                     #'b':           #'f':               #'j': serial msg    #'n': NFC id            #'r':           #'v':           #'z':
                     #'c': credit    #'g':               #'k': test          #'o': no one            #'s':           #'w':
                     #'d':           #'h':               #'l': laser tick    #'p': 3d print tick     #'t': timeout   #'x':
-                    #ser.write('i'+incoming.__dict__['ids']+'\0')
-                    #time.sleep(1)
-                    #ser.write('j'+float2bytes(float('-1.1'))+'0'+'\0')
+                    ser.write('i'+incoming.__dict__['ids']+'\0')
+                    time.sleep(1)
+                    ser.write('j'+float2bytes(float('-1.1'))+'0'+'\0')
 
 
                 else:
-                    #user = excel.read_row(cellTag.row)
+                    user = excel.read_row(cellTag.row)
                     #0: id      #4: Data rich   #8: Nome        #12: Residenza  #16: Quota 2016
                     #1: tagID   #5: Data acc    #9: Cognome     #13: CF         #17: Data annullamento
                     #2: Cr      #6: (tutore)    #10: Data Nas   #14: Qualifica
                     #3: Sk      #7: Mail        #11: Luogo      #15: Quota 2015
-                    # print "6: user: %r" % user
-                    # print "7: Credits: %r" % float(user[2])
-                    # print "8: Skill: %r" % user[3]
-                    # print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
-                    # print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
-                    #ser.write('i'+incoming.__dict__['ids']+'\0')
-                    #time.sleep(1)
-                    #ser.write('j'+float2bytes(float(user[2]))+user[3]+'\0')
+                    print "6: user: %r" % user
+                    print "7: Credits: %r" % float(user[2])
+                    print "8: Skill: %r" % user[3]
+                    print "9: %r" % ''.join('i'+incoming.__dict__['ids'])
+                    print "10: %r" % ''.join('j'+float2bytes(float(user[2]))+user[3])
+                    ser.write('i'+incoming.__dict__['ids']+'\0')
+                    time.sleep(1)
+                    ser.write('j'+float2bytes(float(user[2]))+user[3]+'\0')
 
 
             elif incoming.__dict__['idm'] == 'e':
