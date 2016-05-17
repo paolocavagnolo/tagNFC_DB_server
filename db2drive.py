@@ -13,7 +13,7 @@ def update_linea( row , linea):
             print "e lo confronto con %r" % titolo
             j = j + 1
             if item == titolo:
-                excel.write_log(2,j,linea[item])
+                excel.write_log(2,j,'x')#linea[item] 
 
 
 records = db.read_last_N(1)
