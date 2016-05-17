@@ -65,20 +65,20 @@ def db2drive_log():
         excel.update_linea(l, document)
         l = l + 1
 
-def plotgo:
-    x = []
-
-    #prendi roba dal file
-    ff = open('buffer_plot.txt','a+')
-
-    for line in ff:
-        if line.split(',')[1] == '4'
-
-    #manda su plotly
-
-    #tronca il file
-    ff.truncate()
-    ff.close()
+# def plotgo():
+#     x = []
+#
+#     #prendi roba dal file
+#     ff = open('buffer_plot.txt','a+')
+#
+#     for line in ff:
+#         if line.split(',')[1] == '4'
+#
+#     #manda su plotly
+#
+#     #tronca il file
+#     ff.truncate()
+#     ff.close()
 
 scheduler = BackgroundScheduler()
 reopen_gdrive = scheduler.add_job(excel.open, 'interval', minutes=60)
