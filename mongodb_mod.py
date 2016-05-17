@@ -19,7 +19,9 @@ def read( document ):
 def read_one():
     return db.radio_logs.find_one()
 
-def read_last():
-    tutti = db.radio_logs.find().skip(db.radio_logs.count() - 10)
+def read_last_N( N ):
+    tutti = db.radio_logs.find().skip(db.radio_logs.count() - N)
+    malloppo = []
     for item in tutti:
-        print item
+        malloppo.append(item)
+    return malloppo
