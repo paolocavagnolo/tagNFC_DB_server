@@ -58,6 +58,9 @@ msg2 = '<,5969,2,1,-44,6E,3B,C2,72,62,33,81,>\r\n'
 a_msg = radioPkt(msg2)
 print a_msg.tag
 
+ser = serial.Serial('/dev/ttyAMA0',115200)
+logging.basicConfig()
+
 try:
     while True:
         pl = ser.readline()
