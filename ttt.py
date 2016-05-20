@@ -64,8 +64,9 @@ logging.basicConfig()
 try:
     while True:
         pl = ser.readline()
-        print pl
+        if (pl[0] == '<')
+            print "letto %r di lunghezza %r" % (pl, len(pl))
 
 except:
     ser.close()
-    print bye
+    print "bye"
