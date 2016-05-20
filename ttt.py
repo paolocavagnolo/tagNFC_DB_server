@@ -55,9 +55,6 @@ def bytes2float( data ):
 msg1 = '<,5977,4,1,-41,65,63,B9,8A,B9,42,>'
 msg2 = '<,5969,2,1,-44,6E,3B,C2,72,62,33,81,>\r\n'
 
-a_msg = radioPkt(msg2)
-print a_msg.tag
-
 ser = serial.Serial('/dev/ttyAMA0',115200)
 logging.basicConfig()
 
@@ -66,6 +63,8 @@ try:
         pl = ser.readline()
         if (pl[0] == '<'):
             print "letto %r di lunghezza %r" % (pl, len(pl))
+            a_msg = radioPkt(pl)
+            print a_msg.__dict__
 
 except:
     ser.close()
