@@ -19,7 +19,7 @@ class mongoDB(object):
         return c, f
 
     def write(self, document):
-        return self.collection.insert_one(document).inserted_id
+        return self.collection.insert(document)
 
     def read_last_N(self, N):
         alls = self.collection.find().skip(self.collection.count() - N)
@@ -27,5 +27,3 @@ class mongoDB(object):
         for item in alls:
             malloppo.append(item)
         return malloppo
-
-    
