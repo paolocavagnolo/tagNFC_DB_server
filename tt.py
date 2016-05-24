@@ -1,0 +1,3 @@
+from ppp import *
+
+ciao()

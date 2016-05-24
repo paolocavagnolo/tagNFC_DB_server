@@ -110,6 +110,7 @@ scheduler.start()
 
 id_session = int(excel.read_session(1,1))
 
+
 try:
     while True:
         print "waiting for serial bytes"

@@ -1,41 +1,4 @@
-// **********************************************************************************
-// This sketch is an example of how wireless programming can be achieved with a Moteino
-// that was loaded with a custom 1k bootloader (DualOptiboot) that is capable of loading
-// a new sketch from an external SPI flash chip
-// The sketch includes logic to receive the new sketch 'over-the-air' and store it in
-// the FLASH chip, then restart the Moteino so the bootloader can continue the job of
-// actually reflashing the internal flash memory from the external FLASH memory chip flash image
-// The handshake protocol that receives the sketch wirelessly by means of the RFM69 radio
-// is handled by the SPIFLash/WirelessHEX69 library, which also relies on the RFM69 library
-// These libraries and custom 1k Optiboot bootloader are at: http://github.com/lowpowerlab
-// **********************************************************************************
-// Copyright Felix Rusu, LowPowerLab.com
-// Library and code by Felix Rusu - felix@lowpowerlab.com
-// **********************************************************************************
-// License
-// **********************************************************************************
-// This program is free software; you can redistribute it
-// and/or modify it under the terms of the GNU General
-// Public License as published by the Free Software
-// Foundation; either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will
-// be useful, but WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A
-// PARTICULAR PURPOSE. See the GNU General Public
-// License for more details.
-//
-// You should have received a copy of the GNU General
-// Public License along with this program.
-// If not, see <http://www.gnu.org/licenses/>.
-//
-// Licence can be viewed at
-// http://www.gnu.org/licenses/gpl-3.0.txt
-//
-// Please maintain this license information along with authorship
-// and copyright notices in any redistribution of this code
-// **********************************************************************************
+
 #include <RFM69.h>         //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <SPI.h>
 #include <avr/io.h>

@@ -1,9 +1,14 @@
-#   Module for interact with Google Drive API   #
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-scope = ['https://spreadsheets.google.com/feeds']
+class Ws():
+
+
+
+
+
 credentials = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/Documents/techlab-tag-nfc-b3f2a2929d98.json', scope)
+
 
 
 def log():

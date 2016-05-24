@@ -50,6 +50,7 @@ void setup() {
 
 int idNode;
 
+
 void loop() {
   if (radio.receiveDone())
   {
