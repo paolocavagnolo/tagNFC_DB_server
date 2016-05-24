@@ -13,8 +13,8 @@ class gDriveAPI(object):
         self.scope = ['https://spreadsheets.google.com/feeds']
         self.credentials = ServiceAccountCredentials.from_json_keyfile_name(KEY_PATH, self.scope)
         self.file = gspread.authorize(self.credentials)
-        self.sheet = self.file.open(fl_name)
-        self.worksheet = self.sheet.worksheet(ws_name)
+        self.sheet = self.file.open(self.fl_name)
+        self.worksheet = self.sheet.worksheet(self.ws_name)
 
     def check(self):
         now = datetime.datetime.now()
