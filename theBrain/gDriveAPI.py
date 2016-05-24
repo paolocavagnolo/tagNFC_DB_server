@@ -9,7 +9,7 @@ class gDriveAPI(object):
         self.credentials = ServiceAccountCredentials.from_json_keyfile_name(KEY_PATH, self.scope)
         self.file = gspread.authorize(self.credentials)
         self.sheet = self.file.open(file_name)
-        self.worksheet = self.sheet(worksheet_name)
+        self.worksheet = self.sheet.worksheet(worksheet_name)
 
 
 ############
