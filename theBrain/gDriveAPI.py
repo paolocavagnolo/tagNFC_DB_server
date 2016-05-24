@@ -11,7 +11,8 @@ class gDriveAPI(object):
         self.sheet = self.file.open(file_name)
         self.worksheet = self.sheet.worksheet(worksheet_name)
 
-
+    def find(self, stringa):
+        return self.worksheet.find(stringa)
 ############
 #
 #
