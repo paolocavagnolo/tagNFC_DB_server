@@ -25,15 +25,3 @@ gLog = gDriveAPI('log','tag_system') #open the worksheet 'log' on the file 'tag_
 # ## The information driver! The cool stuff. ##
 #
 # a_msg = radioPkt(payload)
-
-
-
-
-
-
-
-
-except KeyboardInterrupt:
-    # db.close()
-    # ser.close()
-    print "\nBye"
