@@ -20,7 +20,7 @@ class gDriveAPI(object):
     def check(self):
         now = datetime.datetime.now()
         if self.file.auth.token_expiry < now:
-            __init__(self, ws_name, fl_name)
+            self.__init__(ws_name, fl_name)
 
     def find(self, stringa):
         self.check()
