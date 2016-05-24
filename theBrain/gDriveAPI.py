@@ -19,7 +19,7 @@ class gDriveAPI(object):
     def check(self):
         now = datetime.datetime.now()
         if self.file.auth.token_expiry < now:
-            print "il token è minore di adesso"
+            print "il token e' minore di adesso"
             print self.file.auth.token_expiry
             print now
             self.__init__(self.ws_name, self.fl_name)
