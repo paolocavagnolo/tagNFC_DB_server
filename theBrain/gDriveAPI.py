@@ -6,11 +6,11 @@ KEY_PATH = '/home/pi/Documents/techlab-tag-nfc-b3f2a2929d98.json'
 class gDriveAPI(object):
     def __init__(self, worksheet_name, file_name):
         self.scope = ['https://spreadsheets.google.com/feeds']
-        self.credentials = ServiceAccountCredentials.from_json_keyfile_name(KEY_PATH, scope)
+        self.credentials = ServiceAccountCredentials.from_json_keyfile_name(KEY_PATH, self.scope)
         self.file = gspread.authorize(self.credentials)
         self.sheet = self.file.open(file_name)
         self.worksheet = self.sheet(worksheet_name)
-        
+
 
 ############
 #
