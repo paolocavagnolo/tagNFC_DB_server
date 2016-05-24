@@ -2,7 +2,7 @@
 
 from gDriveAPI import *
 from mongoDB import *
-from strucData import *
+from structData import *
 
 ## The logging Part ##
 
