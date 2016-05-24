@@ -25,10 +25,3 @@ gUser = gDriveAPI('soci','tag_system')
 # ## The information driver! The cool stuff. ##
 #
 # a_msg = radioPkt(payload)
-
-print gLog.find('2')
-print gSes.find('5')
-print gUser.find('Paolo ')
-print gLog.find('2')
-print gSes.find('5')
-print gUser.find('Paolo ')
