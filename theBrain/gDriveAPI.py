@@ -5,9 +5,12 @@ import datetime
 KEY_PATH = '/home/pi/Documents/techlab-tag-nfc-b3f2a2929d98.json'
 
 class gDriveAPI(object):
+    ws_name = ''
+    fl_name = ''
+
     def __init__(self, worksheet_name, file_name):
-        global ws_name = worksheet_name
-        global fl_name = file_name
+        ws_name = worksheet_name
+        fl_name = file_name
         self.scope = ['https://spreadsheets.google.com/feeds']
         self.credentials = ServiceAccountCredentials.from_json_keyfile_name(KEY_PATH, self.scope)
         self.file = gspread.authorize(self.credentials)
