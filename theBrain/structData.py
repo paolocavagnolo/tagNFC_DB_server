@@ -1,7 +1,4 @@
 import struct
-import serial
-import logging
-
 
 class radioPkt(object):
     def __init__(self, payload):
@@ -52,21 +49,3 @@ def bytes2float( data ):
     b = ''.join(chr(i) for i in bytecc)
 
     return float("{0:.2f}".format(struct.unpack('>f', b)[0]))
-
-msg1 = '<,5977,4,1,-41,65,63,B9,8A,B9,42,>'
-msg2 = '<,5969,2,1,-44,6E,3B,C2,72,62,33,81,>\r\n'
-
-ser = serial.Serial('/dev/ttyAMA0',115200)
-logging.basicConfig()
-
-try:
-    while True:
-        pl = ser.readline()
-        if (pl[0] == '<'):
-            print "letto %r di lunghezza %r" % (pl, len(pl))
-            a_msg = radioPkt(pl)
-            print a_msg.__dict__
-
-except:
-    ser.close()
-    print "bye"
