@@ -14,8 +14,8 @@ from gDriveAPI import *
 ## The Connections Objects! The real importants things in the IoT ##
 
 gLog = gDriveAPI('log','tag_system') #open the worksheet 'log' on the file 'tag_system'
-# gSes = gDriveAPI('session','tag_system')
-# gUser = gDriveAPI('soci','tag_system')
+gSes = gDriveAPI('open_session','tag_system')
+gUser = gDriveAPI('soci','tag_system')
 #
 # dbLog = mongoDB('radio_logs','techlab-db') #work with the collection 'radio-logs' with the database 'techlab-db'
 # dbEnergy = mongoDB('energy','techlab-db')
@@ -25,3 +25,10 @@ gLog = gDriveAPI('log','tag_system') #open the worksheet 'log' on the file 'tag_
 # ## The information driver! The cool stuff. ##
 #
 # a_msg = radioPkt(payload)
+
+gLog.find('2')
+gSes.find('5')
+gUser.find('Paolo ')
+gLog.find('2')
+gSes.find('5')
+gUser.find('Paolo ')

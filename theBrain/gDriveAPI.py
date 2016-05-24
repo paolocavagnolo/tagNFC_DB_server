@@ -13,76 +13,23 @@ class gDriveAPI(object):
 
     def find(self, stringa):
         return self.worksheet.find(stringa)
-############
-#
-#
-# def log():
-#
-#     gc = gspread.authorize(credentials)
-#     sh = gc.open_by_url('https://docs.google.com/spreadsheets/d/1KWxCi7tny8uxo4TmzjNnVuNj5eGRVngwFD2gxIX5qfw/edit?usp=sharing')
-#
-#
-# def find( string ):
-#
-#     worksheet = sh.worksheet("soci")
-#     return worksheet.find(string)
-#
-#
-#
-# def read_one( row, col ):
-#
-#     worksheet = sh.worksheet("soci")
-#     return worksheet.cell(row, col).value
-#
-#
-#
-# def read_row( row ):
-#
-#     worksheet = sh.worksheet("soci")
-#     return worksheet.row_values(row)
-#
-#
-# def read_col_log( col ):
-#
-#     worksheet = sh.worksheet("log")
-#     return worksheet.col_values(col)
-#
-#
-# def read_row_log( row ):
-#
-#     worksheet = sh.worksheet("log")
-#     return worksheet.row_values(row)
-#
-#
-# def write( row, col, value):
-#
-#     worksheet = sh.worksheet("soci")
-#     return worksheet.update_cell(row, col, value)
-#
-#
-# def write_log( row, col, value):
-#
-#     worksheet = sh.worksheet("log")
-#     return worksheet.update_cell(row, col, value)
-#
-# def update_linea( row , linea, titoli):
-#
-#     for item in linea:
-#         print "guardo %r" % item,
-#         j = 0
-#         for titolo in titoli:
-#             print "e lo confronto con %r" % titolo
-#             j = j + 1
-#             if item == titolo:
-#                 write_log(row,j,linea[item])
-#
-# def read_session( row, col):
-#
-#     worksheet = sh.worksheet("open_session")
-#     return worksheet.cell(row, col).value
-#
-#
-# def write_session( row, col, value):
-#
-#     worksheet = sh.worksheet("open_session")
-#     return worksheet.update_cell(row, col, value)
+
+    def read_one(self, row, col):
+        return self.worksheet.cell(row,col).value
+
+    def read_row(self, row):
+        return self.worksheet.row_values(row)
+
+    def read_col(self, col):
+        return self.worksheet.col_values(col)
+
+    def write(self, row, col, value):
+        return self.worksheet.update_cell(row,col,value)
+
+    def write_line(row, linea, titoli):
+        for item in linea:
+            j = 0
+            for titolo in titoli:
+                j = j + 1
+                if item == titolo:
+                    self.worksheet.update_cell(row,j,linea[item])
