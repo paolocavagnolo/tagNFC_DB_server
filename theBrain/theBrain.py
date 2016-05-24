@@ -1,7 +1,7 @@
 ## The modules we need ##
 
 from gDriveAPI import *
-
+from mongoDB import *
 
 ## The logging Part ##
 
@@ -16,9 +16,9 @@ from gDriveAPI import *
 gLog = gDriveAPI('log','tag_system') #open the worksheet 'log' on the file 'tag_system'
 gSes = gDriveAPI('open_session','tag_system')
 gUser = gDriveAPI('soci','tag_system')
-#
-# dbLog = mongoDB('radio_logs','techlab-db') #work with the collection 'radio-logs' with the database 'techlab-db'
-# dbEnergy = mongoDB('energy','techlab-db')
+
+dbLog = mongoDB('radio_logs','techlab-db') #work with the collection 'radio-logs' with the database 'techlab-db'
+dbEnergy = mongoDB('energy','techlab-db')
 #
 # ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk with the gateway
 #

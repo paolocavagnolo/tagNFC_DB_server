@@ -4,7 +4,6 @@ import datetime
 
 KEY_PATH = '/home/pi/Documents/techlab-tag-nfc-b3f2a2929d98.json'
 
-
 class gDriveAPI(object):
 
     def __init__(self, worksheet_name, file_name):
@@ -18,6 +17,7 @@ class gDriveAPI(object):
 
     def check(self):
         now = datetime.datetime.now()
+        now = now.replace(hour = now.hour - 2)
         if self.file.auth.token_expiry < now:
             print "il token e' minore di adesso"
             print self.file.auth.token_expiry
