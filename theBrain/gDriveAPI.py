@@ -4,13 +4,12 @@ import datetime
 
 KEY_PATH = '/home/pi/Documents/techlab-tag-nfc-b3f2a2929d98.json'
 
+
 class gDriveAPI(object):
-    ws_name = ''
-    fl_name = ''
 
     def __init__(self, worksheet_name, file_name):
-        ws_name = worksheet_name
-        fl_name = file_name
+        self.ws_name = worksheet_name
+        self.fl_name = file_name
         self.scope = ['https://spreadsheets.google.com/feeds']
         self.credentials = ServiceAccountCredentials.from_json_keyfile_name(KEY_PATH, self.scope)
         self.file = gspread.authorize(self.credentials)
@@ -20,7 +19,10 @@ class gDriveAPI(object):
     def check(self):
         now = datetime.datetime.now()
         if self.file.auth.token_expiry < now:
-            self.__init__(ws_name, fl_name)
+            print "il token è minore di adesso"
+            print self.file.auth.token_expiry
+            print now
+            self.__init__(self.ws_name, self.fl_name)
 
     def find(self, stringa):
         self.check()
