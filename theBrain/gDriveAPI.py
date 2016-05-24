@@ -23,27 +23,27 @@ class gDriveAPI(object):
             __init__(self, ws_name, fl_name)
 
     def find(self, stringa):
-        self.check(self)
+        self.check()
         return self.worksheet.find(stringa)
 
     def read_one(self, row, col):
-        self.check(self)
+        self.check()
         return self.worksheet.cell(row,col).value
 
     def read_row(self, row):
-        self.check(self)
+        self.check()
         return self.worksheet.row_values(row)
 
     def read_col(self, col):
-        self.check(self)
+        self.check()
         return self.worksheet.col_values(col)
 
     def write(self, row, col, value):
-        self.check(self)
+        self.check()
         return self.worksheet.update_cell(row,col,value)
 
     def write_line(row, linea, titoli):
-        self.check(self)
+        self.check()
         for item in linea:
             j = 0
             for titolo in titoli:
