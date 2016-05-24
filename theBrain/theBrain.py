@@ -1,5 +1,6 @@
 ## The modules we need ##
 
+import serial
 from gDriveAPI import *
 from mongoDB import *
 from structData import *
