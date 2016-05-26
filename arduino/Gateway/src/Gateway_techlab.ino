@@ -2,6 +2,8 @@
 #include <RFM69_ATC.h>//get it here: https://www.github.com/lowpowerlab/rfm69
 #include <SPI.h>      //comes with Arduino IDE (www.arduino.cc)
 #include <SPIFlash.h> //get it here: https://www.github.com/lowpowerlab/spiflash
+#include <WirelessHEX69.h> //get it here: https://github.com/LowPowerLab/WirelessProgramming/tree/master/WirelessHEX69
+
 
 //*********************************************************************************************
 //************ IMPORTANT SETTINGS *************************************************************
@@ -14,6 +16,8 @@
 #define IS_RFM69HW    //uncomment only for RFM69HW! Leave out if you have RFM69W!
 #define ENABLE_ATC    //comment out this line to disable AUTO TRANSMISSION CONTROL
 #define SERIAL_BAUD   115200
+#define ACK_TIME    50  // # of ms to wait for an ack
+#define TIMEOUT     3000
 //pinout
 #define LED           9 // Moteinos have LEDs on D9
 #define FLASH_SS      8 // and FLASH SS on D8
@@ -49,7 +53,9 @@ void setup() {
 }
 
 int idNode;
-
+char c = 0;
+byte targetID=0;
+char input[64]; //serial input buffer
 
 void loop() {
   if (radio.receiveDone())
@@ -76,8 +82,9 @@ void loop() {
 
   if (Serial.available() > 0)
   {
-     String input = Serial.readString();
-     byte inputLen = input.length();
+     String input_s = Serial.readString();
+     byte inputLen = input_s.length();
+     input_s.toCharArray(input, inputLen);
 
      if (inputLen==4 && input[0]=='F' && input[1]=='L' && input[2]=='X' && input[3]=='?') {
        if (targetID==0)
@@ -110,17 +117,17 @@ void loop() {
        }
      }
      else if (inputLen>0) { //just echo back
-       if (input[0] == 'i') {
-         input.remove(0,1);
-         idNode = input.toInt();
+       if (input_s[0] == 'i') {
+         input_s.remove(0,1);
+         idNode = input_s.toInt();
        }
-       else if (input[0] == 'j') {
-         input.remove(0,1);
-         uint8_t payload[input.length()];
-         for (uint8_t i=0; i<input.length(); i++) {
-           payload[i] = input[i];
+       else if (input_s[0] == 'j') {
+         input_s.remove(0,1);
+         uint8_t payload[input_s.length()];
+         for (uint8_t i=0; i<input_s.length(); i++) {
+           payload[i] = input_s[i];
          }
-         radio.sendWithRetry(idNode, payload, input.length());
+         radio.sendWithRetry(idNode, payload, input_s.length());
        }
      }
 
