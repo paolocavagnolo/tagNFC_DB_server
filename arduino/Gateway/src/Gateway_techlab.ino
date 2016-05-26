@@ -16,8 +16,8 @@
 #define IS_RFM69HW    //uncomment only for RFM69HW! Leave out if you have RFM69W!
 #define ENABLE_ATC    //comment out this line to disable AUTO TRANSMISSION CONTROL
 #define SERIAL_BAUD   115200
-#define ACK_TIME    50  // # of ms to wait for an ack
-#define TIMEOUT     3000
+#define ACK_TIME      50  // # of ms to wait for an ack
+#define TIMEOUT       3000
 //pinout
 #define LED           9 // Moteinos have LEDs on D9
 #define FLASH_SS      8 // and FLASH SS on D8

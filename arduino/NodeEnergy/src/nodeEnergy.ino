@@ -6,6 +6,10 @@
 #include <SPIFlash.h>      //get it here: https://www.github.com/lowpowerlab/spiflash
 #include <avr/wdt.h>
 #include <WirelessHEX69.h> //get it here: https://github.com/LowPowerLab/WirelessProgramming/tree/master/WirelessHEX69
+#include <avr/io.h>
+#include <avr/wdt.h>
+
+#define Reset_AVR() wdt_enable(WDTO_30MS); while(1) {}
 
 #define NODEID      4       // node ID used for this unit
 #define NETWORKID   100
@@ -141,15 +145,17 @@ void setup(){
   pciSetup(4);
   pciSetup(9);
   pciSetup(A2);
-
 }
 
 
 
 char message[5];
 
-void loop(){
 
+void loop(){
+  if (millis() > 86400000) {
+    Reset_AVR();
+  }
   // Check for existing RF data, potentially for a new sketch wireless upload
   // For this to work this check has to be done often enough to be
   // picked up when a GATEWAY is trying hard to reach this node for a new sketch wireless upload
