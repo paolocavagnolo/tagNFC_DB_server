@@ -76,53 +76,18 @@ void loop() {
 
   if (Serial.available() > 0)
   {
-     String input = Serial.readString();
-     byte inputLen = input.length();
-
-     if (inputLen==4 && input[0]=='F' && input[1]=='L' && input[2]=='X' && input[3]=='?') {
-       if (targetID==0)
-         Serial.println("TO?");
-       else
-         CheckForSerialHEX((byte*)input, inputLen, radio, targetID, TIMEOUT, ACK_TIME, false);
+     String message = Serial.readString();
+     if (message[0] == 'i') {
+       message.remove(0,1);
+       idNode = message.toInt();
      }
-     else if (inputLen>3 && inputLen<=6 && input[0]=='T' && input[1]=='O' && input[2]==':')
-     {
-       byte newTarget=0;
-       for (byte i = 3; i<inputLen; i++) //up to 3 characters for target ID
-         if (input[i] >=48 && input[i]<=57)
-           newTarget = newTarget*10+input[i]-48;
-         else
-         {
-           newTarget=0;
-           break;
-         }
-       if (newTarget>0)
-       {
-         targetID = newTarget;
-         Serial.print("TO:");
-         Serial.print(newTarget);
-         Serial.println(":OK");
+     else if (message[0] == 'j') {
+       message.remove(0,1);
+       uint8_t payload[message.length()];
+       for (uint8_t i=0; i<message.length(); i++) {
+         payload[i] = message[i];
        }
-       else
-       {
-         Serial.print(input);
-         Serial.print(":INV");
-       }
+       radio.sendWithRetry(idNode, payload, message.length());
      }
-     else if (inputLen>0) { //just echo back
-       if (input[0] == 'i') {
-         input.remove(0,1);
-         idNode = input.toInt();
-       }
-       else if (input[0] == 'j') {
-         input.remove(0,1);
-         uint8_t payload[input.length()];
-         for (uint8_t i=0; i<input.length(); i++) {
-           payload[i] = input[i];
-         }
-         radio.sendWithRetry(idNode, payload, input.length());
-       }
-     }
-
   }
 }
