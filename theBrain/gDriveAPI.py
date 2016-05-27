@@ -29,7 +29,7 @@ class gDriveAPI(object):
         try:
             return self.worksheet.find(stringa)
         except:
-            return self.worksheet.find('')
+            return self.worksheet.find('00000000')
 
     def read_one(self, row, col):
         self.check()
@@ -47,7 +47,7 @@ class gDriveAPI(object):
         self.check()
         return self.worksheet.update_cell(row,col,value)
 
-    def write_line(row, linea, titoli):
+    def write_line(self, row, linea, titoli):
         self.check()
         for item in linea:
             j = 0

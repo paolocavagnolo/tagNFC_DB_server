@@ -3,6 +3,7 @@ import datetime
 
 class radioPkt(object):
     def __init__(self, payload):
+        self.payload = payload
         self.abs = payload.split(',')[1]
         self.ids = payload.split(',')[2]
         self.idr = payload.split(',')[3]
@@ -16,6 +17,18 @@ class radioPkt(object):
         elif self.idm == 'e':
             self.idphase = payload.split(',')[6].decode("HEX")
             self.count = bytes2float(payload.split(',')[7:11])
+
+class answer(radioPkt):
+    def __init__(self, payload, cr, sk):
+        super(answer, self).__init__(payload)
+        self.idr = self.ids
+        self.ids = 1
+        self.date = datetime.datetime.now()
+        if self.idm == 'n':
+            self.cr = cr
+            self.cr_b = float2bytes(float(cr))
+            self.sk = sk
+
 
 class session(object):
     def __init__(self, msg):
@@ -51,3 +64,6 @@ def bytes2float( data ):
     b = ''.join(chr(i) for i in bytecc)
 
     return float("{0:.2f}".format(struct.unpack('>f', b)[0]))
+
+def float2bytes( data ):
+    return struct.pack('<f', data)
