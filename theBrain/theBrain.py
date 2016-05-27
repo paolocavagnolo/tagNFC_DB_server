@@ -32,9 +32,7 @@ try:
             a_msg = radioPkt(pl)
             if a_msg.idm == 'n':
                 print "n"
-                print a_msg.tag[0:8]
-                print gUser.find(a_msg.tag[0:8])
-                print gUser.read_one(gUser.find(a_msg.tag).row, 3)
+                print gUser.read_one(gUser.find(a_msg.tag[0:8]).row, 3)
 
             elif a_msg.idm == 'e':
                 print "e"
