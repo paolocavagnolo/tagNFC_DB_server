@@ -45,9 +45,9 @@
 #define NODEID             1  //this node's ID, should be unique among nodes on this NETWORKID
 #define NETWORKID          100  //what network this node is on
 //Match frequency to the hardware version of the radio on your Moteino (uncomment one):
-#define FREQUENCY   RF69_433MHZ
+//#define FREQUENCY   RF69_433MHZ
 //#define FREQUENCY   RF69_868MHZ
-//define FREQUENCY     RF69_915MHZ
+#define FREQUENCY     RF69_915MHZ
 #define ENCRYPTKEY "sampleEncryptKey" //(16 bytes of your choice - keep the same on all encrypted nodes)
 //#define IS_RFM69HW             //uncomment only for RFM69HW! Leave out if you have RFM69W!
 
