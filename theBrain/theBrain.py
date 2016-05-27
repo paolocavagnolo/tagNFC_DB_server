@@ -37,6 +37,7 @@ try:
             if a_msg.idm == 'n':
                 print "n - mando crediti"
                 cellTag = gUser.find(a_msg.tag[0:8])
+                print cellTag.row
                 an_ans = answer(pl,gUser.read_one(cellTag.row, 3),gUser.read_one(cellTag.row, 4))
                 dbLog.write(an_ans.__dict__)
 
