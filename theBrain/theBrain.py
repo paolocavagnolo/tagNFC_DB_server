@@ -72,11 +72,7 @@ try:
 
                 print "t - aggiorno sessione"
 
-                gSes.write(id_session+1,4,gSes.read(id_session+1,4)+(0.2-(0.1*int(sk)))
-
-
-
-
+                gSes.write(id_session+1,4,gSes.read(id_session+1,4)+(0.2-(0.1*int(sk))))
 
 
             else:
