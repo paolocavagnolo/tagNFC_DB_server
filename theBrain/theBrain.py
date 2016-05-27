@@ -80,5 +80,4 @@ try:
 
 except:
     dbLog.close()
-    dbEnergy.close()
     ser.close()
