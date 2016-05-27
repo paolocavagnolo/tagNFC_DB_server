@@ -26,12 +26,17 @@ ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk wit
 
 ## The information driver! The cool stuff. ##
 
-msg1 = '<,5977,4,1,-41,65,63,B9,8A,B9,42,>'
-msg2 = '<,5969,2,1,-44,6E,3B,C2,72,62,33,81,>\r\n'
 
-a_msg = radioPkt(msg1)
 
-print a_msg.__dict__
+try:
+    while True:
+        pl = ser.readline()
+        if len(pl) > 5:
+            a_msg = radioPkt(pl)
+            print a_msg.__dict__
+
+except:
+
 
 dbLog.close()
 dbEnergy.close()
