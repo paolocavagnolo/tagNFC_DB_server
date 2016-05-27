@@ -36,8 +36,6 @@ try:
             print a_msg.__dict__
 
 except:
-
-
-dbLog.close()
-dbEnergy.close()
-ser.close()
+    dbLog.close()
+    dbEnergy.close()
+    ser.close()
