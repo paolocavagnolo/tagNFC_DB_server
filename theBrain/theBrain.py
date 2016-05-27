@@ -24,16 +24,25 @@ dbEnergy = mongoDB('energy','techlab')
 
 ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk with the gateway
 
-## The information driver! The cool stuff. ##
-
-
 
 try:
     while True:
         pl = ser.readline()
         if len(pl) > 5:
             a_msg = radioPkt(pl)
-            print a_msg.__dict__
+            if a_msg.idm == 'n':
+                print "n"
+                print gUser.read_one(gUser.find(a_msg.tag).row, 3)
+
+            elif a_msg.idm == 'e':
+                print "e"
+                
+
+            elif a_msg.idm == 'l':
+                print "l"
+
+            else:
+                print "altro"
 
 except:
     dbLog.close()

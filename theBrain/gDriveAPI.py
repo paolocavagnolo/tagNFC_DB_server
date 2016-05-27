@@ -26,7 +26,10 @@ class gDriveAPI(object):
 
     def find(self, stringa):
         self.check()
-        return self.worksheet.find(stringa)
+        try:
+            return self.worksheet.find(stringa)
+        except:
+            return self.worksheet.find('')
 
     def read_one(self, row, col):
         self.check()

@@ -1,4 +1,5 @@
 import struct
+import datetime
 
 class radioPkt(object):
     def __init__(self, payload):
@@ -7,6 +8,7 @@ class radioPkt(object):
         self.idr = payload.split(',')[3]
         self.RSSI = payload.split(',')[4]
         self.idm = payload.split(',')[5].decode("HEX")
+        self.date = datetime.datetime.now()
 
         if self.idm == 'n':
             self.tag = ''.join(payload.split(',')[6:12])
