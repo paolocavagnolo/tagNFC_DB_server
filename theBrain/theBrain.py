@@ -52,6 +52,7 @@ try:
                 dd = struct.pack('<f',cc)
                 print "%r" % dd
 
+                a = '\x00'
                 for n,i in enumerate(dd):
                     if i==a:
                         dd[n]='0x00'
