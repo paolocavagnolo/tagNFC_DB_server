@@ -54,7 +54,7 @@ try:
 
                 print "%r" % dd
 
-                a = '\x00'
+                a = '0x00'
                 for n,i in enumerate(dd):
                     if i==a:
                         ff[n] = a
@@ -64,7 +64,7 @@ try:
                 print "%r" % dd
 
 
-                ser.write('j'+struct.pack('<f', float(an_ans.cr))+an_ans.sk+'\0')
+                ser.write('j'+struct.pack('<f',''.joiin(dd)+an_ans.sk+'\0')
                 dbLog.write(an_ans.__dict__)
                 logger.debug("mandato in db")
 
