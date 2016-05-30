@@ -64,7 +64,7 @@ try:
                 print "%r" % dd
 
 
-                ser.write('j'+struct.pack('<f',''.join(dd)+an_ans.sk+'\0')
+                ser.write('j'+struct.pack('<f',''.join(dd))+an_ans.sk+'\0')
                 dbLog.write(an_ans.__dict__)
                 logger.debug("mandato in db")
 
