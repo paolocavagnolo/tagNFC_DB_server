@@ -73,7 +73,7 @@ try:
             ### ######################## ###
             elif a_msg.idm == 't':
                 print "t - aggiorno crediti"
-                cr = gUser.read_one(cellTag.row, 3)
+                cr = float(gUser.read_one(cellTag.row, 3))
                 sk = gUser.read_one(cellTag.row, 4)
                 cr_new = cr - (0.2-(0.1*int(sk)))
                 an_ans = answer(pl,cr_new,sk)
