@@ -3,13 +3,10 @@ import json
 import logging.config
 
 def setup_logging(
-    default_path='logging.json',
+    default_path='logConfig.json',
     default_level=logging.DEBUG,
-    env_key='LOG_CFG'
-):
-    """Setup logging configuration
+    env_key='LOG_CFG' ):
 
-    """
     path = default_path
     value = os.getenv(env_key, None)
     if value:
@@ -20,11 +17,3 @@ def setup_logging(
         logging.config.dictConfig(config)
     else:
         logging.basicConfig(level=default_level)
-
-setup_logging()
-logger = logging.getLogger()
-
-logger.debug('often makes a very good meal of %r', 'visiting tourists')
-logger.info('ciao')
-logger.error('ciaone')
-logger.debug('often makes a very good meal of %r', 'visiting tourists')

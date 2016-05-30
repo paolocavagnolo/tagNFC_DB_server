@@ -5,14 +5,12 @@ import time
 from gDriveAPI import *
 from mongoDB import *
 from structData import *
+from logBot import *
 
 ## The logging Part ##
 
-# FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
-# logging.basicConfig(format=FORMAT)
-# d = {'clientip': '192.168.0.1', 'user': 'fbloggs'}
-# logger = logging.getLogger('tcpserver')
-# logger.warning('Protocol problem: %s', 'connection reset', extra=d)
+setup_logging('./logConfig.json',logging.DEBUG,'LOG_CFG')
+logger = logging.getLogger()
 
 ## The Connections Objects! The real importants things in the IoT ##
 
@@ -24,7 +22,7 @@ dbLog = mongoDB('radio_log','techlab') #work with the collection 'radio-logs' wi
 
 ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk with the gateway
 
-## The session chronicle ##
+## The laser session chronicle ##
 id_session = gSes.read_one(1,1)
 
 try:
@@ -34,28 +32,42 @@ try:
             a_msg = radioPkt(pl)
             dbLog.write(a_msg.__dict__)
 
+
+
+            ### ################### ###
+            ### Messagge from LASER ###
+            ### ################### ###
             if a_msg.idm == 'n':
-                print "n - mando crediti"
+                logger.debug("n - mando crediti")
                 cellTag = gUser.find(a_msg.tag[0:8])
                 an_ans = answer(pl,gUser.read_one(cellTag.row, 3),gUser.read_one(cellTag.row, 4))
-                print an_ans.__dict__
+                logger.debug(an_ans.__dict__)
                 dbLog.write(an_ans.__dict__)
-
                 ser.write('i'+an_ans.idr+'\0')
                 time.sleep(1)
                 ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
 
-                print "n - apro sessione"
+                logger.debug("n - apro sessione")
                 id_session = id_session + 1
                 gSes.write(id_session+1,1,id_session) #id
                 gSes.write(id_session+1,2,a_msg.date) #data
                 gSes.write(id_session+1,4,gUser.read_one(cellTag.row, 8)) #mail
                 gSes.write(id_session+1,5,0) #cr
 
+
+
+            ### ############################ ###
+            ### Messagge from ENERGY MONITOR ###
+            ### ############################ ###
             elif a_msg.idm == 'e':
                 print "e"
                 #plotly
 
+
+
+            ### ######################## ###
+            ### Messagge from TICK LASER ###
+            ### ######################## ###
             elif a_msg.idm == 't':
                 print "t - aggiorno crediti"
                 cr = gUser.read_one(cellTag.row, 3)
