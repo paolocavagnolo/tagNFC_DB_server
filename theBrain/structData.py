@@ -29,6 +29,11 @@ class answer(radioPkt):
             self.cr_b = float2bytes(float(cr))
             # self.cr_unicode = unicode(float2bytes(float(cr)),errors = 'replace')
             self.sk = sk
+        if self.idm == 't':
+            self.cr = cr
+            self.cr_b = float2bytes(float(cr))
+            # self.cr_unicode = unicode(float2bytes(float(cr)),errors = 'replace')
+            self.sk = sk
 
 
 class session(object):
