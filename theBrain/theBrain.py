@@ -47,14 +47,14 @@ try:
                 time.sleep(1)
 
 
-                cc = float(an_ans.cr)
+                cc = list(float(an_ans.cr))
                 logger.debug(cc)
                 print "%r" % struct.pack('<f', cc)
 
                 for n,i in enumerate(cc):
                     if i==a:
                         cc[n]='0x00'
-                        
+
                 print "%r" % struct.pack('<f', cc)
 
 
