@@ -87,7 +87,7 @@ try:
 
                 print "t - aggiorno sessione"
 
-                gSes.write(id_session+1,4,gSes.read(id_session+1,4)+(0.2-(0.1*int(sk))))
+                gSes.write(id_session+1,4,gSes.read_one(id_session+1,4)+(0.2-(0.1*int(sk))))
                 an_ans_unicode = an_ans
                 an_ans_unicode.cr_b = unicode(float2bytes(float(an_ans_unicode.cr)),errors = 'replace')
                 dbLog.write(an_ans_unicode.__dict__)
