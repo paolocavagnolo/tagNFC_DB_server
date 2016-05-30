@@ -46,8 +46,8 @@ try:
                 ser.write('i'+an_ans.idr+'\0')
                 time.sleep(1)
 
-                looger.debug(float(an_ans.cr))
-                looger.debug(struct.pack('<f', float(an_ans.cr)))
+                logger.debug(float(an_ans.cr))
+                logger.debug(struct.pack('<f', float(an_ans.cr)))
 
                 ser.write('j'+struct.pack('<f', float(an_ans.cr))+an_ans.sk+'\0')
                 dbLog.write(an_ans.__dict__)
