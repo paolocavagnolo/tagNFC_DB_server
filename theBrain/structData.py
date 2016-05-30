@@ -1,4 +1,3 @@
-import struct
 import datetime
 
 class radioPkt(object):
@@ -26,16 +25,12 @@ class answer(radioPkt):
         self.date = datetime.datetime.now()
         if self.idm == 'n':
             self.cr = cr
-            self.cr_b = list(float2bytes(float(cr)))
-            # self.cr_unicode = unicode(float2bytes(float(cr)),errors = 'replace')
             self.sk = sk
         if self.idm == 't':
             self.cr = cr
-            self.cr_b = list(float2bytes(float(cr)))
-            # self.cr_unicode = unicode(float2bytes(float(cr)),errors = 'replace')
             self.sk = sk
 
-        self.payload_out = '<i'+str(self.idr)+'\0>'+' '+'<j'+str(self.cr_b)+str(self.sk)+'\0>'
+        self.payload_out = '<i'+str(self.idr)+'\0>'+' '+'<j'+str(self.cr)+str(self.sk)+'\0>'
 
 
 
