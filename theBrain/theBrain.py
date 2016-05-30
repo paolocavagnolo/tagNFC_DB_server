@@ -44,7 +44,7 @@ try:
                 logger.debug(an_ans.__dict__)
                 ser.write('i'+an_ans.idr+'\0')
                 time.sleep(1)
-                ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
+                ser.write('j'+''.join(an_ans.cr_b)+an_ans.sk+'\0')
                 dbLog.write(an_ans.__dict__)
                 logger.debug("mandato in db")
 
@@ -81,7 +81,7 @@ try:
                 print "t - mando a laser crediti"
                 ser.write('i'+an_ans.idr+'\0')
                 time.sleep(1)
-                ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
+                ser.write('j'+''.join(an_ans.cr_b)+an_ans.sk+'\0')
 
                 print "t - aggiorno sessione"
 

@@ -3,7 +3,7 @@ import datetime
 
 class radioPkt(object):
     def __init__(self, payload):
-        self.payload = payload
+        self.payload_in = payload
         self.abs = payload.split(',')[1]
         self.ids = payload.split(',')[2]
         self.idr = payload.split(',')[3]
@@ -26,14 +26,17 @@ class answer(radioPkt):
         self.date = datetime.datetime.now()
         if self.idm == 'n':
             self.cr = cr
-            self.cr_b = unicode(float2bytes(float(cr)), errors = 'replace').encode('utf-8')
+            self.cr_b = list(float2bytes(float(cr)))
             # self.cr_unicode = unicode(float2bytes(float(cr)),errors = 'replace')
             self.sk = sk
         if self.idm == 't':
             self.cr = cr
-            self.cr_b = unicode(float2bytes(float(cr)), errors = 'replace').encode('utf-8')
+            self.cr_b = list(float2bytes(float(cr)))
             # self.cr_unicode = unicode(float2bytes(float(cr)),errors = 'replace')
             self.sk = sk
+
+        self.payload_out = '<i'+self.idr+'\0>'+' '+'<j'+self.cr_b+self.sk+'\0>'
+
 
 
 class session(object):
