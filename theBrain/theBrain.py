@@ -76,9 +76,9 @@ try:
                 cr = float(gUser.read_one(cellTag.row, 3))
                 sk = gUser.read_one(cellTag.row, 4)
                 cr_new = cr - (0.2-(0.1*int(sk)))
-                an_ans = answer(pl,cr_new,sk)
+                an_ans = answer(pl,str(cr_new),sk)
                 dbLog.write(an_ans.__dict__)
-
+                logger.debug(an_ans.__dict__)
                 gUser.write(cellTag.row, 3, cr_new)
 
                 print "t - mando a laser crediti"
