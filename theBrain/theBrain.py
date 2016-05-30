@@ -47,15 +47,16 @@ try:
                 time.sleep(1)
 
 
-                cc = list(float(an_ans.cr))
+                cc = float(an_ans.cr)
                 logger.debug(cc)
-                print "%r" % struct.pack('<f', cc)
+                dd = struct.pack('<f',cc)
+                print "%r" % dd
 
-                for n,i in enumerate(cc):
+                for n,i in enumerate(dd):
                     if i==a:
-                        cc[n]='0x00'
+                        dd[n]='0x00'
 
-                print "%r" % struct.pack('<f', cc)
+                print "%r" % dd
 
 
                 ser.write('j'+struct.pack('<f', float(an_ans.cr))+an_ans.sk+'\0')
