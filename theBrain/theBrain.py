@@ -47,7 +47,7 @@ try:
                 ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
                 an_ans_unicode = an_ans
                 an_ans_unicode.cr_b = unicode(float2bytes(float(an_ans_unicode.cr)),errors = 'replace')
-                dbLog.write(an_ans.__dict__)
+                dbLog.write(an_ans_unicode.__dict__)
                 logger.debug("mandato in db")
 
                 logger.debug("n - apro sessione")
@@ -77,7 +77,6 @@ try:
                 sk = gUser.read_one(cellTag.row, 4)
                 cr_new = cr - (0.2-(0.1*int(sk)))
                 an_ans = answer(pl,cr_new,sk)
-                dbLog.write(an_ans.__dict__)
                 logger.debug(an_ans.__dict__)
                 gUser.write(cellTag.row, 3, cr_new)
 
@@ -89,6 +88,10 @@ try:
                 print "t - aggiorno sessione"
 
                 gSes.write(id_session+1,4,gSes.read(id_session+1,4)+(0.2-(0.1*int(sk))))
+                an_ans_unicode = an_ans
+                an_ans_unicode.cr_b = unicode(float2bytes(float(an_ans_unicode.cr)),errors = 'replace')
+                dbLog.write(an_ans_unicode.__dict__)
+                logger.debug(an_ans_unicode.__dict__)
 
 
             else:
