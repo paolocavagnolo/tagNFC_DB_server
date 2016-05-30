@@ -55,7 +55,8 @@ try:
                 a = '\x00'
                 for n,i in enumerate(dd):
                     if i==a:
-                        dd[n]='0x00'
+                        print "%r" % dd[n]
+
 
                 print "%r" % dd
 
