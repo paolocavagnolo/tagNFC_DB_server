@@ -46,7 +46,7 @@ try:
                 logger.debug("mandato in db")
                 ser.write('i'+an_ans.idr+'\0')
                 time.sleep(1)
-                ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
+                ser.write(('j'+an_ans.cr_b+an_ans.sk+'\0').encode('utf-8'))
 
                 logger.debug("n - apro sessione")
                 id_session = id_session + 1
