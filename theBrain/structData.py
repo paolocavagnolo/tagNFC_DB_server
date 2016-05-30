@@ -35,7 +35,7 @@ class answer(radioPkt):
             # self.cr_unicode = unicode(float2bytes(float(cr)),errors = 'replace')
             self.sk = sk
 
-        self.payload_out = '<i'+self.idr+'\0>'+' '+'<j'+self.cr_b+self.sk+'\0>'
+        self.payload_out = '<i'+str(self.idr)+'\0>'+' '+'<j'+str(self.cr_b)+str(self.sk)+'\0>'
 
 
 
