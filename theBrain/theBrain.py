@@ -45,9 +45,7 @@ try:
                 ser.write('i'+an_ans.idr+'\0')
                 time.sleep(1)
                 ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
-                an_ans_unicode = an_ans
-                an_ans_unicode.cr_b = unicode(float2bytes(float(an_ans_unicode.cr)),errors = 'replace')
-                dbLog.write(an_ans_unicode.__dict__)
+                dbLog.write(an_ans.__dict__)
                 logger.debug("mandato in db")
 
                 logger.debug("n - apro sessione")
@@ -88,10 +86,8 @@ try:
                 print "t - aggiorno sessione"
 
                 gSes.write(id_session+1,4,float(gSes.read_one(id_session+1,4))+(0.2-(0.1*int(sk))))
-                an_ans_unicode = an_ans
-                an_ans_unicode.cr_b = unicode(float2bytes(float(an_ans_unicode.cr)),errors = 'replace')
-                dbLog.write(an_ans_unicode.__dict__)
-                logger.debug(an_ans_unicode.__dict__)
+                dbLog.write(an_ans.__dict__)
+                logger.debug(an_ans.__dict__)
 
 
             else:
