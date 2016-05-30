@@ -42,11 +42,11 @@ try:
                 cellTag = gUser.find(a_msg.tag[0:8])
                 an_ans = answer(pl,gUser.read_one(cellTag.row, 3),gUser.read_one(cellTag.row, 4))
                 logger.debug(an_ans.__dict__)
-                dbLog.write(an_ans.__dict__)
+                dbLog.write({key: value for key, value in an_ans.items() if key != 'cr_b'})
                 logger.debug("mandato in db")
                 ser.write('i'+an_ans.idr+'\0')
                 time.sleep(1)
-                ser.write(('j'+an_ans.cr_b+an_ans.sk+'\0').encode('utf-8'))
+                ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
 
                 logger.debug("n - apro sessione")
                 id_session = id_session + 1
