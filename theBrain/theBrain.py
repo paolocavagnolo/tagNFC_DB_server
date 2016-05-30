@@ -50,13 +50,16 @@ try:
                 cc = float(an_ans.cr)
                 logger.debug(cc)
                 dd = struct.pack('<f',cc)
+                ff = ['0','0','0','0']
+
                 print "%r" % dd
 
                 a = '\x00'
                 for n,i in enumerate(dd):
                     if i==a:
-                        print "%r" % dd[n]
-
+                        ff[n] = a
+                    else:
+                        ff[n] = dd[n]
 
                 print "%r" % dd
 
