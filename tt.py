@@ -1,30 +1,10 @@
-import os
-import json
-import logging.config
+s = ['\x00', '\x00', '\xc7', 'B']
+a = '\x00'
 
-def setup_logging(
-    default_path='logging.json',
-    default_level=logging.DEBUG,
-    env_key='LOG_CFG'
-):
-    """Setup logging configuration
+print s
 
-    """
-    path = default_path
-    value = os.getenv(env_key, None)
-    if value:
-        path = value
-    if os.path.exists(path):
-        with open(path, 'rt') as f:
-            config = json.load(f)
-        logging.config.dictConfig(config)
-    else:
-        logging.basicConfig(level=default_level)
+for n,i in enumerate(s):
+    if i==a:
+        s[n]='0x00'
 
-setup_logging()
-logger = logging.getLogger()
-
-logger.debug('often makes a very good meal of %r', 'visiting tourists')
-logger.info('ciao')
-logger.error('ciaone')
-logger.debug('often makes a very good meal of %r', 'visiting tourists')
+print s

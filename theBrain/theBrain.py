@@ -46,8 +46,17 @@ try:
                 ser.write('i'+an_ans.idr+'\0')
                 time.sleep(1)
 
-                logger.debug(float(an_ans.cr))
-                print "%r" % struct.pack('<f', float(an_ans.cr))
+
+                cc = float(an_ans.cr)
+                logger.debug(cc)
+                print "%r" % struct.pack('<f', cc)
+
+                for n,i in enumerate(cc):
+                    if i==a:
+                        cc[n]='0x00'
+                        
+                print "%r" % struct.pack('<f', cc)
+
 
                 ser.write('j'+struct.pack('<f', float(an_ans.cr))+an_ans.sk+'\0')
                 dbLog.write(an_ans.__dict__)
