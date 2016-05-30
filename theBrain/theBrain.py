@@ -94,6 +94,7 @@ try:
             else:
                 print "altro"
 
-except:
+except Exception, e:
+    logging.error(e, exc_info=True)
     dbLog.close()
     ser.close()
