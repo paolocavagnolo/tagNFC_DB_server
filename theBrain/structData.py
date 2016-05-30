@@ -72,4 +72,4 @@ def bytes2float( data ):
     return float("{0:.2f}".format(struct.unpack('>f', b)[0]))
 
 def float2bytes( data ):
-    return struct.pack('>f', data)
+    return struct.pack('<f', data)
