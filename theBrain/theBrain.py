@@ -58,8 +58,8 @@ try:
                 id_session = id_session + 1
                 gSes.write(id_session+1,1,id_session) #id
                 gSes.write(id_session+1,2,a_msg.date) #data
-                gSes.write(id_session+1,4,gUser.read_one(cellTag.row, 8)) #mail
-                gSes.write(id_session+1,5,0) #cr
+                gSes.write(id_session+1,3,gUser.read_one(cellTag.row, 8)) #mail
+                gSes.write(id_session+1,4,0) #cr
 
 
 
