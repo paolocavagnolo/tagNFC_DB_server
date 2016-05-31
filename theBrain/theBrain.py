@@ -19,17 +19,13 @@ gUser = gDriveAPI('soci','tag_system')
 
 dbLog = mongoDB('radio_log','techlab') #work with the collection 'radio-logs' with the database 'techlab-db'
 
+
 ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk with the gateway
 
 ## The laser session chronicle ##
 id_session = int(gSes.read_one(1,1))
 
 try:
-
-    ser.write('i'+'2'+'\0')
-    time.sleep(1)
-    ser.write('j'+'\x00'+'\x00'+'\xc7'+'B'+'0'+'\0')
-
     while True:
         pl = ser.readline()
         if len(pl) > 5:
@@ -67,16 +63,17 @@ try:
             ### Messagge from ENERGY MONITOR ###
             ### ############################ ###
             elif a_msg.idm == 'e':
-                print "e"
+                logger.debug("energy!)
                 #plotly
-
+                open('energyBuffer.log','a+').write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count))
+                
 
 
             ### ######################## ###
             ### Messagge from TICK LASER ###
             ### ######################## ###
             elif a_msg.idm == 't':
-                print "t - aggiorno crediti"
+                logger.debug("t - aggiorno crediti")
                 cr = float(gUser.read_one(cellTag.row, 3))
                 sk = gUser.read_one(cellTag.row, 4)
                 cr_new = cr - (0.2-(0.1*int(sk)))
@@ -84,13 +81,12 @@ try:
                 logger.debug(an_ans.__dict__)
                 gUser.write(cellTag.row, 3, cr_new)
 
-                print "t - mando a laser crediti"
+                logger.debug("t - mando a laser crediti")
                 ser.write('i'+an_ans.idr+'\0')
                 time.sleep(1)
                 ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
 
-                print "t - aggiorno sessione"
-
+                logger.debug("t - aggiorno sessione")
                 gSes.write(id_session+1,4,float(gSes.read_one(id_session+1,4))+(0.2-(0.1*int(sk))))
                 db_ans = an_ans.__dict__
                 db_ans.pop('cr_b',None)
@@ -100,7 +96,7 @@ try:
 
 
             else:
-                print "altro"
+                logger.debug("altro")
 
 except Exception, e:
     logging.error(e, exc_info=True)

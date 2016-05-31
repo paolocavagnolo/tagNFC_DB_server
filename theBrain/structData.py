@@ -42,9 +42,6 @@ class session(object):
         if self.idm == 'n':
             self.tag = ''.join(payload.split(',')[6:12])
 
-        elif self.idm == 'e':
-            self.idphase = payload.split(',')[6].decode("HEX")
-            self.count = bytes2float(payload.split(',')[7:11])
 
 
 def bytes2float( data ):
