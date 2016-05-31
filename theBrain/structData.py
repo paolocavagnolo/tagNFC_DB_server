@@ -28,6 +28,7 @@ class answer(radioPkt):
         if self.idm == 'n' or self.idm == 't':
             self.cr = cr
             self.cr_b = float2bytes(float(cr))
+            self.sk = sk
 
 
 class session(object):
