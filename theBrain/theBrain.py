@@ -9,17 +9,17 @@ from structData import *
 from logBot import *
 
 ## The logging Part ##
-
-setup_logging('./logConfig.json',logging.DEBUG,'LOG_CFG')
-logger = logging.getLogger()
-
-## The Connections Objects! The real importants things in the IoT ##
-
-gLog = gDriveAPI('log','tag_system') #open the worksheet 'log' on the file 'tag_system'
-gSes = gDriveAPI('open_session','tag_system')
-gUser = gDriveAPI('soci','tag_system')
-
-dbLog = mongoDB('radio_log','techlab') #work with the collection 'radio-logs' with the database 'techlab-db'
+#
+# setup_logging('./logConfig.json',logging.DEBUG,'LOG_CFG')
+# logger = logging.getLogger()
+#
+# ## The Connections Objects! The real importants things in the IoT ##
+#
+# gLog = gDriveAPI('log','tag_system') #open the worksheet 'log' on the file 'tag_system'
+# gSes = gDriveAPI('open_session','tag_system')
+# gUser = gDriveAPI('soci','tag_system')
+#
+# dbLog = mongoDB('radio_log','techlab') #work with the collection 'radio-logs' with the database 'techlab-db'
 
 ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk with the gateway
 
