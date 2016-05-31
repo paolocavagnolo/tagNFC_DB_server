@@ -30,7 +30,7 @@ try:
 
     ser.write('i'+'2'+'\0')
     time.sleep(1)
-    ser.write('j'+'0'+'0'+'\xc7'+'B'+'0'+'\0')
+    ser.write('j'+'\x00'+'\x00'+'\xc7'+'B'+'0'+'\0')
 
     # while True:
     #     pl = ser.readline()
