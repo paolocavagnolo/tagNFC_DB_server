@@ -29,8 +29,6 @@ class answer(radioPkt):
             self.cr = cr
             self.cr_b = float2bytes(float(cr))
             self.sk = sk
-        self.payload_out = '<i'+str(self.idr)+'>'+' '+'<j'+str(unicode(self.cr_b,errors = 'replace'))+str(self.sk)+'>'
-
 
 
 class session(object):
