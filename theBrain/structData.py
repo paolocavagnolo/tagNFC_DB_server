@@ -27,8 +27,7 @@ class answer(radioPkt):
         self.date = datetime.datetime.now()
         if self.idm == 'n' or self.idm == 't':
             self.cr = cr
-            self.cr_b = unicode(float2bytes(float(cr)),errors = 'replace')
-            self.sk = sk
+            self.cr_b = float2bytes(float(cr)).encode()
 
 
 class session(object):
