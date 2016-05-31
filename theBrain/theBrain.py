@@ -43,28 +43,11 @@ try:
                 cellTag = gUser.find(a_msg.tag[0:8])
                 an_ans = answer(pl,gUser.read_one(cellTag.row, 3),gUser.read_one(cellTag.row, 4))
                 logger.debug(an_ans.__dict__)
+
                 ser.write('i'+an_ans.idr+'\0')
                 time.sleep(1)
+                ser.write('j'+'\x00'+'\x00'+'\xc7'+'B'+an_ans.sk+'\0')
 
-
-                cc = float(an_ans.cr)
-                logger.debug(cc)
-                dd = struct.pack('<f',cc)
-                ff = ['0','0','0','0']
-
-                print "%r" % dd
-
-                a = '0x00'
-                for n,i in enumerate(dd):
-                    if i==a:
-                        ff[n] = a
-                    else:
-                        ff[n] = dd[n]
-
-                print "%r" % dd
-
-
-                ser.write('j'+''.join(dd)+an_ans.sk+'\0')
                 dbLog.write(an_ans.__dict__)
                 logger.debug("mandato in db")
 
