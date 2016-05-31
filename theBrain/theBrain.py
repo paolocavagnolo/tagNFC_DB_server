@@ -49,7 +49,9 @@ try:
                 time.sleep(1)
                 ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
 
-                dbLog.write(an_ans.__dict__)
+                db_ans = an_ans.__dict__
+                db_ans.pop('cr_n',None)
+                dbLog.write(db_ans)
                 logger.debug("mandato in db")
 
                 logger.debug("n - apro sessione")
@@ -90,8 +92,11 @@ try:
                 print "t - aggiorno sessione"
 
                 gSes.write(id_session+1,4,float(gSes.read_one(id_session+1,4))+(0.2-(0.1*int(sk))))
-                dbLog.write(an_ans.__dict__)
-                logger.debug(an_ans.__dict__)
+                db_ans = an_ans.__dict__
+                db_ans.pop('cr_n',None)
+                dbLog.write(db_ans)
+                logger.debug(db_ans)
+                logger.debug("mandato in db")
 
 
             else:
