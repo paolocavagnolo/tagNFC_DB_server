@@ -1,6 +1,4 @@
 ## The modules we need ##
-
-import struct
 import serial
 import time
 from gDriveAPI import *

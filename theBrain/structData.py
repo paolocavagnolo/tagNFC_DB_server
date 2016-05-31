@@ -1,4 +1,6 @@
 import datetime
+import struct
+
 
 class radioPkt(object):
     def __init__(self, payload):
