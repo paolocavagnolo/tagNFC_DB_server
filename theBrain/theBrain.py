@@ -50,7 +50,7 @@ try:
                 ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
 
                 db_ans = an_ans.__dict__
-                db_ans.pop('cr_n',None)
+                db_ans.pop('cr_b',None)
                 dbLog.write(db_ans)
                 logger.debug("mandato in db")
 
@@ -93,7 +93,7 @@ try:
 
                 gSes.write(id_session+1,4,float(gSes.read_one(id_session+1,4))+(0.2-(0.1*int(sk))))
                 db_ans = an_ans.__dict__
-                db_ans.pop('cr_n',None)
+                db_ans.pop('cr_b',None)
                 dbLog.write(db_ans)
                 logger.debug(db_ans)
                 logger.debug("mandato in db")
