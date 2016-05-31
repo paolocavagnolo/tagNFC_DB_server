@@ -24,7 +24,7 @@ from logBot import *
 ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk with the gateway
 
 ## The laser session chronicle ##
-id_session = int(gSes.read_one(1,1))
+# id_session = int(gSes.read_one(1,1))
 
 try:
 
