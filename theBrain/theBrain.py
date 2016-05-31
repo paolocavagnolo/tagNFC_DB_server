@@ -28,10 +28,10 @@ id_session = int(gSes.read_one(1,1))
 
 try:
 
-    ser.write('i'+an_ans.idr+'\0')
+    ser.write('i'+'2'+'\0')
     time.sleep(1)
-    ser.write('j'+'\x00'+'\x00'+'\xc7'+'B'+an_ans.sk+'\0')
-    
+    ser.write('j'+'0'+'0'+'\xc7'+'B'+'0'+'\0')
+
     # while True:
     #     pl = ser.readline()
     #     if len(pl) > 5:
