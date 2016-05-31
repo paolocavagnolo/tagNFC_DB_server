@@ -23,14 +23,11 @@ class answer(radioPkt):
         self.idr = self.ids
         self.ids = 1
         self.date = datetime.datetime.now()
-        if self.idm == 'n':
+        if self.idm == 'n' or self.idm == 't':
             self.cr = cr
+            self.cr_b = float2bytes(float(cr))
             self.sk = sk
-        if self.idm == 't':
-            self.cr = cr
-            self.sk = sk
-
-        self.payload_out = '<i'+str(self.idr)+'\0>'+' '+'<j'+str(self.cr)+str(self.sk)+'\0>'
+        self.payload_out = '<i'+str(self.idr)+'\0>'+' '+'<j'+str(self.cr_b)+str(self.sk)+'\0>'
 
 
 
@@ -70,4 +67,12 @@ def bytes2float( data ):
     return float("{0:.2f}".format(struct.unpack('>f', b)[0]))
 
 def float2bytes( data ):
-    return struct.pack('<f', data)
+    vals = list(struct.pack('<f', data))
+    c_vals = []
+    for num in vals:
+        if num == '\x00':
+            c_vals.append('0')
+        else:
+            c_vals.append(num)
+
+    return ''.join(c_vals)
