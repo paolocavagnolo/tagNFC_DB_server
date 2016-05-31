@@ -56,12 +56,16 @@ void setup() {
 
   Serial.begin(SERIAL_BAUD);
 
-  cli();
+  noInterrupts(); // disable all interrupts
   TCCR1A = 0;
   TCCR1B = 0;
-  TIMSK1 = (1 << TOIE1);
-  TCCR1B |= (1 << CS11);
-  sei();
+  TCNT1 = 0;
+
+  OCR1A = 6250; // compare match register 16MHz/256/10Hz
+  TCCR1B |= (1 << WGM12); // CTC mode
+  TCCR1B |= (1 << CS12); // 256 prescaler
+  TIMSK1 |= (1 << OCIE1A); // enable timer compare interrupt
+  interrupts(); // enable all interrupts
 
   //NFC side
   nfc.begin();
@@ -118,22 +122,14 @@ void setup() {
 
 }
 
-volatile long trigTime = 0;
-int ar = 0;
-long tick = 0;
-bool trig = false;
+volatile float trigTime = 0;
+float ar = 0;
 
-ISR(TIMER1_OVF_vect)
+ISR(TIMER1_COMPA_vect)
 {
   ar = analogRead(0);
-  if (ar > 15) {
-    if (!trig) trigTime = millis();
-    trig = true;
-    if ((millis() - trigTime) > (2023 - ar)) {
-      tick++;
-      trigTime = 0;
-      trig = false;
-    }
+  if (ar > 100) {
+    trigTime = trigTime + (ar / 1500) + 0.318;
   }
 }
 
@@ -230,38 +226,39 @@ void loop() {
   }
 
   if (radio.receiveDone()) {
+    
     timeout_tick = millis();
     byte inByte[radio.DATALEN];
-    if (radio.ACKRequested()) radio.sendACK();
-
-    if (radio.DATALEN) > 2 {
-      for (byte i = 0; i < radio.DATALEN; i++) {
-        inByte[i] = radio.DATA[i];
-      }
-
-      Cr = bytes2float(inByte[0],inByte[1],inByte[2],inByte[3]);
-      Sk = (int)inByte[4]-48;
-      printCr(Cr,Sk);
-    }
-    else {
-      Blink(RED,1000);
-    }
     
+    Serial.print(radio.DATALEN);
+    Serial.print(" - ");
+
+    for (int i = 0; i < radio.DATALEN; i++) {
+      inByte[i] = radio.DATA[i];
+      Serial.print(inByte[i],DEC);
+      Serial.print(" - ");
+    }
+    if (radio.ACKRequested()) radio.sendACK();
+    Cr = bytes2float(inByte[0], inByte[1], inByte[2], inByte[3]);
+    Serial.print("cr ");
+    Serial.println(Cr);
+    Sk = (int)inByte[4] - 48;
+    printCr(Cr, Sk);
 
   }
 
 
 
   if (Cr >= 0) {
-    printCr(Cr,Sk);
+    
     digitalWrite(GREEN, HIGH);
     digitalWrite(LASER, HIGH);
-
-    if (tick > 10) {
+    Serial.println(trigTime);
+    if (trigTime > 110) {
       timeout_tick = millis();
       if (radio.sendWithRetry(GATEWAYID, "t", 1)) {
         Serial.print(" ok!");
-        tick -= 10;
+        trigTime -= 110;
       }
     }
 
@@ -344,3 +341,4 @@ void printCr(float num, int sk) {
 
 
 }
+
