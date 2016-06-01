@@ -9,8 +9,8 @@ from structData import *
 from logBot import *
 
 ## The logging Part ##
-
-setup_logging('./logConfig.json',logging.DEBUG,'LOG_CFG')
+ENERGYLOG = '/home/pi/Documents/tagNFC_DB_server/theBrain/energyBuffer.log'
+setup_logging('/home/pi/Documents/tagNFC_DB_server/theBrain/logConfig.json',logging.DEBUG,'LOG_CFG')
 logger = logging.getLogger()
 
 ## The Connections Objects! The real importants things in the IoT ##
@@ -67,7 +67,7 @@ try:
             elif a_msg.idm == 'e':
                 logger.debug("energy!")
                 #plotly
-                open('energyBuffer.log','a+',0).write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count) + '\n')
+                open(ENERGYLOG,'a+',0).write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count) + '\n')
 
 
 

@@ -11,7 +11,7 @@
 ### END INIT INFO
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
-DIR=/home/pi/Documents/tagNFC_DB_server/theBrain
+DIR=/usr/local/bin/theBrain
 DAEMON=$DIR/theBrain.py
 DAEMON_NAME=theBrain
 
