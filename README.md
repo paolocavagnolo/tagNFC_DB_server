@@ -46,6 +46,13 @@ test UART
       sudo apt-get install minicom
       sudo minicom -D /dev/ttyAMA0 -b115200
 
+## Run on startup
+
+http://blog.scphillips.com/posts/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/
+
+      sudo /etc/init.d/goMonitor.sh start
+      sudo /etc/init.d/goMonitor.sh status
+      sudo /etc/init.d/goMonitor.sh stop
 
 
 ## Set-up github on local machine
