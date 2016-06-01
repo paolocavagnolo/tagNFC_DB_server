@@ -9,6 +9,7 @@
 #include <avr/io.h>
 #include <avr/wdt.h>
 
+
 #define Reset_AVR() wdt_enable(WDTO_30MS); while(1) {}
 
 #define NODEID      4       // node ID used for this unit
@@ -150,32 +151,49 @@ void setup(){
 
 
 char message[5];
-
+long timeoutMAX = 60000000;
 
 void loop(){
-  if (millis() > 86400000) {
+
+  if (millis() > timeoutMAX) {
     Reset_AVR();
   }
-  // Check for existing RF data, potentially for a new sketch wireless upload
-  // For this to work this check has to be done often enough to be
-  // picked up when a GATEWAY is trying hard to reach this node for a new sketch wireless upload
-  if (radio.receiveDone())
-  {
-    Serial.print("Got [");
-    Serial.print(radio.SENDERID);
-    Serial.print(':');
-    Serial.print(radio.DATALEN);
-    Serial.print("] > ");
-    for (byte i = 0; i < radio.DATALEN; i++)
-      Serial.print((char)radio.DATA[i], HEX);
-    Serial.println();
-    CheckForWirelessHEX(radio, flash, true);
-    Serial.println();
-  }
-  //else Serial.print('.');
 
-  ////////////////////////////////////////////////////////////////////////////////////////////
-  // Real sketch code here, let's blink the onboard LED
+  if (radio.receiveDone()) {
+
+    byte inByte[radio.DATALEN];
+
+    Serial.print(radio.DATALEN);
+    Serial.print(" - ");
+
+    for (int i = 0; i < radio.DATALEN; i++) {
+      inByte[i] = radio.DATA[i];
+      Serial.print(inByte[i],DEC);
+      Serial.print(" - ");
+    }
+
+    if (radio.ACKRequested()) radio.sendACK();
+
+    float count = bytes2float(inByte[1], inByte[2], inByte[3], inByte[4]);
+    switch (inByte[0]) {
+      case 'a':
+        totenA = count;
+        break;
+
+      case 'b':
+        totenB = count;
+        break;
+
+      case 'c':
+        totenC = count;
+        break;
+
+      default:
+        break;
+    }
+
+  }
+
   if (tA>COUNT_TICK) {
     tA = tA - COUNT_TICK;
     totenA = totenA + 0.01;
@@ -262,7 +280,7 @@ void loop(){
     Serial.print("C: ");
     Serial.println(totenC);
   }
-  ////////////////////////////////////////////////////////////////////////////////////////////
+// end loop
 }
 
 void float2Bytes(float val,byte* bytes_array){
