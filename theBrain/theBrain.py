@@ -67,7 +67,7 @@ try:
             elif a_msg.idm == 'e':
                 logger.debug("energy!")
                 #plotly
-                open('energyBuffer.log','a+').write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count) + '\n')
+                open('energyBuffer.log','a+',0).write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count) + '\n')
 
 
 
