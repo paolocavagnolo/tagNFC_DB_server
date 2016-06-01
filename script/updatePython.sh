@@ -9,8 +9,8 @@ echo "python as exe"
 sudo cp theBrain/goMonitor.sh /etc/init.d/
 sudo cp theBrain/theBrain.py /usr/local/bin/theBrain/
 
-chmod 755 /usr/local/bin/theBrain/theBrain.py
-chmod 755 /etc/init.d/goMonitor.sh
+sudo chmod 755 /usr/local/bin/theBrain/theBrain.py
+sudo chmod 755 /etc/init.d/goMonitor.sh
 
 cd /etc/init.d/
 sudo update-rc.d goMonitor.sh defaults
