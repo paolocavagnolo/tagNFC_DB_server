@@ -22,18 +22,18 @@ a_count = raw_input(prompt)
 
 ser.write('i'+'4'+'\0')
 time.sleep(1)
-ser.write('j'+float2bytes(float(a_count))+'\0')
+ser.write('j'+'a'+float2bytes(float(a_count))+'\0')
 
 print "Count for B?"
 b_count = raw_input(prompt)
 
 ser.write('i'+'4'+'\0')
 time.sleep(1)
-ser.write('j'+float2bytes(float(b_count))+'\0')
+ser.write('j'+'b'+float2bytes(float(b_count))+'\0')
 
 print "Count for C?"
 c_count = raw_input(prompt)
 
 ser.write('i'+'4'+'\0')
 time.sleep(1)
-ser.write('j'+float2bytes(float(c_count))+'\0')
+ser.write('j'+'c'+float2bytes(float(c_count))+'\0')
