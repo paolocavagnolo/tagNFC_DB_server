@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import fileinput
 
 def data2web( data, a, b, c ):
@@ -27,12 +29,16 @@ def readFromFile():
   return lines
 
 lines = readFromFile()
-print lines
 
-
-# if a_msg.idphase == 'a':
-#     data2web(a_msg.date.strftime('%d/%m/%y %H:%M:%S'),a_msg.count,' ',' ')
-# elif a_msg.idphase == 'b':
-#     data2web(a_msg.date.strftime('%d/%m/%y %H:%M:%S'),' ',a_msg.count,' ')
-# elif a_msg.idphase == 'c':
-#     data2web(a_msg.date.strftime('%d/%m/%y %H:%M:%S'),' ',' ',a_msg.count)
+i=0
+for line in lines:
+    data = lines[i].split(',')[0]
+    idphase = lines[i].split(',')[1]
+    count = lines[i].split(',')[2]
+    if idphase == 'a':
+        data2web(data,count,' ',' ')
+    elif idphase == 'b':
+        data2web(data,' ',count,' ')
+    elif idphase == 'c':
+        data2web(data,' ',' ',count)
+    i=i+1
