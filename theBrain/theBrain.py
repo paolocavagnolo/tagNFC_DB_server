@@ -72,7 +72,7 @@ try:
 
                 #plotly
                 logger.debug(open(ENERGYLOG,'a+',0).write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count) + '\n'))
-                logger.debug(os.system("sh plotData.sh"))
+                logger.debug(os.system("plotData.sh"))
 
 
             ### ######################## ###
