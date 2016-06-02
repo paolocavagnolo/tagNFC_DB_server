@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import fileinput
 
 def data2web( data, a, b, c ):
@@ -18,15 +16,16 @@ def data2web( data, a, b, c ):
       print line,
 
 def readFromFile():
-  arduFile = "/home/pi/Documents/tagNFC_DB_server/theBrain/energyBuffer.log"
+  buffer_file = "/home/pi/Documents/tagNFC_DB_server/theBrain/energyBuffer.log"
   lines = []
-  with open(arduFile, "r") as f:
+  with open(buffer_file, "r") as f:
       lines = f.readlines()
-  # with open(arduFile, "w") as f:
-  #     f.truncate()
+  with open(buffer_file, "w") as f:
+      f.truncate()
   f.close()
   lines = map(lambda x: x.rstrip(), lines)
   return lines
+
 
 lines = readFromFile()
 

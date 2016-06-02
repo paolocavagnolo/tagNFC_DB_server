@@ -3,6 +3,8 @@
 ## The modules we need ##
 import serial
 import time
+import os
+import sys
 from gDriveAPI import *
 from mongoDB import *
 from structData import *
@@ -67,10 +69,10 @@ try:
             ### ############################ ###
             elif a_msg.idm == 'e':
                 logger.debug("energy!")
-                
-                #plotly
-                open(ENERGYLOG,'a+',0).write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count) + '\n')
 
+                #plotly
+                logger.debug(open(ENERGYLOG,'a+',0).write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count) + '\n'))
+                logger.debug(os.system("sh plotData.sh"))
 
 
             ### ######################## ###
