@@ -6,6 +6,7 @@ python plotEnergy.py
 
 echo "Copy file to the apache serve index.html"
 sudo cp panel.html /var/www/html/
+cd /var/www/html/
 sudo rm index.html
 sudo mv panel.html index.html
 
