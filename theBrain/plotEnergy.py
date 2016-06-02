@@ -27,7 +27,7 @@ def readFromFile():
   return lines
 
 lines = readFromFile()
-
+print lines
 
 
 # if a_msg.idphase == 'a':
