@@ -67,13 +67,7 @@ try:
             ### ############################ ###
             elif a_msg.idm == 'e':
                 logger.debug("energy!")
-                if a_msg.idphase == 'a':
-                    data2web(a_msg.date.strftime('%d/%m/%y %H:%M:%S'),a_msg.count,' ',' ')
-                elif a_msg.idphase == 'b':
-                    data2web(a_msg.date.strftime('%d/%m/%y %H:%M:%S'),' ',a_msg.count,' ')
-                elif a_msg.idphase == 'c':
-                    data2web(a_msg.date.strftime('%d/%m/%y %H:%M:%S'),' ',' ',a_msg.count)
-
+                
                 #plotly
                 open(ENERGYLOG,'a+',0).write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count) + '\n')
 
