@@ -10,5 +10,10 @@ cd /var/www/html/
 sudo rm index.html
 sudo mv panel.html index.html
 
+echo "Starting from a new file"
+cd /home/pi/Documents/tagNFC_DB_server/theBrain
+rm panel.html
+cp panel_init.html panel.html
+
 echo "come back"
 cd $PTH
