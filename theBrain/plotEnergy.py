@@ -20,8 +20,8 @@ def readFromFile():
   lines = []
   with open(buffer_file, "r") as f:
       lines = f.readlines()
-  with open(buffer_file, "w") as f:
-      f.truncate()
+  # with open(buffer_file, "w") as f:
+  #     f.truncate()
   f.close()
   lines = map(lambda x: x.rstrip(), lines)
   return lines
