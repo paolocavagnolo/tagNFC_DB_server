@@ -106,5 +106,6 @@ try:
 
 except Exception, e:
     logging.error(e, exc_info=True)
+    logger.info("CHIUSO!", exc_info=True)
     dbLog.close()
     ser.close()
