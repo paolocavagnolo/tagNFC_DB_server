@@ -18,7 +18,7 @@ case "$1" in
   start)
     echo "Starting theBrain!"
     # run application you want to start
-    /home/pi/Documents/tagNFC_DB_server/theBrain/theBrain.py
+    python /home/pi/Documents/tagNFC_DB_server/theBrain/theBrain.py >/tmp/script_stdout.txt 2>/tmp/script_stderr.txt &
     ;;
   stop)
     echo "Stopping theBrain!"
