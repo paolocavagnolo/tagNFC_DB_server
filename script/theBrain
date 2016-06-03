@@ -23,7 +23,7 @@ case "$1" in
   stop)
     echo "Stopping theBrain!"
     # kill application you want to stop
-    killall theBrain.py
+    kill -9 $(ps aux | grep '[p]ython /home/pi/Documents/tagNFC_DB_server/theBrain/theBrain.py' | awk '{print $2}')
     ;;
   *)
     echo "Usage: /etc/init.d/theBrain {start|stop}"
