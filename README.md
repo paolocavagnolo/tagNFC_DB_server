@@ -54,6 +54,8 @@ http://blog.scphillips.com/posts/2013/07/getting-a-python-script-to-run-in-the-b
       sudo /etc/init.d/goMonitor.sh status
       sudo /etc/init.d/goMonitor.sh stop
 
+      python myscript.py >/tmp/script_stdout.txt 2>/tmp/script_stderr.txt &
+
 ## Webserver
 
       https://www.raspberrypi.org/documentation/remote-access/web-server/apache.md
