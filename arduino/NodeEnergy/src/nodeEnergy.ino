@@ -1,4 +1,3 @@
-
 #include <RFM69.h>         //get it here: https://www.github.com/lowpowerlab/rfm69
 #include <SPI.h>
 #include <avr/io.h>
@@ -79,29 +78,23 @@ ISR (PCINT1_vect) // handle pin change interrupt for A0 to A5 here
 
 ISR (PCINT0_vect) // handle pin change interrupt for D8 to D13 here
 {
-    tB++;
+    tC++;
 }
 
 ISR (PCINT2_vect) // handle pin change interrupt for D0 to D7 here
 {
-   tC++;
+   tB++;
 }
 
 void setup(){
   pinMode(LED, OUTPUT);
-  Serial.begin(SERIAL_BAUD);
-
   radio.initialize(FREQUENCY,NODEID,NETWORKID);
   radio.encrypt(ENCRYPTKEY); //OPTIONAL
   #ifdef IS_RFM69HW
     radio.setHighPower(); //only for RFM69HW!
   #endif
-  Serial.print("Start node...");
-
-  if (flash.initialize())
-    Serial.println("SPI Flash Init OK!");
-  else
-    Serial.println("SPI Flash Init FAIL!");
+  
+  flash.initialize();
 
   byte max_b[4], max2_b[4];
   float max, max2;
@@ -153,6 +146,7 @@ void setup(){
 char message[5];
 long timeoutMAX = 60000000;
 
+
 void loop(){
 
   if (millis() > timeoutMAX) {
@@ -163,29 +157,28 @@ void loop(){
 
     byte inByte[radio.DATALEN];
 
-    Serial.print(radio.DATALEN);
-    Serial.print(" - ");
-
     for (int i = 0; i < radio.DATALEN; i++) {
       inByte[i] = radio.DATA[i];
-      Serial.print(inByte[i],DEC);
-      Serial.print(" - ");
     }
 
     if (radio.ACKRequested()) radio.sendACK();
-
-    float count = bytes2float(inByte[1], inByte[2], inByte[3], inByte[4]);
-    switch (inByte[0]) {
+  
+    byte cc[4] = {inByte[1],inByte[2],inByte[3],inByte[4]};
+    float count = bytes2Float(&cc[0]);
+    switch ((char)inByte[0]) {
       case 'a':
         totenA = count;
+        tA = 0;
         break;
 
       case 'b':
         totenB = count;
+        tB = 0;
         break;
 
       case 'c':
         totenC = count;
+        tC = 0;
         break;
 
       default:
@@ -194,7 +187,7 @@ void loop(){
 
   }
 
-  if (tA>COUNT_TICK) {
+  if (tA>=COUNT_TICK) {
     tA = tA - COUNT_TICK;
     totenA = totenA + 0.01;
     //totenA = 48.67;
@@ -214,16 +207,10 @@ void loop(){
     message[5] = totenA_b[3];
 
     //send to gateway
-    if (radio.sendWithRetry(GATEWAYID, message, sendSize)) {
-      Serial.print(" ok!");
-    }
-    else Serial.print(" nothing...");
-
-    Serial.print("A: ");
-    Serial.println(totenA);
+    radio.sendWithRetry(GATEWAYID, message, sendSize);
   }
 
-  if (tB>COUNT_TICK) {
+  if (tB>=COUNT_TICK) {
     tB = tB - COUNT_TICK;
     totenB = totenB + 0.01;
     //totenB = 42.00;
@@ -241,18 +228,12 @@ void loop(){
     message[3] = totenB_b[1];
     message[4] = totenB_b[2];
     message[5] = totenB_b[3];
+    
+    radio.sendWithRetry(GATEWAYID, message, sendSize);
 
-    //send to gateway
-    if (radio.sendWithRetry(GATEWAYID, message, sendSize)) {
-      Serial.print(" ok!");
-    }
-    else Serial.print(" nothing...");
-
-    Serial.print("B: ");
-    Serial.println(totenB);
   }
 
-  if (tC>COUNT_TICK) {
+  if (tC>=COUNT_TICK) {
     tC = tC - COUNT_TICK;
     totenC = totenC + 0.01;
     //totenC = 24.63;
@@ -271,16 +252,10 @@ void loop(){
     message[4] = totenC_b[2];
     message[5] = totenC_b[3];
 
-    //send to gateway
-    if (radio.sendWithRetry(GATEWAYID, message, sendSize)) {
-      Serial.print(" ok!");
-    }
-    else Serial.print(" nothing...");
-
-    Serial.print("C: ");
-    Serial.println(totenC);
+    radio.sendWithRetry(GATEWAYID, message, sendSize);
   }
-// end loop
+// end loop 
+
 }
 
 void float2Bytes(float val,byte* bytes_array){
@@ -311,3 +286,4 @@ float bytes2Float(byte* bytes_array) {
   val = u.fval;
   return val;
 }
+
