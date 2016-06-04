@@ -54,7 +54,11 @@ http://blog.scphillips.com/posts/2013/07/getting-a-python-script-to-run-in-the-b
       sudo /etc/init.d/goMonitor.sh status
       sudo /etc/init.d/goMonitor.sh stop
 
+      http://www.stuffaboutcode.com/2012/06/raspberry-pi-run-program-at-start-up.html
+
       python myscript.py >/tmp/script_stdout.txt 2>/tmp/script_stderr.txt &
+      sudo update-rc.d NameOfYourScript defaults
+      sudo update-rc.d -f  NameOfYourScript remove
 
 ## Webserver
 

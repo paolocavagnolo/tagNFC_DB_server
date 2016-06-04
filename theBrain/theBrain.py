@@ -17,10 +17,16 @@ setup_logging('/home/pi/Documents/tagNFC_DB_server/theBrain/logConfig.json',logg
 logger = logging.getLogger()
 
 ## The Connections Objects! The real importants things in the IoT ##
+wired = False
 
-gLog = gDriveAPI('log','tag_system') #open the worksheet 'log' on the file 'tag_system'
-gSes = gDriveAPI('open_session','tag_system')
-gUser = gDriveAPI('soci','tag_system')
+while wired == False:
+    try:
+        gLog = gDriveAPI('log','tag_system') #open the worksheet 'log' on the file 'tag_system'
+        gSes = gDriveAPI('open_session','tag_system')
+        gUser = gDriveAPI('soci','tag_system')
+        wired = True
+    except:
+        sleep(10)
 
 dbLog = mongoDB('radio_log','techlab') #work with the collection 'radio-logs' with the database 'techlab-db'
 
