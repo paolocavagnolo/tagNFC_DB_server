@@ -5,11 +5,14 @@ import serial
 import time
 import os
 import sys
+import telepot
+
 from gDriveAPI import *
 from mongoDB import *
 from structData import *
 from logBot import *
 from dataHtml import *
+
 
 ## The logging Part ##
 ENERGYLOG = '/home/pi/Documents/tagNFC_DB_server/theBrain/energyBuffer.log'
@@ -35,6 +38,27 @@ ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk wit
 
 ## The laser session chronicle ##
 id_session = int(gSes.read_one(1,1))
+
+## Start the telegram bot
+def handle(msg):
+    chat_id = msg['chat']['id']
+    command = msg['text']
+
+    print 'Got command: %s' % command
+
+    if command == '/door':
+        stringa = str(datetime.datetime.now()) + ',' + str(msg['from']['first_name']) + ' ' + str(msg['from']['last_name']) + ',' + str(command) + '\n'
+        open('test.txt','a+').write(stringa)
+        bot.sendMessage(chat_id,"ok!")
+        ser.write('i'+'3'+'\0')
+        time.sleep(1)
+        ser.write('j'+'d'+'\0')
+
+bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
+
+bot.message_loop(handle)
+
+## Read from serial
 
 try:
     while True:
