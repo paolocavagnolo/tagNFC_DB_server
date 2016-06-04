@@ -53,7 +53,7 @@ def handle(msg):
         logger.debug("Apro porta")
         ser.write('i'+'3'+'\0')
         time.sleep(1)
-        ser.write('j'+'d'+'\0')
+        ser.write('j'+'d'+'d'+'\0')
 
 bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
 
@@ -64,7 +64,7 @@ bot.message_loop(handle)
 try:
     while True:
         pl = ser.readline()
-        if len(pl) > 20:
+        if len(pl) > 5:
             logger.debug(pl)
             a_msg = radioPkt(pl)
             dbLog.write(a_msg.__dict__)
