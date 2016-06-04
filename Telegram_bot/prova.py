@@ -17,3 +17,7 @@ def handle(msg):
 bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
 
 bot.message_loop(handle)
+
+while 1:
+    print "ciao"
+    time.sleep(3)
