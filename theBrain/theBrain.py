@@ -47,13 +47,14 @@ def handle(msg):
     print 'Got command: %s' % command
 
     if command == '/door':
+        logger.debug("Apro porta " + msg['chat']['id'])
         stringa = str(datetime.datetime.now()) + ',' + str(msg['from']['first_name']) + ' ' + str(msg['from']['last_name']) + ',' + str(command) + '\n'
         open('/home/pi/Documents/tagNFC_DB_server/theBrain/test.txt','a+').write(stringa)
         bot.sendMessage(chat_id,"ok!")
-        logger.debug("Apro porta")
+
         ser.write('i'+'3'+'\0')
         time.sleep(1)
-        ser.write('j'+'d'+'d'+'\0')
+        ser.write('j'+'d123'+'\0')
 
 bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
 
