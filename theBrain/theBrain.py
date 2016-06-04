@@ -65,6 +65,7 @@ try:
     while True:
         pl = ser.readline()
         if len(pl) > 5:
+            logger.debug(pl)
             a_msg = radioPkt(pl)
             dbLog.write(a_msg.__dict__)
 
