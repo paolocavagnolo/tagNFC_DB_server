@@ -48,7 +48,7 @@ def handle(msg):
 
     if command == '/door':
         stringa = str(datetime.datetime.now()) + ',' + str(msg['from']['first_name']) + ' ' + str(msg['from']['last_name']) + ',' + str(command) + '\n'
-        open('test.txt','a+').write(stringa)
+        open('/home/pi/Documents/tagNFC_DB_server/theBrain/test.txt','a+').write(stringa)
         bot.sendMessage(chat_id,"ok!")
         logger.debug("Apro porta")
         ser.write('i'+'3'+'\0')
