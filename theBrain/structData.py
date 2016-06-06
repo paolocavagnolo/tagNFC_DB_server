@@ -9,7 +9,7 @@ class radioPkt(object):
         self.ids = payload.split(',')[2]
         self.idr = payload.split(',')[3]
         self.RSSI = payload.split(',')[4]
-        if self.idm == '3':
+        if self.ids == '3':
             self.idm = 'd'
         else:
             self.idm = payload.split(',')[5].decode("HEX")
