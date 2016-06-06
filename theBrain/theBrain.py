@@ -60,7 +60,7 @@ def check_telegram(bot):
 
         logger.debug(chat_id)
         logger.debug("porta!")
-        stringa = str(date + ',' + first + ' ' + last + ',' + str(command) + '\n')
+        stringa = str(str(date) + ',' + first + ' ' + last + ',' + str(command) + '\n')
         open('/home/pi/Documents/tagNFC_DB_server/theBrain/doorLog.txt','a+').write(stringa)
         bot.sendMessage(chat_id,"ok!")
 
