@@ -7,6 +7,8 @@ import os
 import sys
 import telepot
 import thread
+import asyncio
+import telepot.async
 
 from gDriveAPI import *
 from mongoDB import *
@@ -58,10 +60,12 @@ def handle(msg):
         time.sleep(1)
         ser.write('j'+'d'+'\0')
 
-bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
-
+# bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
 def start_maggiorBot():
-    bot.message_loop(handle)
+    bot = telepot.async.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
+    loop = asyncio.get_event_loop()
+    loop.create_task(bot.message_loop(handle))
+    loop.run_forever()
 
 thread.start_new_thread(start_maggiorBot, ())
 
