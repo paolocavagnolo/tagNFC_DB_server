@@ -43,8 +43,8 @@ id_session = int(gSes.read_one(1,1))
 def check_telegram(bot):
     msg = bot.getUpdates(offset=100000001)
 
-    chat_id = msg['chat']['id']
-    command = msg['text']
+    chat_id = msg[len(msg)-1]['message']['chat']['id']
+    command = msg[len(msg)-1]['message']['text']
 
     print 'Got command: %s' % command
 
