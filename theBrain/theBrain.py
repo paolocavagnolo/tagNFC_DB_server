@@ -34,7 +34,7 @@ while wired == False:
 dbLog = mongoDB('radio_log','techlab') #work with the collection 'radio-logs' with the database 'techlab-db'
 
 
-ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk with the gateway
+ser = serial.Serial('/dev/ttyAMA0',115200, timeout=3) #open a serial connection to talk with the gateway
 
 ## The laser session chronicle ##
 id_session = int(gSes.read_one(1,1))
