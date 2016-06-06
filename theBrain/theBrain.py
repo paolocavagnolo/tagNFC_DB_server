@@ -69,7 +69,7 @@ a_bot.getUpdates(offset=100000001)
 
 try:
     while True:
-        logger.DEBUG(check_telegram(a_bot))
+        logger.debug(check_telegram(a_bot))
         pl = ser.readline()
         if pl[0] == '<' and pl[1] == ',':
             logger.debug(pl)
