@@ -75,6 +75,7 @@ def check_telegram(bot):
 a_bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
 ## Read from serial
 
+
 try:
     while True:
         pl = ser.readline()
