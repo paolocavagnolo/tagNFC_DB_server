@@ -40,7 +40,9 @@ ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk wit
 id_session = int(gSes.read_one(1,1))
 
 ## Start the telegram bot
-def handle(msg):
+def check_telegram(bot):
+    msg = bot.getUpdates(offset=100000001)
+
     chat_id = msg['chat']['id']
     command = msg['text']
 
@@ -58,12 +60,13 @@ def handle(msg):
         time.sleep(1)
         ser.write('j'+'d'+'\0')
 
-bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
-
+a_bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
+a_bot.getUpdates(offset=100000001)
 ## Read from serial
 
 try:
     while True:
+        check_telegram(a_bot)
         pl = ser.readline()
         if pl[0] == '<' and pl[1] == ',':
             logger.debug(pl)
@@ -136,6 +139,7 @@ try:
 
             else:
                 logger.debug("altro")
+
 
 except Exception, e:
     logging.error(e, exc_info=True)
