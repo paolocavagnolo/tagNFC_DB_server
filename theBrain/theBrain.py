@@ -53,7 +53,7 @@ def check_telegram(bot):
     print 'Got command: %s' % command
 
     # if command == '/door' and chat_id == -123571607:
-    if command == '/door' and old_date != date:
+    if command == '/door' and old_date != date and chat_id == -123571607:
         logger.debug("nuova richiesta! eseguo:")
         old_date = date
         first = msg[len(msg)-1]['message']['chat']['first_name']
