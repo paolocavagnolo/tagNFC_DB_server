@@ -43,6 +43,7 @@ id_session = int(gSes.read_one(1,1))
 old_date = 0
 
 def check_telegram(bot):
+    logger.debug("telegram")
     global old_date
     msg = bot.getUpdates(offset=100000001)
 
@@ -67,6 +68,7 @@ def check_telegram(bot):
         ser.write('i'+'3'+'\0')
         time.sleep(1)
         ser.write('j'+'d'+'\0')
+
     else:
         logger.debug("niente di nuovo")
 
@@ -75,7 +77,8 @@ a_bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
 
 try:
     while True:
-        logger.debug(check_telegram(a_bot))
+        # logger.debug(check_telegram(a_bot))
+        logger.debug("guardo")
         pl = ser.readline()
         if pl[0] == '<' and pl[1] == ',':
             logger.debug(pl)
