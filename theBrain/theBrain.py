@@ -50,10 +50,13 @@ def check_telegram(bot):
 
     # if command == '/door' and chat_id == -123571607:
     if command == '/door':
+        first = msg[len(msg)-1]['message']['chat']['first_name']
+        last = msg[len(msg)-1]['message']['chat']['last_name']
+
         logger.debug(chat_id)
         logger.debug("porta!")
-        stringa = str(datetime.datetime.now()) + ',' + str(msg['from']['first_name']) + ' ' + str(msg['from']['last_name']) + ',' + str(command) + '\n'
-        open('/home/pi/Documents/tagNFC_DB_server/theBrain/test.txt','a+').write(stringa)
+        stringa = str(datetime.datetime.now()) + ',' + first + ' ' + last + ',' + str(command) + '\n'
+        open('/home/pi/Documents/tagNFC_DB_server/theBrain/doorLog.txt','a+').write(stringa)
         bot.sendMessage(chat_id,"ok!")
 
         ser.write('i'+'3'+'\0')
@@ -66,7 +69,7 @@ a_bot.getUpdates(offset=100000001)
 
 try:
     while True:
-        check_telegram(a_bot)
+        logger.DEBUG(check_telegram(a_bot))
         pl = ser.readline()
         if pl[0] == '<' and pl[1] == ',':
             logger.debug(pl)
