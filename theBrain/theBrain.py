@@ -60,7 +60,10 @@ def handle(msg):
 
 bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
 
-thread.start_new_thread(bot.message_loop(handle), ())
+def start_maggiorBot():
+    bot.message_loop(handle)
+
+thread.start_new_thread(start_maggiorBot, ())
 
 ## Read from serial
 
