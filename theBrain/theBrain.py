@@ -43,6 +43,7 @@ id_session = int(gSes.read_one(1,1))
 old_date = 0
 
 def check_telegram(bot):
+    global old_date
     msg = bot.getUpdates(offset=100000001)
 
     chat_id = msg[len(msg)-1]['message']['chat']['id']
