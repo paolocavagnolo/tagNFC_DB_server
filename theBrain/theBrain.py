@@ -77,85 +77,83 @@ a_bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
 
 try:
     while True:
-        # logger.debug(check_telegram(a_bot))
         pl = ser.readline()
         if len(pl) > 2:
             if pl[0] == '<' and pl[1] == ',':
-                logger.debug("quaclosa")
-                # logger.debug(pl)
-                # a_msg = radioPkt(pl)
-                # dbLog.write(a_msg.__dict__)
-                #
-                # ### ################### ###
-                # ### Messagge from LASER ###
-                # ### ################### ###
-                # if a_msg.idm == 'n':
-                #     logger.debug("n - mando crediti")
-                #     cellTag = gUser.find(a_msg.tag[0:8])
-                #     an_ans = answer(pl,gUser.read_one(cellTag.row, 3),gUser.read_one(cellTag.row, 4))
-                #     logger.debug(an_ans.__dict__)
-                #
-                #     ser.write('i'+an_ans.idr+'\0')
-                #     time.sleep(1)
-                #     ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
-                #
-                #     db_ans = an_ans.__dict__
-                #     db_ans.pop('cr_b',None)
-                #     dbLog.write(db_ans)
-                #     logger.debug("mandato in db")
-                #
-                #     logger.debug("n - apro sessione")
-                #     id_session = id_session + 1
-                #     gSes.write(id_session+1,1,id_session) #id
-                #     gSes.write(id_session+1,2,a_msg.date) #data
-                #     gSes.write(id_session+1,3,gUser.read_one(cellTag.row, 8)) #mail
-                #     gSes.write(id_session+1,4,0) #cr
-                #
-                #
-                #
-                # ### ############################ ###
-                # ### Messagge from ENERGY MONITOR ###
-                # ### ############################ ###
-                # elif a_msg.idm == 'e':
-                #     logger.debug("energy!")
-                #
-                #     #plotly
-                #     logger.debug(open(ENERGYLOG,'a+',0).write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count) + '\n'))
-                #     logger.debug(os.system("plotData.sh"))
-                #
-                #
-                # ### ######################## ###
-                # ### Messagge from TICK LASER ###
-                # ### ######################## ###
-                # elif a_msg.idm == 't':
-                #     logger.debug("t - aggiorno crediti")
-                #     cr = float(gUser.read_one(cellTag.row, 3))
-                #     sk = gUser.read_one(cellTag.row, 4)
-                #     cr_new = cr - (0.2-(0.1*int(sk)))
-                #     an_ans = answer(pl,cr_new,sk)
-                #     logger.debug(an_ans.__dict__)
-                #     gUser.write(cellTag.row, 3, cr_new)
-                #
-                #     logger.debug("t - mando a laser crediti")
-                #     ser.write('i'+an_ans.idr+'\0')
-                #     time.sleep(1)
-                #     ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
-                #
-                #     logger.debug("t - aggiorno sessione")
-                #     gSes.write(id_session+1,4,float(gSes.read_one(id_session+1,4))+(0.2-(0.1*int(sk))))
-                #     db_ans = an_ans.__dict__
-                #     db_ans.pop('cr_b',None)
-                #     dbLog.write(db_ans)
-                #     logger.debug(db_ans)
-                #     logger.debug("mandato in db")
-                #
-                #
-                # else:
-                #     logger.debug("altro")
+                logger.debug(pl)
+                a_msg = radioPkt(pl)
+                dbLog.write(a_msg.__dict__)
+
+                ### ################### ###
+                ### Messagge from LASER ###
+                ### ################### ###
+                if a_msg.idm == 'n':
+                    logger.debug("n - mando crediti")
+                    cellTag = gUser.find(a_msg.tag[0:8])
+                    an_ans = answer(pl,gUser.read_one(cellTag.row, 3),gUser.read_one(cellTag.row, 4))
+                    logger.debug(an_ans.__dict__)
+
+                    ser.write('i'+an_ans.idr+'\0')
+                    time.sleep(1)
+                    ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
+
+                    db_ans = an_ans.__dict__
+                    db_ans.pop('cr_b',None)
+                    dbLog.write(db_ans)
+                    logger.debug("mandato in db")
+
+                    logger.debug("n - apro sessione")
+                    id_session = id_session + 1
+                    gSes.write(id_session+1,1,id_session) #id
+                    gSes.write(id_session+1,2,a_msg.date) #data
+                    gSes.write(id_session+1,3,gUser.read_one(cellTag.row, 8)) #mail
+                    gSes.write(id_session+1,4,0) #cr
+
+
+
+                ### ############################ ###
+                ### Messagge from ENERGY MONITOR ###
+                ### ############################ ###
+                elif a_msg.idm == 'e':
+                    logger.debug("energy!")
+
+                    #plotly
+                    logger.debug(open(ENERGYLOG,'a+',0).write(str(a_msg.date) + ',' + str(a_msg.idphase) + ',' + str(a_msg.count) + '\n'))
+                    logger.debug(os.system("plotData.sh"))
+
+
+                ### ######################## ###
+                ### Messagge from TICK LASER ###
+                ### ######################## ###
+                elif a_msg.idm == 't':
+                    logger.debug("t - aggiorno crediti")
+                    cr = float(gUser.read_one(cellTag.row, 3))
+                    sk = gUser.read_one(cellTag.row, 4)
+                    cr_new = cr - (0.2-(0.1*int(sk)))
+                    an_ans = answer(pl,cr_new,sk)
+                    logger.debug(an_ans.__dict__)
+                    gUser.write(cellTag.row, 3, cr_new)
+
+                    logger.debug("t - mando a laser crediti")
+                    ser.write('i'+an_ans.idr+'\0')
+                    time.sleep(1)
+                    ser.write('j'+an_ans.cr_b+an_ans.sk+'\0')
+
+                    logger.debug("t - aggiorno sessione")
+                    gSes.write(id_session+1,4,float(gSes.read_one(id_session+1,4))+(0.2-(0.1*int(sk))))
+                    db_ans = an_ans.__dict__
+                    db_ans.pop('cr_b',None)
+                    dbLog.write(db_ans)
+                    logger.debug(db_ans)
+                    logger.debug("mandato in db")
+
+
+                else:
+                    logger.debug("altro")
 
         ## if nothing arrived at serial:
         else:
-            logger.debug("guardo")
+            logger.debug(check_telegram(a_bot))
 
 except Exception, e:
     logging.error(e, exc_info=True)
