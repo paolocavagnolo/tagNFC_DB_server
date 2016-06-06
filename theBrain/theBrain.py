@@ -40,31 +40,36 @@ ser = serial.Serial('/dev/ttyAMA0',115200) #open a serial connection to talk wit
 id_session = int(gSes.read_one(1,1))
 
 ## Start the telegram bot
+old_date = 0
+
 def check_telegram(bot):
     msg = bot.getUpdates(offset=100000001)
 
     chat_id = msg[len(msg)-1]['message']['chat']['id']
     command = msg[len(msg)-1]['message']['text']
-
+    date = msg[len(msg)-1]['message']['date']
     print 'Got command: %s' % command
 
     # if command == '/door' and chat_id == -123571607:
-    if command == '/door':
+    if command == '/door' and old_date != date:
+        logger.debug("nuova richiesta! eseguo:")
+        old_date = date
         first = msg[len(msg)-1]['message']['chat']['first_name']
         last = msg[len(msg)-1]['message']['chat']['last_name']
 
         logger.debug(chat_id)
         logger.debug("porta!")
-        stringa = str(datetime.datetime.now()) + ',' + first + ' ' + last + ',' + str(command) + '\n'
+        stringa = str(date + ',' + first + ' ' + last + ',' + str(command) + '\n'
         open('/home/pi/Documents/tagNFC_DB_server/theBrain/doorLog.txt','a+').write(stringa)
         bot.sendMessage(chat_id,"ok!")
 
         ser.write('i'+'3'+'\0')
         time.sleep(1)
         ser.write('j'+'d'+'\0')
+    else:
+        logger.debug("niente di nuovo")
 
 a_bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
-a_bot.getUpdates(offset=100000001)
 ## Read from serial
 
 try:
