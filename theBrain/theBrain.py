@@ -29,7 +29,7 @@ while wired == False:
         gUser = gDriveAPI('soci','tag_system')
         wired = True
     except:
-        sleep(10)
+        time.sleep(10)
 
 dbLog = mongoDB('radio_log','techlab') #work with the collection 'radio-logs' with the database 'techlab-db'
 
