@@ -6,6 +6,7 @@ import time
 import os
 import sys
 import telepot
+import thread
 
 from gDriveAPI import *
 from mongoDB import *
@@ -55,11 +56,11 @@ def handle(msg):
 
         ser.write('i'+'3'+'\0')
         time.sleep(1)
-        ser.write('j'+'d'+'d'+'d'+'\0')
+        ser.write('j'+'d'+'\0')
 
 bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
 
-bot.message_loop(handle)
+thread.start_new_thread(bot.message_loop(handle), ())
 
 ## Read from serial
 
