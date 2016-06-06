@@ -46,7 +46,8 @@ def handle(msg):
 
     print 'Got command: %s' % command
 
-    if command == '/door' and chat_id == -123571607:
+    # if command == '/door' and chat_id == -123571607:
+    if command == '/door':
         logger.debug(chat_id)
         logger.debug("porta!")
         stringa = str(datetime.datetime.now()) + ',' + str(msg['from']['first_name']) + ' ' + str(msg['from']['last_name']) + ',' + str(command) + '\n'
