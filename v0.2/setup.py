@@ -1,19 +1,23 @@
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+# -*- coding: utf-8 -*-
 
-config = {
-    'description': 'theBrain - the big brain of the techlab',
-    'author': 'Paolo Cavagnolo',
-    'url': '',
-    'download_url': 'Where to download it.',
-    'author_email': 'My email.',
-    'version': '0.1',
-    'install_requires': ['nose'],
-    'packages': ['NAME'],
-    'scripts': [],
-    'name': 'projectname'
-}
+from setuptools import setup, find_packages
 
-setup(**config)
+
+with open('README.rst') as f:
+    readme = f.read()
+
+with open('LICENSE') as f:
+    license = f.read()
+
+setup(
+    name='sample',
+    version='0.0.1',
+    description='Sample package for Python-Guide.org',
+    long_description=readme,
+    author='Kenneth Reitz',
+    author_email='me@kennethreitz.com',
+    url='https://github.com/kennethreitz/samplemod',
+    license=license,
+    packages=find_packages(exclude=('tests', 'docs'))
+)
+
