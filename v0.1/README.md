@@ -23,6 +23,7 @@ Resize to the max size
 
 update
 
+
       sudo apt-get update
       sudo apt-get upgrade
       sudo apt-get dist-upgrade
@@ -45,6 +46,11 @@ test UART
 
       sudo apt-get install minicom
       sudo minicom -D /dev/ttyAMA0 -b115200
+
+setup wifi
+
+      https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
+
 
 ## Run on startup (?)
 

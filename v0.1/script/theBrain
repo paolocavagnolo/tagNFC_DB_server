@@ -18,12 +18,16 @@ case "$1" in
   start)
     echo "Starting theBrain!"
     # run application you want to start
-    python /home/pi/Documents/tagNFC_DB_server/theBrain/theBrain.py >/tmp/script_stdout.txt 2>/tmp/script_stderr.txt &
+    python /home/pi/Documents/tagNFC_DB_server/theBrain/theBrain.py >/tmp/brainLog_normal.txt 2>/tmp/brainLog_error.txt &
+    echo "Starting telegram"
+    python /home/pi/Documents/tagNFC_DB_server/theBrain/theBot.py >/tmp/botLog_normal.txt 2>/tmp/botLog_error.txt &
     ;;
   stop)
     echo "Stopping theBrain!"
     # kill application you want to stop
     kill -9 $(ps aux | grep '[p]ython /home/pi/Documents/tagNFC_DB_server/theBrain/theBrain.py' | awk '{print $2}')
+    echo "Stopping telegram"
+    kill -9 $(ps aux | grep '[p]ython /home/pi/Documents/tagNFC_DB_server/theBrain/theBot.py' | awk '{print $2}')
     ;;
   *)
     echo "Usage: /etc/init.d/theBrain {start|stop}"
