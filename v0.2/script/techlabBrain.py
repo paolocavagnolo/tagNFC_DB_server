@@ -20,7 +20,6 @@ if state == 0:
     elif readFromTelegram():    # Secondly, look at telegram
         msgIn = telegramPkt()
         state = 1
-    else:                       # Something else?
 
 ## PROCESS
 elif state == 1:
