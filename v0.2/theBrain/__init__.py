@@ -23,7 +23,7 @@ fkey.close()
 
 # readFromSerial(RFmsg):
 
-ser = serial.Serial('/dev/ttysAMA0', 115200, timeout=.5)
+ser = serial.Serial('/dev/ttyAMA0', 115200, timeout=.5)
 
 def readFromSerial(RFmsg):
     if ser.is_open:
