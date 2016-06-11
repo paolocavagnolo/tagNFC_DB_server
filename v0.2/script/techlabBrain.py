@@ -1,4 +1,4 @@
-import theBrain as *
+from theBrain import *
 
 # Check internet connection!
 gUser = gDriveAPI('soci','tag_system')
