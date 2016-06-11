@@ -10,7 +10,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 
-SYSTEM_PATH = '/Users/paolo/Documents/'
+SYSTEM_PATH = '/home/pi/Documents/'
 PATH_KEYS = SYSTEM_PATH + 'keys.txt'
 fkey=open(PATH_KEYS,'r')
 fkeylines=fkey.readlines()
