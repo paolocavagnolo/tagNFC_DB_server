@@ -10,7 +10,6 @@ from gDriveAPI import *
 from mongoDB import *
 from structData import *
 from logBot import *
-from dataHtml import *
 
 
 ## The logging Part ##
@@ -126,7 +125,7 @@ try:
                 time.sleep(1)
                 ser.write('j'+'d'+'\0')
                 logger.debug(os.system("rm /home/pi/Documents/tagNFC_DB_server/theBrain/bridge2brain.txt"))
-                
+
 
 
 except Exception, e:

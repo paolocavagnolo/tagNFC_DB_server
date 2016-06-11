@@ -1,4 +1,4 @@
-from theBrain import *
+import theBrain as *
 
 # Check internet connection!
 gUser = gDriveAPI('soci','tag_system')
@@ -20,8 +20,8 @@ if state == 0:
     elif readFromTelegram():    # Secondly, look at telegram
         msgIn = telegramPkt()
         state = 1
-    else:
-        print "no input"
+    else:                       # Something else?
+
 ## PROCESS
 elif state == 1:
     dbLog.write(msg.__dict__)   ## msg to mongo online database

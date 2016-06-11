@@ -1,2 +1,8 @@
 nose
 sphinx
+oauth2client
+pymongo
+pyserial
+telepot
+simplejson
+logging
