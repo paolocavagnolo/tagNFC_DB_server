@@ -7,7 +7,6 @@ gSes = gDriveAPI('open_session','tag_system')
 dbLog = mongoDB('radio_log','techlab') #work with the collection 'radio-logs' with the database 'techlab-db'
 
 
-
 state = 0
 id_session = int(gSes.read_one(1,1))
 
@@ -16,12 +15,13 @@ if state == 0:
     RFmsg = ""
     if readFromSerial(RFmsg):   # Firs of all, look at the serial port for communication from moteino
         msgIn = radioPkt(RFmsg)
-        state = 1
+        state = 0
     elif readFromTelegram():    # Secondly, look at telegram
         msgIn = telegramPkt()
-        state = 1
+        state = 0
     else:
         print "no input"
+
 ## PROCESS
 elif state == 1:
     dbLog.write(msg.__dict__)   ## msg to mongo online database

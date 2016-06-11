@@ -5,10 +5,14 @@ import json
 import datetime
 import struct
 import pymongo
-import telepot
 from pymongo import MongoClient
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+
+
+## ~/Documents/
+##              --some important file
+##              -/tagNFC_etc../
 
 
 SYSTEM_PATH = '/home/pi/Documents/'
@@ -106,11 +110,10 @@ class answerTelegram(object):
 
 # msgOut = telegramPrs(msgIn)
 
-bot = telepot.Bot('223540260:AAE5dNuHTt5F9m3gGHNxieghQgP58EzxilU')
-
 def telegramPrs(msgIn):
     msgOut = answerTelegram()
-
+    RM_FILE_COMMAND = "rm " + TELEGRAM_BRIDGE
+    os.system(RM_FILE_COMMAND)
 
 
 # dbLog.write(msg.__dict__)

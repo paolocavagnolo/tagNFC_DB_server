@@ -40,17 +40,11 @@ elif state == 1:
         state = 0
 
     elif msg.idm == 'b':
+        if msg.cmd == 'door':  ## Door
+            print "APRO PORTA!"
         msgOut = telegramPrs(msgIn)
         state = 2
-        # elif msg.cmd == 'door':  ## Door
-        #
-        # elif msg.cmd == 'temp':  ## Get temperature
-        #     s
-        # elif msg.cmd == 'umidity': ## Get umidity
-        #     s
-        # elif msg.cmd == 'sound': ## Get sound
-        #     s
-        # elif msg.cmd == 'air': ## Get quality of the air
+
 
 ## OUTPUT
 elif state == 2:
